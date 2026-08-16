@@ -1,8 +1,8 @@
 # ZUnfurl 0.x Preview 开源执行计划
 
-> 状态：净化根历史已替换当前 Private 远端；Phase 6 尚待目标 Organization/仓库身份与 GitHub Apps 人工复核
+> 状态：已转移至 `ZUnfurl/zunfurl` Private Template repository（默认分支 `main`）；旧历史、目标身份、GitHub Apps 与 Codespaces secrets 人工复核已完成，最终候选仍须重新完成 G6a，并在 Public 前清空候选 CI cache 后通过精确远程复审
 >
-> 审计基线：2026-08-15
+> 计划基线：2026-08-15；执行状态更新：2026-08-16
 >
 > 选定路线：快速开源，以 `0.x preview` 发布
 >
@@ -19,7 +19,7 @@ Phase 0 工作文件：
 
 本文是 `ZUnfurl` 首次开源的执行权威文档。现有内部 `gcss-*` package、profile key 和迁移协议为兼容性暂不机械改名。计划把“快速开源”定义为收窄并准确描述当前能力，而不是降低版权、安全、可复现性或 Profile 正确性门槛。
 
-本计划本身不自动授权历史重写、远程仓库创建、push、Public 切换、tag、GitHub Release、生产部署或任何 Cloudflare、Sanity、Shopify、DNS 写入。Owner 已于 2026-08-16 持续授权完成 Phase 9 前所需的 commit、push、PR、tag 与 GitHub Release；该授权不包含 Public 切换、Organization 创建/转移、仓库安全设置或生产平台写入，且不替代任何技术 Gate。
+本计划本身不自动授权历史重写、远程仓库创建、push、Public 切换、tag、GitHub Release、生产部署或任何 Cloudflare、Sanity、Shopify、DNS 写入。Owner 已于 2026-08-16 持续授权完成 Phase 9 前所需的 commit、push、PR、tag 与 GitHub Release，并已单独确认创建 `ZUnfurl`、转移及改名为 `ZUnfurl/zunfurl`；Public 切换、仓库安全设置或生产平台写入仍不由该授权隐含，且任何授权都不替代技术 Gate。
 
 ## 1. 已冻结的发布决策
 
@@ -154,7 +154,7 @@ Phase 0 工作文件：
 - [x] 确认新公共历史使用批准的组织身份或 GitHub noreply 邮箱，不复制当前真实 author 历史。
 - [x] 复用当前 Private Template repository identity；原始历史保存为私有离线归档，公共版本只使用单一净化根历史，不保留或合并旧提交。
 
-已确认：公共品牌和目标 Organization 使用 `ZUnfurl`，目标仓库 slug 为 `zunfurl`；首版不设独立 Logo；Schema `$id` 使用 `urn:gcss-v3-site-framework:schema:project:v1`；公共提交使用批准的组织或 noreply 身份。D-02 已于 2026-08-16 修订为复用当前仓库 identity，但 commit、历史替换、创建 Organization、转移、改名或其他远程修改仍不属于“进入 Phase 6”的隐含授权范围。
+已确认：公共品牌和目标 Organization 使用 `ZUnfurl`，目标仓库 slug 为 `zunfurl`；首版不设独立 Logo；Schema `$id` 使用 `urn:gcss-v3-site-framework:schema:project:v1`；公共提交使用批准的组织或 noreply 身份。D-02 已于 2026-08-16 修订为复用当前仓库 identity；创建 Organization、仓库转移和改名随后已获单独确认并完成。其余远程修改（尤其 Public 切换）仍不属于“进入 Phase 6”的隐含授权范围。
 
 #### OSS-0002：确定许可政策
 
@@ -752,12 +752,21 @@ G1 至 G5 全部通过。所有远程写入仍需用户明确授权。
 
 - [x] 删除并核验 3 个旧 Actions runs/logs；旧日志端点均返回 `404`，旧 artifacts/caches 为 0。
 - [x] 以 `--force-with-lease` 将远程 `main` 替换为单一净化根历史；实际 origin 已重新扫描为 0 secret/PII/IP finding。
-- [x] 复核 branches、tags、Release、Issues、Discussions、wiki、Pages、deployments、environments、hooks、secrets、variables、deploy keys、LFS、packages 和 forks；未发现旧对象残留。
-- [x] GitHub 自动生成的 3 个 Dependabot 大版本 PR 已关闭，普通 head branches、runs 与 caches 已删除；GitHub 保留的 3 个只读 `refs/pull/*/head` 均直接派生自净化根、无 merge ref，并纳入可达历史审计。
+- [x] 复核 branches、tags、Release、Issues、Discussions、wiki、Pages、deployments、environments、hooks、secrets、variables、deploy keys、LFS、packages 和 forks；未发现旧历史对象残留。后续候选 CI 产生的平台对象单独按结构审计，不与旧对象混称。
+- [x] GitHub 自动生成的 3 个 Dependabot 大版本 PR 已关闭；截至 2026-08-16、源候选 `2b7aa20...` 的审计快照连同已合并候选 PR #4 共保留 4 个只读 `refs/pull/*/head`。四者均只使用批准的净化根、无 merge ref，并纳入可达历史审计；后续修复 PR 产生的 head 只以最终审计为准。
 - [x] 保持 `isTemplate=true`；Private/Free 下不可用的 ruleset、branch protection、CodeQL 上传和 PVR 已作为平台限制记录，不伪装成已启用。
-- [ ] 创建 `ZUnfurl` Organization，将仓库转移并改名为 `ZUnfurl/zunfurl`，随后重新审计。
-- [ ] 通过 sudo-protected GitHub UI 人工复核已安装 GitHub Apps 对该仓库的访问范围。
+- [x] 已在单独确认后创建 `ZUnfurl` Organization，并将仓库转移、改名为 `ZUnfurl/zunfurl`；复核结果为 Private、Template、默认分支 `main`。
+- [x] 已通过 sudo-protected GitHub UI 人工复核 GitHub Apps：仓库和 Organization 均显示无已安装 App。
 - [x] 未配置任何客户或生产 secret。
+- [x] 已通过 GitHub UI 精确复核 Codespaces secrets：仓库显示无 secrets。REST API 因当前 token 未授予 Codespaces scope 返回 `404`，不将该响应误作空结果；零 secret 结论仅以该人工页面证据补足。
+- [x] 提交态 6 个 workflow 与候选完全一致；运行时另有 2 个精确 GitHub-managed dynamic workflow。唯一 `copilot` Environment 为平台生成的空结构，已验证为 0 secrets、0 variables、0 deployments、0 protection rules 且无 branch policy。
+- [ ] 最终 G6a 结束后清空候选 CI 产生的 Actions caches，并以精确仓库身份、净化根和两项人工 attestation 重新运行 `--require-clean`；cache 非零时保持 fail-closed。
+
+完成 cache 清场且操作员已经在当前 repository ID 上重新查看两处 UI 后，使用以下精确命令；两个 attestation 参数是本次人工事实声明，不是 API 自动证明，也不得复制到其他仓库：
+
+```powershell
+npm.cmd run audit:phase6:github:clean -- --attest-codespaces-secrets-empty --attest-github-apps-reviewed
+```
 
 上述每一项都是远程写入或破坏性历史操作，不因进入 Phase 6 自动获批。若 Organization 创建、仓库转移或目标 slug 发生冲突，立即停止；不得临场新建第二个公共候选仓库或移动 remote。
 
@@ -767,7 +776,7 @@ G1 至 G5 全部通过。所有远程写入仍需用户明确授权。
 
 停止条件：任何客户素材、个人邮箱、secret 或内部文档进入候选；tree 差异无法解释；候选仓库被提前切为 Public。
 
-执行结果：OSS-0601、OSS-0602 和 OSS-0603 的历史替换/旧对象清场部分已通过；唯一保留的 Actions run 是同一净化根 SHA 的手动 Secret Scan success。GitHub 不允许删除 closed PR 的只读 hidden refs，因此 Gate 以“无开放 PR、无普通 PR branch、无 merge ref、保留 head ref 全部同一净化根”为准。Phase 6 当前为 `blocked-by-target-identity-and-app-review`，尚未通过 Organization 转移与 GitHub Apps 人工复核。
+执行结果：OSS-0601、OSS-0602 和 OSS-0603 的历史替换、旧对象清场、目标身份迁移与人工访问复核均已完成；远端为 `ZUnfurl/zunfurl` Private Template repository，默认分支 `main`。截至 2026-08-16、源候选 `2b7aa20...` 的转移后审计快照为 23 个 Actions runs、4 个 caches、4 个只读 closed-PR head refs、2 个 GitHub-managed dynamic workflows 和 1 个空 `copilot` Environment；runs 与 refs 均只使用净化历史。该快照不是冻结计数：本轮修复 PR/CI 会继续增加净化对象，最终只以合并后的精确审计为准。cache API 不提供对应 commit/run，因此快照中的 4 个及随后产生的全部 caches 都必须在 Public Gate 前删除并复审为 0。GitHub 不允许删除 closed PR 的只读 hidden refs，因此 Gate 以“无开放 PR、无普通 PR branch、无 merge ref、保留 head ref 全部同一净化根”为准。当前仅有单一 maintainer/Code Owner，尚无独立审批；不得把该事实表述为已满足独立审核或受保护分支要求。Phase 6 当前为 `blocked-by-final-cache-purge-and-reaudit`；最终 G6a、G6b、远程安全 Gate 与独立审核策略仍未完成。
 
 ## Phase 7：全新环境发布候选验证
 
@@ -841,6 +850,8 @@ git fsck --full --strict
 
 通过条件（G6a）：精确候选 commit 在经授权的全新隔离 checkout 可复现；Windows/Linux required checks 全绿；工作树干净；证据摘要无 secret。真正无仓库权限的匿名 clone 属于 Public 后、tag 前的 G6b，不得在 Private 状态伪造完成。
 
+已完成的前序证据：`2b7aa20efdc57564bbc36c720d208b64d1a2f3f5` 的 `main` GitHub Actions run `31925593834` 有 7 个 job 全绿。该 SHA 是本次文档和 validator 后续变更前的源候选；任何新提交均必须拥有自己的 G6a 运行和脱敏证据，不能复用该结果宣称最终 Gate 通过。
+
 停止条件：候选提交没有自己的 CI；任何步骤依赖生产 secret；安装或构建依赖本机缓存；声明与实现不一致。
 
 ## Phase 8：配置 GitHub 并执行公开发布窗口
@@ -874,7 +885,7 @@ G0 至 G6a 全部通过；Public 获得独立授权。tag 与 GitHub Release 已
 - `v*` tag 仅 release maintainer 可创建；已发布 tag 不移动、不复用。
 - 未来生产 Deploy 必须使用 Environment 和最小权限 token；独立人工审批只在 GitHub 计划支持并经远程验收后声明，否则继续依赖人工 dispatch，并另行设计真正受保护的发布边界。
 
-公开前先完成当前计划允许的 Actions 权限、允许列表、仓库元数据和安全开关。ruleset、branch protection、Private Vulnerability Reporting 及其他 Public-only 控制必须在切换 Public 后立即启用并验证；在验证成功前不得创建 tag、Release 或宣传安全入口已可用。若希望这些控制在公开前已生效，必须先升级到支持 Private repository 规则的 GitHub 计划并重新验收。
+公开前先完成当前计划允许的 Actions 权限、允许列表、仓库元数据和安全开关。ruleset、branch protection、Private Vulnerability Reporting 及其他 Public-only 控制必须在切换 Public 后立即启用并验证；在验证成功前不得创建 tag、Release 或宣传安全入口已可用。若希望这些控制在公开前已生效，必须先升级到支持 Private repository 规则的 GitHub 计划并重新验收。当前仅有单一 maintainer/Code Owner，不能伪造独立 CODEOWNERS 批准；应在公开窗口前补充真实独立审阅者，或先修订治理承诺并重新验收可执行的单维护者规则。
 
 Template 创建的客户仓库不会自动继承上游全部安全设置。计划新增 `docs/customer-repository-settings.md`，为客户 Organization 提供独立 bootstrap 清单。
 
@@ -892,8 +903,8 @@ Template 创建的客户仓库不会自动继承上游全部安全设置。计�
 4. 立即启用并验证 Public 状态下的 ruleset/branch protection、Private Vulnerability Reporting、Dependabot/CodeQL/secret scanning，以及计划支持的其他安全控制。
 5. 复核 Public、Template、默认分支、LICENSE、Community Profile、Security 和规则状态；任何关键控制不可用时停止 tag/Release，并记录仓库已经发生过公开暴露，不得把恢复 Private 表述为从未公开。
 6. 清空本地 GitHub 凭据后通过公开 HTTPS URL 执行真正匿名 fresh clone，验证精确 SHA、Quick Start 和完整门禁；随后从外部 fork/PR 场景运行一次不含 production secret 的 CI。该步骤构成 G6b。
-7. 经单独授权，创建并 push 签名 annotated tag `v0.3.0-preview.1`。
-8. 经单独授权，创建 GitHub Pre-release。
+7. 依据 2026-08-16 已授予且仍有效的持续授权，创建并 push 签名 annotated tag `v0.3.0-preview.1`。
+8. 依据同一持续授权创建 GitHub Pre-release。
 9. 附加 SBOM、SHA-256 和脱敏验证摘要，不附带 `node_modules` 或未经审核的二进制。
 10. 验证 `Use this template` 创建独立 Private 测试项目的路径。
 
@@ -1008,7 +1019,7 @@ Template 创建的客户仓库不会自动继承上游全部安全设置。计�
 
 | 编号 | 决策 | 已确认结果 | 状态/实施阶段 |
 | --- | --- | --- | --- |
-| D-01 | 公共仓库所有者 | `ZUnfurl` Organization；目标仓库 `ZUnfurl/zunfurl` | 已确认；Phase 0 |
+| D-01 | 公共仓库所有者 | `ZUnfurl` Organization；目标仓库 `ZUnfurl/zunfurl` | 已确认并实施；Phase 6 |
 | D-02 | 历史策略 | 复用当前 Private 仓库 identity；旧历史私有离线归档；单一净化根历史替换远程旧历史 | 2026-08-16 修订；Phase 6 实施 |
 | D-03 | 代码许可证 | Apache-2.0 | 已确认；Phase 0 |
 | D-04 | 文档许可证 | 首个 Preview 与代码同为 Apache-2.0 | 已确认；Phase 0 |
@@ -1033,6 +1044,7 @@ Template 创建的客户仓库不会自动继承上游全部安全设置。计�
 - 权利复核人：版权主体，必要时外部律师。
 - Security 联系人：至少一名主联系人；如条件允许，增加独立替代联系人。
 - Release maintainer：负责 Go/No-Go、tag、Release 和证据摘要。
+- 独立 release reviewer / Code Owner：当前暂无第二名合格人员；在补充真实审阅者或明确修订单维护者治理承诺前，不得声称满足独立批准。
 
 ## 11. Definition of Done
 
@@ -1050,7 +1062,7 @@ Template 创建的客户仓库不会自动继承上游全部安全设置。计�
 - [x] 所有 Actions 固定完整 SHA，fork PR 不接触 secret。
 - [x] `LICENSE`、`SECURITY.md`、社区治理和 Issue/PR 模板已建立并通过本地门禁。
 - [x] 根、契约、workspace、fixtures、lockfile、CHANGELOG 和 Release 版本一致。
-- [ ] 原始私有历史与净化历史分别通过 secret/PII/IP 扫描。
+- [x] 专项扫描结论已记录：原始私有历史的 PII/IP 规则命中 39 项、旧 Actions 日志命中 70 项，均为 `blocked` 私有归档；净化历史与实际候选远端的 secret/PII/IP 扫描为 0 finding。
 - [ ] Private 公共候选仓库在 Windows/Linux、Node 22.12/24 全绿。
 - [ ] 匿名全新 clone 可执行 Quick Start 和完整门禁。
 - [ ] 发布证据摘要包含精确 commit、校验和、环境和已知限制。

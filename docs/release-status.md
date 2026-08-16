@@ -1,6 +1,6 @@
 # Release Status
 
-> 当前仓库状态：首次开源准备中，尚未公开发布
+> 当前仓库状态：`ZUnfurl/zunfurl` Private Template repository（默认分支 `main`），首次开源准备中，尚未公开发布
 >
 > 目标发布通道：`0.x preview`
 >
@@ -64,15 +64,15 @@
 
 ## 首个 Preview 的发布阻断项
 
-- Phase 1 当前发布树门禁已通过：旧媒体已替换或删除，当前 26 项媒体和 77 个源码引用完成 provenance 登记，9 个中文文件已重写，当前树文本扫描为 0 个未批准命中。原始私有历史仍不符合公开条件，但已从远端 `main` 移除并仅保留在私有离线 bundle。
+- Phase 1 当前发布树门禁已通过：旧媒体已替换或删除，当前 26 项媒体和 77 个源码引用完成 provenance 登记，9 个中文文件已重写，当前树文本扫描为 0 个未批准命中。原始私有历史的 PII/IP 规则命中 39 项、旧 Actions 日志命中 70 项，均为 `blocked` 私有归档；它们已从远端 `main` 移除。净化历史与实际候选远端的 secret/PII/IP 扫描为 0 finding。
 - Phase 2 能力声明门禁已通过：C 定位、三类 Preview、Production Backup/Disaster Recovery Restore、商品 archive/unarchive 和公开上游工作流已分离。
 - Phase 3 工程门禁已通过：A1/A2/B/C 四份初始化后独立 fixture、Profile/Schema/法律路由隔离、Contact 原子限流、Webhook 短期幂等、显式 Shopify handle、全 workspace typecheck、构建与 Worker dry-run 均通过；临时目录已删除且源工作树状态未被夹具改变。
-- Phase 0 已确认公共 owner、版权署名、许可证和权利链声明；Phase 5 已建立 `LICENSE`、`NOTICE`、商标政策和 fail-closed 许可覆盖门禁。Phase 6 的唯一净化根提交为 `e50b0cec829cee08397bbc87b7ed483e8ee7afda`，根提交中的 303 个文件均完成许可映射；当前 Phase 7 修复分支新增 `.gitattributes` 后候选为 304 个文件。真实自然人与笔名映射及权利链证据继续保存在私有权属记录中，不进入公共仓库。
+- Phase 0 已确认公共 owner、版权署名、许可证和权利链声明；Phase 5 已建立 `LICENSE`、`NOTICE`、商标政策和 fail-closed 许可覆盖门禁。Phase 6 的唯一净化根提交为 `e50b0cec829cee08397bbc87b7ed483e8ee7afda`，根提交中的 303 个文件均完成许可映射；当前 `main` 新增 `.gitattributes` 后候选为 304 个文件。真实自然人与笔名映射及权利链证据继续保存在私有权属记录中，不进入公共仓库。
 - Phase 4 本地供应链门禁已通过：完整树与 production tree 均为 0 critical、0 high、7 moderate、0 low；1600-component CycloneDX SBOM、依赖许可证政策、固定 SHA Actions 和无生产 secret 的 PR CI 已建立。Phase 5 版本元数据对齐后当前 SBOM SHA-256 为 `6c122c2713fbe378f1a889f8acc89913ae33f7765379b21b823ebcec81d7f738`。最终候选 commit 的托管 CI 与真实远程 `production` Environment/branch policy/arming 仍未验收。
 - Phase 5 本地 Gate 已通过：Apache-2.0、DCO、社区治理、安全与支持政策、README、CHANGELOG、Release 契约和完整 SemVer 已实施；12 个社区文件、3 个 Issue Forms、候选中 65 个 Markdown 文件的 145 个链接和 10 个私有 manifest 已通过专用门禁。安全邮箱实际收件、GitHub Private Vulnerability Reporting、CODEOWNERS 权限和 Community Profile 仍需在公共候选远程验证。
-- 当前 Private Template repository identity 已复用：3 个旧 Actions runs/logs 已删除并验证日志端点不可用，远程 `main` 已通过 lease-protected history replacement 指向单一净化根；实际 GitHub origin 再扫描为 0 secret/PII/IP finding。GitHub 自动生成的 3 个 Dependabot PR 已关闭，普通 branches/runs/caches 已清理；平台保留的 3 个只读 closed-PR head refs 均直接派生自净化根且无 merge ref。Phase 6 仍待 `ZUnfurl/zunfurl` Organization 身份迁移与 GitHub Apps 人工访问复核。
-- Fresh Windows clone 已发现并修复默认 `core.autocrlf` 导致资产字节哈希漂移的问题；`.gitattributes` 固定 LF checkout，Node 24 CI 增加 Storefront build 前置步骤，并新增 Windows Node 22.12 托管 job。以上修复必须在新的精确候选 SHA 上重新通过 G6a。
-- GitHub Free 的 Private 仓库不能完成 CodeQL/Dependency Review 上传、Public ruleset/branch protection 和 PVR 验收；这些控制及真正匿名 clone 必须在 Public 后、任何 tag/Release 前完成。tag 与 GitHub Release 已获持续授权至 Phase 9；Public 切换仍缺少单独明确授权。
+- 当前 Private Template repository identity 已复用并在单独确认后完成 Organization 创建、仓库转移和改名：远端为 `ZUnfurl/zunfurl`，默认分支 `main`。3 个旧 Actions runs/logs 已删除并验证日志端点不可用，远程 `main` 已通过 lease-protected history replacement 指向单一净化根；GitHub 自动生成的 3 个 Dependabot PR 已关闭。截至 2026-08-16、源候选 `2b7aa20...` 的转移后审计快照为 23 个 Actions runs、4 个 caches、4 个只读 closed-PR head refs、2 个精确 GitHub-managed dynamic workflows 和 1 个空 `copilot` Environment；runs 与 refs 均只使用净化历史，Environment 为 0 secrets、0 variables、0 deployments、0 protection rules 且无 branch policy 的平台空结构。本轮修复 PR/CI 会继续增加净化对象，最终计数只以合并后审计为准；快照中的 4 个及随后产生的全部 caches 仍须在最终 G6a 后删除并复审为 0。通过 sudo-protected GitHub UI 人工复核后，仓库和 Organization 均显示无已安装 GitHub App；Codespaces secrets 页面显示仓库无 secrets。Codespaces REST API 因当前 token scope 返回 `404`，不将该响应误作零 secret 证明。
+- Fresh Windows clone 已发现并修复默认 `core.autocrlf` 导致资产字节哈希漂移的问题；`.gitattributes` 固定 LF checkout，Node 24 CI 增加 Storefront build 前置步骤，并新增 Windows Node 22.12 托管 job。`2b7aa20efdc57564bbc36c720d208b64d1a2f3f5` 的 `main` run `31925593834` 已有 7 个 job 全绿；本次文档/validator 新提交必须以自己的精确 SHA 重新完成 G6a，不能沿用该前序证据。
+- GitHub Free 的 Private 仓库不能完成 CodeQL/Dependency Review 上传、Public ruleset/branch protection 和 PVR 验收；这些控制及真正匿名 clone 必须在 Public 后、任何 tag/Release 前完成。当前仅有单一 maintainer/Code Owner，尚无独立批准，不能声称已满足独立审核或 CODEOWNERS review。当前没有可用的签名 key；创建签名 annotated tag 前还需要单独建立、保护并验证签名身份。tag 与 GitHub Release 已获持续授权至 Phase 9；Public 切换仍缺少单独明确授权。
 
 任一阻断项存在时，不允许把仓库切为 Public。
 

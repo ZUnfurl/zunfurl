@@ -8,6 +8,10 @@
 
 本清单是发布操作门禁，不是当前完成证明。只有证据存在时才可勾选。Owner 已授权完成 Phase 9 前所需的 tag 与 GitHub Release；Public 切换仍须单独明确授权，已有授权也不替代技术 Gate。
 
+当前事实（不构成最终 Gate 通过）：目标为 `ZUnfurl/zunfurl` Private Template repository，默认分支 `main`；Organization 创建、仓库转移和改名已获单独确认并完成。GitHub sudo-protected UI 显示仓库和 Organization 均无已安装 App；Codespaces secrets UI 显示仓库无 secrets。Codespaces REST API 因当前 token scope 返回 `404`，零 secret 结论仅以精确人工 UI 证据补足。
+
+截至 2026-08-16、源候选 `2b7aa20...` 的转移后审计快照为 4 个只读 closed-PR head refs、23 个只使用净化历史的 Actions runs、4 个 caches、2 个精确 GitHub-managed dynamic workflows 和 1 个空 `copilot` Environment。该快照不是冻结计数；本轮修复 PR/CI 会继续增加净化对象，最终只以合并后审计为准。快照中的 4 个及随后生成的全部 caches 必须在最终 G6a 后清空并复审为 0；这些对象不得与已清除的旧历史对象混称。
+
 ## 1. 候选冻结
 
 - [ ] 候选树只包含拟公开文件，`git status` 与变更审阅已归档。
@@ -47,6 +51,9 @@
 - [ ] Windows/Node 22.12、Linux/Node 22.12 与 Linux/Node 24 托管 CI 全绿。
 - [ ] A1/A2/B/C fixture、Storefront/Studio build 与 Worker dry-run 在精确候选 SHA 上通过。
 - [ ] `.gitattributes` 保证默认 Windows Git checkout 不改变受哈希门禁管理的文本字节。
+- [ ] 最终 G6a 完成后，Actions caches 已按单独确认清空；远程 `--require-clean` 以精确仓库/根历史及 Apps、Codespaces 人工 attestation 返回 `go`。
+
+前序证据仅供追溯：`2b7aa20efdc57564bbc36c720d208b64d1a2f3f5` 的 `main` run `31925593834` 有 7 个 job 全绿。本次文档/validator 变更会产生新 SHA，因此本节仍全部未完成，必须在最终精确 SHA 上重跑。
 
 ## 6. G6b Public 后、tag 前匿名重现
 
@@ -60,6 +67,7 @@
 - [ ] **Public 授权**：Owner 明确批准将净化后的目标仓库设为 Public。
 - [ ] Template repository 标记、描述、topics 与默认分支设置已复核。
 - [x] **Tag 授权**：Owner 已明确批准在全部 Gate 通过后创建签名 annotated tag `v0.3.0-preview.1`。
+- [ ] 已建立、保护并验证可用于该 tag 的签名 key；当前尚无可用签名 key。
 - [ ] tag 精确指向唯一候选 commit，且没有移动或复用既有 tag。
 - [x] **Release 授权**：Owner 已明确批准在全部 Gate 通过后发布 `ZUnfurl v0.3.0-preview.1`。
 - [ ] GitHub Release 标记为 Pre-release，仅附源码、SBOM 与脱敏证据摘要。
