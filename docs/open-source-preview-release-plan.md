@@ -19,7 +19,7 @@ Phase 0 工作文件：
 
 本文是 `ZUnfurl` 首次开源的执行权威文档。现有内部 `gcss-*` package、profile key 和迁移协议为兼容性暂不机械改名。计划把“快速开源”定义为收窄并准确描述当前能力，而不是降低版权、安全、可复现性或 Profile 正确性门槛。
 
-本计划本身不自动授权历史重写、远程仓库创建、push、Public 切换、tag、GitHub Release、生产部署或任何 Cloudflare、Sanity、Shopify、DNS 写入。Owner 已于 2026-08-16 持续授权完成 Phase 9 前所需的 commit、push、PR、tag 与 GitHub Release，并已单独确认创建 `ZUnfurl`、转移及改名为 `ZUnfurl/zunfurl`；随后又明确要求完成 Phase 8 后暂停，因此 Phase 8 所需的候选 cache 清场、仓库安全设置、Public 窗口、G6b、签名 tag 与 Pre-release 已获得操作授权。该授权不包含生产平台写入，也不替代任何技术 Gate；Phase 9 仍需新的进入指令。
+本计划本身不自动授权历史重写、远程仓库创建、push、Public 切换、tag、GitHub Release、生产部署或任何 Cloudflare、Sanity、Shopify、DNS 写入。Owner 已于 2026-08-16 持续授权完成 Phase 9 前所需的 commit、push、PR、tag 与 GitHub Release，并已单独确认创建 `ZUnfurl`、转移及改名为 `ZUnfurl/zunfurl`；随后又明确要求完成 Phase 8 后暂停，因此 Phase 8 所需的候选 cache 清场、仓库安全设置、Public 窗口、G6b、annotated tag 与 Pre-release 已获得操作授权。该授权不包含生产平台写入，也不替代任何技术 Gate；Phase 9 仍需新的进入指令。
 
 ## 1. 已冻结的发布决策
 
@@ -845,7 +845,7 @@ Phase 7 只生成仓库外的私有 pre-tag 证据，不向候选树写入会改
 - Known limitations 和 Roadmap 边界；
 - 检查时间和责任人。
 
-`docs/compliance/release-evidence.schema.json` 与 `scripts/compliance/validate-release-evidence.mjs` 保留为 Experimental 研究工具，不再作为 `v0.3.0-preview.1` 的发布阻断项，也不上传 detached evidence asset。首个 Preview 的公共证据收敛为签名 annotated tag、GitHub Actions 结果、可重现 `sbom.cdx.json`、`SHA256SUMS` 与 Release Notes；原始扫描日志、操作者身份映射和完整执行记录继续留在仓库外私有证据包。若未来要把 detached evidence 升格为强制 Gate，必须单独评审其维护成本和威胁模型。
+`docs/compliance/release-evidence.schema.json` 与 `scripts/compliance/validate-release-evidence.mjs` 保留为 Experimental 研究工具，不再作为 `v0.3.0-preview.1` 的发布阻断项，也不上传 detached evidence asset。首个 Preview 的公共证据收敛为普通 annotated tag、GitHub Actions 结果、可重现 `sbom.cdx.json`、`SHA256SUMS` 与 Release Notes；原始扫描日志、操作者身份映射和完整执行记录继续留在仓库外私有证据包。若未来要把 detached evidence 或签名 tag 升格为强制 Gate，必须单独评审其维护成本和威胁模型。
 
 ### Phase 7 Gate
 
@@ -883,7 +883,7 @@ G0 至 G6a 全部通过；Public 获得独立授权。tag 与 GitHub Release 已
 - 禁止 checkout、fetch、解析 artifact 或执行 PR head 的高风险 `pull_request_target`；唯一例外是冻结的 metadata-only DCO publisher，它只执行受信任默认分支代码、分页读取 PR commit metadata，并以最窄 `statuses: write` 向精确 PR head 发布 DCO 状态。fork PR 不取得 secrets。
 - 启用 dependency graph、Dependabot alerts/updates、dependency review、CodeQL、secret scanning、push protection 和 Private Vulnerability Reporting。
 - `main` 在当前单维护者阶段必须通过 PR、required checks、解决全部 conversation，并要求 linear history；`required_approving_reviews = 0`、`require_code_owner_review = false`，禁止 force push 和删除。CODEOWNERS 只用于责任与 review request 路由，不构成独立批准。
-- `v*` tag 必须使用已登记的专用 signing key 创建签名 annotated tag；已发布 tag 不移动、不复用。
+- `v*` tag 使用 annotated tag 并精确指向已验证候选；首个 Preview 不要求专用 signing key，已发布 tag 不移动、不复用。
 - 未来生产 Deploy 必须使用 Environment 和最小权限 token；独立人工审批只在 GitHub 计划支持并经远程验收后声明，否则继续依赖人工 dispatch，并另行设计真正受保护的发布边界。
 
 公开前先完成当前计划允许的 Actions 权限、允许列表、仓库元数据和安全开关。ruleset、branch protection、Private Vulnerability Reporting 及其他 Public-only 控制必须在切换 Public 后立即启用并验证；在验证成功前不得创建 tag、Release 或宣传安全入口已可用。若希望这些控制在公开前已生效，必须先升级到支持 Private repository 规则的 GitHub 计划并重新验收。当前单维护者规则必须按上一条原样落地；新增第二名身份独立、列入名册且具有 `write` 权限的合格维护者后，必须在后续合并前升级为 `required_approving_reviews >= 1` 与 `require_code_owner_review = true`，其余保护不得弱化。
@@ -906,7 +906,7 @@ Phase 8 Lite 的远程设置以 `docs/compliance/github-public-security-policy.j
 4. 立即启用并验证 Public 状态下的 ruleset/branch protection、Private Vulnerability Reporting、Dependabot/CodeQL/secret scanning，以及计划支持的其他安全控制。
 5. 复核 Public、Template、默认分支、LICENSE、Community Profile、Security 和规则状态；任何关键控制不可用时停止 tag/Release，并记录仓库已经发生过公开暴露，不得把恢复 Private 表述为从未公开。
 6. 清空本地 GitHub 凭据后通过公开 HTTPS URL 执行真正匿名 fresh clone，验证精确 SHA、Quick Start 和公开门禁。真正无目标写权限的外部 fork PR 留作 0.x 已知限制，在首个真实外部贡献者 PR 后补验。
-7. 依据 2026-08-16 已授予且仍有效的持续授权，创建并 push 签名 annotated tag `v0.3.0-preview.1`。
+7. 依据 2026-08-16 已授予且仍有效的持续授权，创建并 push annotated tag `v0.3.0-preview.1`。
 8. 依据同一持续授权创建 GitHub Pre-release。
 9. 附加 `sbom.cdx.json` 与 `SHA256SUMS`，在 Release Notes 记录候选 SHA、CI、Known limitations 和 Roadmap；不附带 detached evidence、`node_modules` 或未经审核的二进制。
 10. 验证 `Use this template` 创建独立 Private 测试项目的路径。
@@ -1000,7 +1000,7 @@ Owner 已决定：完成 Phase 8 并记录执行情况后暂停。D+1、D+7 与 
 - 首个公共版本确定为 `v0.3.0-preview.1`。
 - 根 `package.json.version`、`gcss.project.json.frameworkVersion`、workspace 版本、CHANGELOG、tag 和 Release title 按批准的同一政策更新。
 - 所有 package 继续 `private: true`。
-- Release tag 必须指向已经通过 G6a 与 G6b 的唯一 commit，并使用签名 annotated tag。
+- Release tag 必须是 annotated tag，并精确指向已经通过 G6a 与 G6b 的唯一 commit；首个 Preview 不要求密码学签名。
 - 已发布 tag 不移动、不重用。
 - Preview 阶段只支持最新发布版本，是否回补安全修复由 `SECURITY.md` 明确。
 

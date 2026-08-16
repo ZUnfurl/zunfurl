@@ -20,7 +20,7 @@
 
 ### Changed
 
-- Phase 8 采用 Lite 发布路线：detached Release evidence、same-maintainer fork canary、专用 release Team/tag-creation ruleset和重复全量 Actions 日志扫描降为非阻断；首个 Preview 保留签名 tag、SBOM、校验和、匿名 clone、Template smoke 与必要 GitHub 安全设置。
+- Phase 8 采用 Lite 发布路线：detached Release evidence、same-maintainer fork canary、专用 release Team/tag-creation ruleset、签名 tag 和重复全量 Actions 日志扫描降为非阻断；首个 Preview 保留普通 annotated tag、SBOM、校验和、匿名 clone、Template smoke 与必要 GitHub 安全设置。
 - 公开产品名采用 ZUnfurl；内部 `gcss-*` package、配置文件和 Skill 标识暂时保留，以避免无必要的破坏性迁移。
 - C 的公开定位收窄为 **Retail Catalog & Content Foundation**：只读映射 Shopify 目录与媒体事实，不提供交易闭环。
 - `frameworkVersion` 和所有私有 workspace 统一为完整 SemVer prerelease `0.3.0-preview.1`。

@@ -96,8 +96,8 @@
 
 ## 8. Tag 与 GitHub Release
 
-- tag 必须是签名 annotated tag，并指向通过全部 Gate 的唯一 commit。
-- `v*` tag 必须由已授权维护者使用已登记的专用 signing key 创建。
+- tag 必须是 annotated tag，并指向通过全部 Gate 的唯一 commit；首个 Preview 不要求密码学签名。
+- `v*` tag 只能由已授权维护者创建；不得移动、覆盖或复用。
 - Preview 的 GitHub Release 必须标记 Pre-release。
 - Release note 必须包含：成熟度、Profile 范围、C 排除项、Known limitations、Roadmap、安全报告入口、支持的 Node/npm 和迁移说明。
 - Release 附加 `sbom.cdx.json` 与 `SHA256SUMS`；不附加 detached evidence、secret scanner 原始命中或私有授权材料。

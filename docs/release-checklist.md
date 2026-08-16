@@ -70,8 +70,7 @@ PR #5 由当前唯一维护者 `@mp4102` 提交并合并；合并前所有实际
 
 - [x] **Public 授权**：Owner 已以“完成 Phase 8 后暂停”的明确指令批准将净化后的目标仓库设为 Public。
 - [ ] Template repository 标记、描述、topics 与默认分支设置已复核。
-- [x] **Tag 授权**：Owner 已明确批准在全部 Gate 通过后创建签名 annotated tag `v0.3.0-preview.1`。
-- [ ] 已建立、保护并验证可用于该 tag 的签名 key；当前尚无可用签名 key。
+- [x] **Tag 授权**：Owner 已明确批准在全部 Gate 通过后创建 annotated tag `v0.3.0-preview.1`；首个 Preview 不要求签名 key。
 - [ ] tag 精确指向唯一候选 commit，且没有移动或复用既有 tag。
 - [x] **Release 授权**：Owner 已明确批准在全部 Gate 通过后发布 `ZUnfurl v0.3.0-preview.1`。
 - [ ] 启用并审计 Immutable Releases；创建 draft Pre-release，上传 `sbom.cdx.json` 与 `SHA256SUMS` 并逐项核对摘要和 content type。
