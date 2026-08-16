@@ -81,7 +81,21 @@ function normalizeStoreDomain(storeDomain) {
     throw new Error('Missing SHOPIFY_STORE_DOMAIN for Shopify Storefront API.');
   }
 
-  return storeDomain.replace(/^https?:\/\//, '').replace(/\/+$/, '');
+  let normalized = String(storeDomain).trim();
+  if (normalized.startsWith('https://')) {
+    normalized = normalized.slice('https://'.length);
+  } else if (normalized.startsWith('http://')) {
+    normalized = normalized.slice('http://'.length);
+  }
+  let end = normalized.length;
+  while (end > 0 && normalized[end - 1] === '/') {
+    end -= 1;
+  }
+  normalized = normalized.slice(0, end);
+  if (!normalized) {
+    throw new Error('Missing SHOPIFY_STORE_DOMAIN for Shopify Storefront API.');
+  }
+  return normalized;
 }
 
 function getFetch(fetchImpl) {

@@ -105,11 +105,30 @@ function collectMarkdownDestinations(source) {
   return links;
 }
 
+function stripHtmlTags(value) {
+  const result = [];
+  const pendingTag = [];
+  let insideTag = false;
+  for (const character of value) {
+    if (!insideTag && character === '<') {
+      insideTag = true;
+      pendingTag.push(character);
+    } else if (insideTag && character === '>') {
+      insideTag = false;
+      pendingTag.length = 0;
+    } else if (insideTag) {
+      pendingTag.push(character);
+    } else {
+      result.push(character);
+    }
+  }
+  return result.join('') + pendingTag.join('');
+}
+
 function githubSlug(value) {
-  return value
+  return stripHtmlTags(value)
     .trim()
     .toLowerCase()
-    .replace(/<[^>]*>/g, '')
     .replace(/[`*_~]/g, '')
     .replace(/[^\p{Letter}\p{Number}\p{Mark}\s-]/gu, '')
     .replace(/\s+/g, '-');
