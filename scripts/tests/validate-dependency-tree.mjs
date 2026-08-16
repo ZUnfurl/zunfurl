@@ -1,10 +1,11 @@
 /**
  * 校验 Phase 4 的依赖树完整性与两项临时安全覆盖。
  *
- * npm 11 在从传递依赖进入的 exact override 上会继续用上游旧 exact spec
- * 报告 `invalid`。这里仅接受两条已审核节点；上游一旦修改声明、覆盖失效、
- * npm 修复该报告行为，或出现任何未被算法证明的平台可选 orphan，以及其他
- * missing / extraneous / invalid，测试都会 fail closed，要求维护者重新审核并删除过期覆盖。
+ * 部分 npm 11 构建会在从传递依赖进入的 exact override 上继续用上游旧 exact
+ * spec 报告 `invalid`，而 Node 22.12 随附的 npm 在 Linux 上可能返回 clean tree。
+ * 两种输出都必须先通过 parent 声明、lock 与实际解析版本的精确验证；若存在
+ * problems，只接受两条已审核 invalid 与算法证明的平台可选 orphan。其他
+ * missing / extraneous / invalid 始终 fail closed。
  */
 
 import { spawnSync } from 'node:child_process';
@@ -281,11 +282,14 @@ try {
 }
 
 const problems = Array.isArray(dependencyTree.problems) ? dependencyTree.problems : [];
-if (npmList.status === 0 || problems.length === 0) {
-  fail('npm ls 已不再报告预期的 exact override；请复核上游并删除陈旧 override');
-}
-if (npmList.status !== 1) {
+if (![0, 1].includes(npmList.status)) {
   fail(`npm ls 返回意外退出码 ${npmList.status}`);
+}
+if (npmList.status === 0 && problems.length !== 0) {
+  fail(`npm ls 退出码为 0 但仍报告 ${problems.length} 个 problem`);
+}
+if (npmList.status === 1 && problems.length === 0) {
+  fail('npm ls 退出码为 1 但没有提供可审核 problem');
 }
 
 const platformOptional = derivePlatformOptionalClosure(
@@ -324,17 +328,19 @@ const remainingProblems = problems.filter((problem) => {
   return !provenOptionalExtraneous.has(problem.replaceAll('\\', '/'));
 });
 
-if (remainingProblems.length !== expectedRepairs.length) {
+if (![0, expectedRepairs.length].includes(remainingProblems.length)) {
   fail(
-    `npm ls 未证明 problems 数量应为 2，实际为 ${remainingProblems.length}：` +
+    `npm ls 未证明 problems 数量应为 0 或 2，实际为 ${remainingProblems.length}：` +
       `${remainingProblems.join(' | ')}`,
   );
 }
 
-for (const repair of expectedRepairs) {
-  const matches = remainingProblems.filter((problem) => repair.expectedProblemPattern.test(problem));
-  if (matches.length !== 1) {
-    fail(`${repair.label} 的 expected-invalid 不唯一：${remainingProblems.join(' | ')}`);
+if (remainingProblems.length > 0) {
+  for (const repair of expectedRepairs) {
+    const matches = remainingProblems.filter((problem) => repair.expectedProblemPattern.test(problem));
+    if (matches.length !== 1) {
+      fail(`${repair.label} 的 expected-invalid 不唯一：${remainingProblems.join(' | ')}`);
+    }
   }
 }
 
@@ -345,7 +351,7 @@ for (const problem of remainingProblems) {
 }
 
 console.log(
-  `Dependency tree gate OK: 2 reviewed exact-override reports and ` +
+  `Dependency tree gate OK: ${remainingProblems.length} reviewed exact-override reports and ` +
     `${problems.length - remainingProblems.length} algorithmically proven platform-optional ` +
     'orphans; no unproved physical-tree problems.',
 );

@@ -31,8 +31,9 @@ SBOM 由根 `devDependency` 中精确固定的 `@cyclonedx/cyclonedx-npm` 生成
 --spec-version 1.6 --validate`，从而纳入所有平台的 optional package，而不是只记录
 当前 OS 实际安装的二进制。工具本身必须先由干净 `npm ci` 按 lock 安装。
 
-当前 npm 11 会把两项 parent-scoped exact override 的已修复解析结果报告为
-`npm ls invalid`，即使 `npm ci`、实际解析版本和 `npm audit` 均一致。CycloneDX 调用
+部分 npm 11 环境会把两项 parent-scoped exact override 的已修复解析结果报告为
+`npm ls invalid`，即使 `npm ci`、实际解析版本和 `npm audit` 均一致；Node 22.12
+随附的 npm 在 Linux runner 上则可能返回 clean tree。CycloneDX 调用
 因此使用其官方 `--ignore-npm-errors` 开关继续读取 lock；这不是忽略依赖完整性的
 blanket waiver。本地许可证 validator 会对 `package-lock.json` 与 SBOM 的每一个
 third-party package path/version 做双向覆盖校验，任一缺项、额外项或版本差异均失败。
@@ -63,8 +64,9 @@ component 数、四类 scope 计数和 SBOM SHA-256。
 | `@module-federation/dts-plugin@2.8.1` | `undici@7.28.0` | `undici@7.29.0` | parent 解析到已审查修复版 |
 | `@vercel/frameworks@3.29.0` | `js-yaml@3.13.1` | `js-yaml@3.15.1` | parent subtree 固定到已审查 backport |
 
-当前 parent package metadata 仍精确声明旧子版本，因此 npm 11 会把 override 后的子版本
-写成 `invalid`；专门 validator 只接受上述 parent、child、resolved version 和问题形态。
+当前 parent package metadata 仍精确声明旧子版本。专门 validator 始终核对上述 parent、
+child、resolved version、lock 路径和实际安装路径；当 npm 报告 `invalid` 时只接受两条
+精确问题形态，若 npm 返回 clean tree 则不得出现其他 problem。
 任何第三条 problem、missing/extraneous package、路径或版本差异均失败。`npm ci`、完整
 与 production `npm audit`、dependency-tree、SBOM 双向覆盖和许可证检查必须共同通过，
 不能用 `--force`、全局 ignore 或宽泛 override 代替。
