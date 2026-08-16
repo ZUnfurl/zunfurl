@@ -105,11 +105,25 @@ function collectMarkdownDestinations(source) {
   return links;
 }
 
+function stripHtmlTags(value) {
+  let depth = 0;
+  let result = '';
+  for (const character of value) {
+    if (character === '<') {
+      depth += 1;
+    } else if (character === '>' && depth > 0) {
+      depth -= 1;
+    } else if (depth === 0) {
+      result += character;
+    }
+  }
+  return result;
+}
+
 function githubSlug(value) {
-  return value
+  return stripHtmlTags(value)
     .trim()
     .toLowerCase()
-    .replace(/<[^>]*>/g, '')
     .replace(/[`*_~]/g, '')
     .replace(/[^\p{Letter}\p{Number}\p{Mark}\s-]/gu, '')
     .replace(/\s+/g, '-');

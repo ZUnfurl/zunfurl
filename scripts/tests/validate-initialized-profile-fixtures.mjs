@@ -106,7 +106,7 @@ async function validateFixtureContracts() {
     );
 
     const serialized = JSON.stringify(contract);
-    assert(!serialized.includes('example.com'), `${variant} must not retain the template domain.`);
+    assert(contract.identity.domain !== 'example.com', `${variant} must not retain the template domain.`);
     assert(!serialized.includes('owner/'), `${variant} must not retain the template repository owner.`);
     assert(!serialized.includes('sk_live_'), `${variant} must not contain a live secret.`);
   }

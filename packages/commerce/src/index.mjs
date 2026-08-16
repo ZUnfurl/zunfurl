@@ -81,7 +81,16 @@ function normalizeStoreDomain(storeDomain) {
     throw new Error('Missing SHOPIFY_STORE_DOMAIN for Shopify Storefront API.');
   }
 
-  return storeDomain.replace(/^https?:\/\//, '').replace(/\/+$/, '');
+  let normalized = String(storeDomain).trim();
+  if (normalized.startsWith('https://')) {
+    normalized = normalized.slice('https://'.length);
+  } else if (normalized.startsWith('http://')) {
+    normalized = normalized.slice('http://'.length);
+  }
+  while (normalized.endsWith('/')) {
+    normalized = normalized.slice(0, -1);
+  }
+  return normalized;
 }
 
 function getFetch(fetchImpl) {
