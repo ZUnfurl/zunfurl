@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@sanity/ui": "^3.5.3",
+    "@sanity/ui": "^4.0.2",
     "@sanity/vision": "^6.9.2",
     "@types/react": "^19.2.18",
     "gcss-config": "file:../../packages/config",
