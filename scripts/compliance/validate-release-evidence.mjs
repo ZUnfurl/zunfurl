@@ -30,6 +30,7 @@ import { buildCandidateManifest } from './prepare-public-candidate.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const schemaPath = path.join(root, 'docs', 'compliance', 'release-evidence.schema.json');
 const MAX_EVIDENCE_BYTES = 2 * 1024 * 1024;
+const MAX_FUTURE_CLOCK_SKEW_MS = 60 * 1000;
 const VERSION = '0.3.0-preview.1';
 const TAG = `v${VERSION}`;
 const REPOSITORY = 'ZUnfurl/zunfurl';
@@ -134,6 +135,28 @@ function requireTimestamp(value, label) {
     fail(`${label} must be a canonical UTC timestamp with milliseconds.`);
   }
   return Date.parse(value);
+}
+
+function requireEpochMilliseconds(value, label) {
+  if (!Number.isSafeInteger(value) || value < 0 || Number.isNaN(new Date(value).getTime())) {
+    fail(`${label} must be valid non-negative epoch milliseconds.`);
+  }
+  return value;
+}
+
+function requireGithubSecondTimestamp(value, label) {
+  if (typeof value !== 'string' ||
+      !/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$/.test(value) ||
+      Number.isNaN(Date.parse(value)) ||
+      new Date(value).toISOString().replace('.000Z', 'Z') !== value) {
+    fail(`${label} must be a canonical GitHub UTC timestamp with whole-second precision.`);
+  }
+  return Date.parse(value);
+}
+
+function githubSecondTimestampMatchesEvidence(githubValue, evidenceValue, label) {
+  return requireGithubSecondTimestamp(githubValue, `${label} GitHub timestamp`) ===
+    requireTimestamp(evidenceValue, `${label} evidence timestamp`);
 }
 
 function requireGithubUrl(value, label, { exact, pathPattern } = {}) {
@@ -446,8 +469,8 @@ function assertExternalEvidencePath(filePath) {
   return realFile;
 }
 
-function loadJson(filePath, label) {
-  const bytes = readFileSync(filePath);
+function parseJsonBytes(bytes, label) {
+  if (!Buffer.isBuffer(bytes)) fail(`${label} bytes must be a Buffer.`);
   let text;
   try {
     text = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
@@ -459,6 +482,30 @@ function loadJson(filePath, label) {
     return JSON.parse(text);
   } catch (error) {
     fail(`${label} is invalid JSON: ${error.message}`);
+  }
+}
+
+function loadJson(filePath, label) {
+  return parseJsonBytes(readFileSync(filePath), label);
+}
+
+function readExternalEvidenceSnapshot(filePath, readBytes = readFileSync) {
+  const bytes = readBytes(filePath);
+  if (!Buffer.isBuffer(bytes)) fail('Release evidence reader must return a Buffer.');
+  const snapshot = Buffer.from(bytes);
+  if (snapshot.length <= 0 || snapshot.length > MAX_EVIDENCE_BYTES) {
+    fail(`Release evidence must be between 1 and ${MAX_EVIDENCE_BYTES} bytes.`);
+  }
+  return {
+    bytes: snapshot,
+    evidence: parseJsonBytes(snapshot, 'Release evidence'),
+  };
+}
+
+function assertExactEvidenceAssetBytes(localEvidenceBytes, remoteEvidenceBytes) {
+  if (!Buffer.isBuffer(localEvidenceBytes) || !Buffer.isBuffer(remoteEvidenceBytes) ||
+      !remoteEvidenceBytes.equals(localEvidenceBytes)) {
+    fail('Published Release evidence asset bytes differ from the captured local evidence snapshot.');
   }
 }
 
@@ -565,7 +612,11 @@ function validateChecks(checks, expectedContexts, expectedFor, label) {
 }
 
 /** 严格验证 evidence 模型的跨字段发布语义。 */
-export function validateEvidenceModel(evidence, validateSchema = buildSchemaValidator()) {
+export function validateEvidenceModel(
+  evidence,
+  validateSchema = buildSchemaValidator(),
+  { validationStartedAt = Date.now() } = {},
+) {
   assertNoNull(evidence, 'evidence');
   if (!validateSchema(evidence)) {
     const errors = (validateSchema.errors ?? []).map((entry) => `${entry.instancePath || '/'} ${entry.message}`).join('; ');
@@ -577,6 +628,11 @@ export function validateEvidenceModel(evidence, validateSchema = buildSchemaVali
     fail('candidate.rootCommitSha differs from the approved sanitized root OID.');
   }
   const generatedAt = requireTimestamp(evidence.release.generatedAt, 'release.generatedAt');
+  const validationStart = requireEpochMilliseconds(validationStartedAt, 'validationStartedAt');
+  // 只约束未来时间，不要求 evidence 接近当前时刻；同一份 draft 预检证据可在发布后继续复核。
+  if (generatedAt > validationStart + MAX_FUTURE_CLOCK_SKEW_MS) {
+    fail('release.generatedAt must not follow validation start by more than the 60-second clock-skew allowance.');
+  }
   requireGithubUrl(evidence.release.releaseUrl, 'release.releaseUrl', { exact: `${REPOSITORY_URL}/releases/tag/${TAG}` });
   requireGithubUrl(evidence.release.schemaUrl, 'release.schemaUrl', {
     exact: `${REPOSITORY_URL}/blob/${candidateSha}/docs/compliance/release-evidence.schema.json`,
@@ -957,15 +1013,25 @@ function validateTagApi(tagRecord, evidence) {
   const object = requireOwn(tagRecord, 'object', 'Git tag API record');
   const tagger = requireOwn(tagRecord, 'tagger', 'Git tag API record');
   const verification = requireOwn(tagRecord, 'verification', 'Git tag API record');
+  const taggerDateMatchesEvidence = githubSecondTimestampMatchesEvidence(
+    requireOwn(tagger, 'date', 'Git tag API record.tagger'),
+    evidence.tagSignature.signedAt,
+    'Git tag API record.tagger.date',
+  );
+  const verifiedAtMatchesEvidence = githubSecondTimestampMatchesEvidence(
+    requireOwn(verification, 'verified_at', 'Git tag API record.verification'),
+    evidence.tagSignature.githubVerification.verifiedAt,
+    'Git tag API record.verification.verified_at',
+  );
   if (requireOwn(tagRecord, 'tag', 'Git tag API record') !== TAG ||
       requireOwn(object, 'type', 'Git tag API record.object') !== 'commit' ||
       requireOwn(object, 'sha', 'Git tag API record.object') !== evidence.candidate.commitSha ||
       requireOwn(tagger, 'name', 'Git tag API record.tagger') !== 'Noodle Freeman' ||
       requireOwn(tagger, 'email', 'Git tag API record.tagger') !== evidence.tagSignature.signerPrincipal ||
-      requireOwn(tagger, 'date', 'Git tag API record.tagger') !== evidence.tagSignature.signedAt ||
+      !taggerDateMatchesEvidence ||
       requireOwn(verification, 'verified', 'Git tag API record.verification') !== true ||
       requireOwn(verification, 'reason', 'Git tag API record.verification') !== 'valid' ||
-      requireOwn(verification, 'verified_at', 'Git tag API record.verification') !== evidence.tagSignature.githubVerification.verifiedAt) {
+      !verifiedAtMatchesEvidence) {
     fail('GitHub tag verification projection differs from Release evidence.');
   }
   requireString(requireOwn(verification, 'signature', 'Git tag API record.verification'), 'Git tag verification signature');
@@ -1052,7 +1118,7 @@ function verifyLocalTagWithRegisteredKey(evidence, keyRecord) {
   }
 }
 
-async function validateRemoteEvidence(evidence, externalEvidencePath, { releaseStage }) {
+async function validateRemoteEvidence(evidence, externalEvidenceBytes, { releaseStage }) {
   runFullPhase8SecurityAudit();
   const prNumber = Number(new URL(evidence.gates.g6b.prUrl).pathname.split('/').at(-1));
   const pr = ghJson(`${API_PREFIX}pulls/${prNumber}`, 'read G6b pull request');
@@ -1065,12 +1131,17 @@ async function validateRemoteEvidence(evidence, externalEvidencePath, { releaseS
   const headSource = requireOwn(headRepo, 'source', 'G6b pull request.head.repo');
   const author = requireOwn(pr, 'user', 'G6b pull request');
   const fork = evidence.gates.g6b.forkCanary;
+  const closedAtMatchesEvidence = githubSecondTimestampMatchesEvidence(
+    requireOwn(pr, 'closed_at', 'G6b pull request'),
+    evidence.gates.g6b.closedAt,
+    'G6b pull request.closed_at',
+  );
   if (requireOwn(pr, 'number', 'G6b pull request') !== prNumber ||
       requireOwn(pr, 'html_url', 'G6b pull request') !== evidence.gates.g6b.prUrl ||
       requireOwn(pr, 'state', 'G6b pull request') !== 'closed' ||
       requireOwn(pr, 'draft', 'G6b pull request') !== false ||
       requireOwn(pr, 'merged', 'G6b pull request') !== false ||
-      requireOwn(pr, 'closed_at', 'G6b pull request') !== evidence.gates.g6b.closedAt ||
+      !closedAtMatchesEvidence ||
       requireOwn(base, 'sha', 'G6b pull request.base') !== evidence.gates.g6b.baseSha ||
       requireOwn(baseRepo, 'id', 'G6b pull request.base.repo') !== 1292385902 ||
       requireOwn(baseRepo, 'full_name', 'G6b pull request.base.repo') !== REPOSITORY ||
@@ -1230,7 +1301,7 @@ async function validateRemoteEvidence(evidence, externalEvidencePath, { releaseS
   requireObject(evidenceAssetSummary, 'Release evidence asset summary');
   const evidenceAssetId = requireInteger(requireOwn(evidenceAssetSummary, 'id', 'Release evidence asset summary'), 'Release evidence asset ID');
   const evidenceAsset = ghJson(`${API_PREFIX}releases/assets/${evidenceAssetId}`, 'read published Release evidence asset');
-  const localEvidenceBytes = readFileSync(externalEvidencePath);
+  const localEvidenceBytes = externalEvidenceBytes;
   const localEvidenceDigest = sha256Bytes(localEvidenceBytes);
   if (requireOwn(evidenceAsset, 'name', 'Release evidence asset') !== evidence.release.evidenceAssetName ||
       requireOwn(evidenceAsset, 'state', 'Release evidence asset') !== 'uploaded' ||
@@ -1242,7 +1313,7 @@ async function validateRemoteEvidence(evidence, externalEvidencePath, { releaseS
     fail('Published Release evidence asset metadata differs from the local evidence file.');
   }
   const remoteEvidenceBytes = ghBytes(`${API_PREFIX}releases/assets/${evidenceAssetId}`, 'download published Release evidence asset');
-  if (!remoteEvidenceBytes.equals(localEvidenceBytes)) fail('Published Release evidence asset bytes differ from the local evidence file.');
+  assertExactEvidenceAssetBytes(localEvidenceBytes, remoteEvidenceBytes);
   return readRegisteredSigningKey(evidence);
 }
 
@@ -1250,13 +1321,16 @@ export async function validateExternalEvidenceFile(
   filePath,
   { verifyLocal = true, verifyRemote = true, releaseStage = 'published' } = {},
 ) {
+  // 在任何文件、Git 或远程检查前冻结时钟，避免长时间验证过程放宽未来时间上界。
+  const validationStartedAt = Date.now();
   if (!['draft-prepublish', 'published'].includes(releaseStage)) fail('Release evidence stage is not supported.');
   const externalPath = assertExternalEvidencePath(filePath);
-  const evidence = loadJson(externalPath, 'Release evidence');
-  validateEvidenceModel(evidence);
+  // 解析和最终 Release asset 比较必须共享同一份首次读取快照，禁止再次读取可变路径。
+  const { bytes: externalEvidenceBytes, evidence } = readExternalEvidenceSnapshot(externalPath);
+  validateEvidenceModel(evidence, undefined, { validationStartedAt });
   if (verifyLocal) await validateLocalCandidate(evidence);
   let signingKey;
-  if (verifyRemote) signingKey = await validateRemoteEvidence(evidence, externalPath, { releaseStage });
+  if (verifyRemote) signingKey = await validateRemoteEvidence(evidence, externalEvidenceBytes, { releaseStage });
   if (verifyLocal && verifyRemote) verifyLocalTagWithRegisteredKey(evidence, signingKey);
   return evidence;
 }
@@ -1506,7 +1580,9 @@ function expectBlocked(mutator, pattern, label) {
   const evidence = validEvidence();
   mutator(evidence);
   try {
-    validateEvidenceModel(evidence);
+    validateEvidenceModel(evidence, undefined, {
+      validationStartedAt: Date.parse('2026-08-16T12:00:10.000Z'),
+    });
   } catch (error) {
     if (pattern.test(error.message)) return;
     fail(`${label} returned unexpected error: ${error.message}`);
@@ -1515,7 +1591,14 @@ function expectBlocked(mutator, pattern, label) {
 }
 
 function runSelfTest() {
-  validateEvidenceModel(validEvidence());
+  const validationStartedAt = Date.parse('2026-08-16T12:00:10.000Z');
+  validateEvidenceModel(validEvidence(), undefined, { validationStartedAt });
+  validateEvidenceModel(validEvidence(), undefined, {
+    validationStartedAt: Date.parse('2026-08-17T12:00:10.000Z'),
+  });
+  const skewBoundaryEvidence = validEvidence();
+  skewBoundaryEvidence.release.generatedAt = '2026-08-16T12:01:10.000Z';
+  validateEvidenceModel(skewBoundaryEvidence, undefined, { validationStartedAt });
   const cases = [
     ['unknown field', (value) => { value.unknown = true; }, /additional properties/],
     ['private source commit disclosure', (value) => { value.candidate.sourceCommitSha = 'f'.repeat(40); }, /additional properties/],
@@ -1548,6 +1631,19 @@ function runSelfTest() {
     ['missing limitation', (value) => { value.knownLimitations.pop(); }, /fewer than 4/],
     ['weakened limitation', (value) => { value.knownLimitations[0].summary = 'not a real limitation'; }, /frozen disclosure/],
     ['timestamp disorder', (value) => { value.gates.g6b.startedAt = '2026-08-16T11:00:00.000Z'; }, /out of release order/],
+    ['generatedAt beyond allowed skew', (value) => { value.release.generatedAt = '2026-08-16T12:01:10.001Z'; }, /60-second clock-skew allowance/],
+    ['far-future generatedAt', (value) => { value.release.generatedAt = '2027-08-16T12:00:09.000Z'; }, /60-second clock-skew allowance/],
+    ['future authorization', (value) => { value.authorizations.public.grantedAt = '2026-08-16T12:00:10.000Z'; }, /follows evidence generation/],
+    ['future operator attestation', (value) => { value.operatorAttestations[0].attestedAt = '2026-08-16T12:00:10.000Z'; }, /follows evidence generation/],
+    ['future-dated authorization and attestation bundle', (value) => {
+      value.release.generatedAt = '2027-08-16T12:00:09.000Z';
+      for (const authorization of Object.values(value.authorizations)) {
+        authorization.grantedAt = '2027-08-16T12:00:07.000Z';
+      }
+      for (const attestation of value.operatorAttestations) {
+        attestation.attestedAt = '2027-08-16T12:00:08.000Z';
+      }
+    }, /60-second clock-skew allowance/],
   ];
   for (const [label, mutator, pattern] of cases) expectBlocked(mutator, pattern, label);
   try {
@@ -1555,6 +1651,28 @@ function runSelfTest() {
     fail('inside-repository evidence path must block.');
   } catch (error) {
     if (!/outside the repository/.test(error.message)) throw error;
+  }
+  const authorityA = Buffer.from(JSON.stringify(validEvidence()), 'utf8');
+  const replacementEvidence = validEvidence();
+  replacementEvidence.release.releaseId += 1;
+  const replacementB = Buffer.from(JSON.stringify(replacementEvidence), 'utf8');
+  const mutableFirstRead = Buffer.from(authorityA);
+  let evidenceReadCount = 0;
+  const captured = readExternalEvidenceSnapshot('injected-evidence.json', () => {
+    evidenceReadCount += 1;
+    return evidenceReadCount === 1 ? mutableFirstRead : replacementB;
+  });
+  replacementB.copy(mutableFirstRead);
+  if (evidenceReadCount !== 1 || !captured.bytes.equals(authorityA) ||
+      captured.evidence.release.releaseId !== validEvidence().release.releaseId) {
+    fail('Release evidence snapshot must bind parsing and comparison to the immutable first read.');
+  }
+  assertExactEvidenceAssetBytes(captured.bytes, authorityA);
+  try {
+    assertExactEvidenceAssetBytes(captured.bytes, replacementB);
+    fail('A/B Release evidence replacement must block.');
+  } catch (error) {
+    if (!/captured local evidence snapshot/.test(error.message)) throw error;
   }
   try {
     assertVerifiedCommandResult({ status: 1, stdout: '-----BEGIN SSH SIGNATURE-----', stderr: '', error: undefined }, 'fake marker');
@@ -1615,6 +1733,50 @@ function runSelfTest() {
       if (!/Release projection/.test(error.message)) throw error;
     }
   }
+  const tagApiRecord = (taggerDate, verifiedAt) => ({
+    tag: TAG,
+    object: { type: 'commit', sha: lifecycleEvidence.candidate.commitSha },
+    tagger: {
+      name: 'Noodle Freeman',
+      email: lifecycleEvidence.tagSignature.signerPrincipal,
+      date: taggerDate,
+    },
+    verification: {
+      verified: true,
+      reason: 'valid',
+      verified_at: verifiedAt,
+      signature: '-----BEGIN SSH SIGNATURE-----',
+      payload: 'signed tag payload',
+    },
+  });
+  validateTagApi(
+    tagApiRecord('2026-08-16T12:00:05Z', '2026-08-16T12:00:06Z'),
+    lifecycleEvidence,
+  );
+  for (const [label, tagRecord, pattern] of [
+    [
+      'GitHub tag timestamp with milliseconds',
+      tagApiRecord('2026-08-16T12:00:05.000Z', '2026-08-16T12:00:06Z'),
+      /whole-second precision/,
+    ],
+    [
+      'GitHub tag timestamp with non-UTC offset',
+      tagApiRecord('2026-08-16T20:00:05+08:00', '2026-08-16T12:00:06Z'),
+      /whole-second precision/,
+    ],
+    [
+      'GitHub tag timestamp at a different epoch',
+      tagApiRecord('2026-08-16T12:00:04Z', '2026-08-16T12:00:06Z'),
+      /tag verification projection differs/,
+    ],
+  ]) {
+    try {
+      validateTagApi(tagRecord, lifecycleEvidence);
+      fail(`${label} must block.`);
+    } catch (error) {
+      if (!pattern.test(error.message)) throw error;
+    }
+  }
   const latestEvidence = validEvidence();
   const latestChecks = latestEvidence.gates.g6a.checks.map((entry) => ({
     app: { id: 15368, slug: 'github-actions' },
@@ -1655,7 +1817,7 @@ function runSelfTest() {
   } catch (error) {
     if (!/latest .* job differs/.test(error.message)) throw error;
   }
-  console.log(`External Release evidence logic OK: ${cases.length + 10} fail-closed mutations.`);
+  console.log(`External Release evidence logic OK: ${cases.length + 14} fail-closed mutations.`);
 }
 
 async function main() {
