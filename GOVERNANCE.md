@@ -15,6 +15,42 @@ ZUnfurl 初期采用 maintainer-led 模型。当前没有技术委员会、基�
 
 维护者应说明重要决定的理由，并尽量在 Issue、PR、release 文档或项目日志中留下可回溯记录。Maintainer-led 不等于所有建议都会被接受，也不建立响应、路线图或发布时间 SLA。
 
+## 默认分支与单维护者合并策略
+
+当前只有一名具有仓库 `write` 权限的合格维护者。单维护者阶段无法产生独立的人类批准，因此 `main` 必须使用一套可执行且不伪造制衡的规则：所有变更必须经过 Pull Request；`required_approving_reviews = 0`；`require_code_owner_review = false`；required status checks、conversation resolution 和 linear history 必须启用；force push 与 branch deletion 必须禁止。`.github/CODEOWNERS` 只用于责任与 review request 路由，不代表第二名维护者，也不构成独立批准证据。
+
+新增第二名具有 `write` 权限、身份独立且列入 [MAINTAINERS.md](MAINTAINERS.md) 的合格维护者后，必须在后续合并前把规则升级为 `required_approving_reviews >= 1` 和 `require_code_owner_review = true`；required checks、conversation resolution、linear history、禁止 force push 与禁止删除继续保持。
+
+以下 JSON 是上述默认分支政策的机器可读权威；社区门禁对字段、类型和值做 fail-closed 校验，缺失、未知或弱化值都会失败。
+
+<!-- governance-policy-v1:begin -->
+```json
+{
+  "policy_version": 1,
+  "mode": "single-maintainer",
+  "qualified_write_maintainers": 1,
+  "require_pull_request": true,
+  "required_approving_reviews": 0,
+  "require_code_owner_review": false,
+  "require_status_checks": true,
+  "require_conversation_resolution": true,
+  "require_linear_history": true,
+  "allow_force_pushes": false,
+  "allow_deletions": false,
+  "codeowners_role": "routing-only",
+  "upgrade_when_qualified_write_maintainers_at_least": 2,
+  "upgraded_required_approving_reviews_minimum": 1,
+  "upgraded_require_code_owner_review": true
+}
+```
+<!-- governance-policy-v1:end -->
+
+默认分支上的 `DCO / Signed-off-by` 状态由受信任默认分支中的 metadata-only workflow 发布。该 workflow 不 checkout、fetch 或执行 Pull Request head，不读取仓库 secret；它只读取 GitHub PR commit metadata，并以最小 `statuses: write` 权限向事件中的精确 head SHA 写入状态。任何人类作者仍须逐 commit 签署 DCO，首个 Preview 拒绝 `Co-authored-by` 多作者 commit。唯一免签对象是 `dependabot[bot]` 自动依赖更新，且 GitHub API 必须精确认证其固定 bot ID 与 noreply 身份，并证明 GitHub signature verification 为 `verified/valid`；它属于仓库触发的机器更新，不构成自然人的 DCO 声明，也不免除依赖、许可、SBOM 和漏洞门禁。
+
+GitHub Actions App 的 required-check source 绑定只能证明状态由该 App 发布，不能证明普通 `pull_request` 使用的 workflow 或 validator 没有被 PR 改写。当前零独立 review 的单维护者阶段，维护者必须人工审阅 `.github/workflows/**`、`package.json`、lockfile、`scripts/tests/**`、`scripts/compliance/**` 和安全/许可策略的任何变化；绿色状态不能替代这项审阅，也不得据此启用自动合并或自动发布。CODEOWNERS 在此仍只做路由。新增第二名合格维护者后，按机器政策启用受保护的独立 review。
+
+2026-08-16 的 [PR #5](https://github.com/ZUnfurl/zunfurl/pull/5) 由当前唯一维护者 `@mp4102` 提交并合并；合并前所有实际执行的自动门禁均为 `SUCCESS`，但合格独立维护者批准为 `0`。受 Private 计划限制而 `SKIPPED` 的 CodeQL/Dependency Review 不计作已通过控制；合并后出现的 Copilot `COMMENTED` review 也不构成人类独立批准。这是单维护者现实的披露，不是独立 review 声明。
+
 ## 决策原则
 
 决策按以下优先级权衡：

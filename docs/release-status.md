@@ -62,17 +62,24 @@
 
 `Supported` 只说明候选版本在公开声明范围内有相应验证，不替代客户对 Cloudflare、Sanity、Shopify、Resend、DNS、MFA、账单、备份和生产验收的责任。
 
+## 治理状态
+
+当前只有一名身份独立、列入名册且具有 `write` 权限的合格维护者。单维护者默认分支政策为 `required_approving_reviews = 0`、`require_code_owner_review = false`，同时强制 Pull Request、required checks、conversation resolution 和 linear history，并禁止 force push 与 branch deletion。CODEOWNERS 只用于责任与 review request 路由，不是独立批准证明。
+
+新增第二名合格 `write` maintainer 后，必须在后续合并前升级为 `required_approving_reviews >= 1` 与 `require_code_owner_review = true`，其余保护保持不变。PR #5 由当前唯一维护者 `@mp4102` 在所有实际执行的自动门禁均为 `SUCCESS` 后合并，合格独立维护者批准为 `0`；Private 计划下 `SKIPPED` 的 CodeQL/Dependency Review 和合并后的 Copilot `COMMENTED` review 均不计作独立批准。
+
 ## 首个 Preview 的发布阻断项
 
 - Phase 1 当前发布树门禁已通过：旧媒体已替换或删除，当前 26 项媒体和 77 个源码引用完成 provenance 登记，9 个中文文件已重写，当前树文本扫描为 0 个未批准命中。原始私有历史的 PII/IP 规则命中 39 项、旧 Actions 日志命中 70 项，均为 `blocked` 私有归档；它们已从远端 `main` 移除。净化历史与实际候选远端的 secret/PII/IP 扫描为 0 finding。
 - Phase 2 能力声明门禁已通过：C 定位、三类 Preview、Production Backup/Disaster Recovery Restore、商品 archive/unarchive 和公开上游工作流已分离。
 - Phase 3 工程门禁已通过：A1/A2/B/C 四份初始化后独立 fixture、Profile/Schema/法律路由隔离、Contact 原子限流、Webhook 短期幂等、显式 Shopify handle、全 workspace typecheck、构建与 Worker dry-run 均通过；临时目录已删除且源工作树状态未被夹具改变。
-- Phase 0 已确认公共 owner、版权署名、许可证和权利链声明；Phase 5 已建立 `LICENSE`、`NOTICE`、商标政策和 fail-closed 许可覆盖门禁。Phase 6 的唯一净化根提交为 `e50b0cec829cee08397bbc87b7ed483e8ee7afda`，根提交中的 303 个文件均完成许可映射；当前 `main` 新增 `.gitattributes` 后候选为 304 个文件。真实自然人与笔名映射及权利链证据继续保存在私有权属记录中，不进入公共仓库。
+- Phase 0 已确认公共 owner、版权署名、许可证和权利链声明；Phase 5 已建立 `LICENSE`、`NOTICE`、商标政策和 fail-closed 许可覆盖门禁。Phase 6 的唯一净化根提交为 `e50b0cec829cee08397bbc87b7ed483e8ee7afda`，根提交中的 303 个文件均完成许可映射；当前候选加入 `.gitattributes`、客户仓库安全设置手册、DCO trusted metadata publisher、Phase 8 公共安全策略与审计器，以及 detached Release evidence 契约后为 311 个文件，全部纳入许可和公开候选映射。真实自然人与笔名映射及权利链证据继续保存在私有权属记录中，不进入公共仓库。
 - Phase 4 本地供应链门禁已通过：完整树与 production tree 均为 0 critical、0 high、7 moderate、0 low；1600-component CycloneDX SBOM、依赖许可证政策、固定 SHA Actions 和无生产 secret 的 PR CI 已建立。Phase 5 版本元数据对齐后当前 SBOM SHA-256 为 `6c122c2713fbe378f1a889f8acc89913ae33f7765379b21b823ebcec81d7f738`。最终候选 commit 的托管 CI 与真实远程 `production` Environment/branch policy/arming 仍未验收。
-- Phase 5 本地 Gate 已通过：Apache-2.0、DCO、社区治理、安全与支持政策、README、CHANGELOG、Release 契约和完整 SemVer 已实施；12 个社区文件、3 个 Issue Forms、候选中 65 个 Markdown 文件的 145 个链接和 10 个私有 manifest 已通过专用门禁。安全邮箱实际收件、GitHub Private Vulnerability Reporting、CODEOWNERS 权限和 Community Profile 仍需在公共候选远程验证。
+- Phase 5 本地 Gate 已通过：Apache-2.0、DCO、社区治理、安全与支持政策、README、CHANGELOG、Release 契约和完整 SemVer 已实施；12 个社区文件、3 个 Issue Forms、3 份治理状态披露、29 个治理负例、候选中 66 个 Markdown 文件的 159 个链接和 10 个私有 manifest 已通过专用门禁。安全邮箱实际收件、GitHub Private Vulnerability Reporting、CODEOWNERS 权限和 Community Profile 仍需在公共候选远程验证。
 - 当前 Private Template repository identity 已复用并在单独确认后完成 Organization 创建、仓库转移和改名：远端为 `ZUnfurl/zunfurl`，默认分支 `main`。3 个旧 Actions runs/logs 已删除并验证日志端点不可用，远程 `main` 已通过 lease-protected history replacement 指向单一净化根；GitHub 自动生成的 3 个 Dependabot PR 已关闭。截至 2026-08-16、源候选 `2b7aa20...` 的转移后审计快照为 23 个 Actions runs、4 个 caches、4 个只读 closed-PR head refs、2 个精确 GitHub-managed dynamic workflows 和 1 个空 `copilot` Environment；runs 与 refs 均只使用净化历史，Environment 为 0 secrets、0 variables、0 deployments、0 protection rules 且无 branch policy 的平台空结构。本轮修复 PR/CI 会继续增加净化对象，最终计数只以合并后审计为准；快照中的 4 个及随后产生的全部 caches 仍须在最终 G6a 后删除并复审为 0。通过 sudo-protected GitHub UI 人工复核后，仓库和 Organization 均显示无已安装 GitHub App；Codespaces secrets 页面显示仓库无 secrets。Codespaces REST API 因当前 token scope 返回 `404`，不将该响应误作零 secret 证明。
-- Fresh Windows clone 已发现并修复默认 `core.autocrlf` 导致资产字节哈希漂移的问题；`.gitattributes` 固定 LF checkout，Node 24 CI 增加 Storefront build 前置步骤，并新增 Windows Node 22.12 托管 job。`2b7aa20efdc57564bbc36c720d208b64d1a2f3f5` 的 `main` run `31925593834` 已有 7 个 job 全绿；本次文档/validator 新提交必须以自己的精确 SHA 重新完成 G6a，不能沿用该前序证据。
-- GitHub Free 的 Private 仓库不能完成 CodeQL/Dependency Review 上传、Public ruleset/branch protection 和 PVR 验收；这些控制及真正匿名 clone 必须在 Public 后、任何 tag/Release 前完成。当前仅有单一 maintainer/Code Owner，尚无独立批准，不能声称已满足独立审核或 CODEOWNERS review。当前没有可用的签名 key；创建签名 annotated tag 前还需要单独建立、保护并验证签名身份。tag 与 GitHub Release 已获持续授权至 Phase 9；Public 切换仍缺少单独明确授权。
+- Fresh Windows clone 已发现并修复默认 `core.autocrlf` 导致资产字节哈希漂移的问题；`.gitattributes` 固定 LF checkout，Node 24 CI 增加 Storefront build 前置步骤，并新增 Windows Node 22.12 托管 job。`2b7aa20efdc57564bbc36c720d208b64d1a2f3f5` 的 `main` run `31925593834` 已有 7 个 job 全绿；`53c5f6d1fa650c168d434ec9c668fca1c0704ba9` 的 `main` run `31928082328` 同样 7 个 job 全绿，push Secret Scan run `31928060750` 成功。后者仍早于单维护者治理与客户仓库设置手册的最终提交；新提交必须以自己的精确 SHA 重跑 G6a，不能沿用前序证据。
+- GitHub Free 的 Private 仓库不能完成 CodeQL/Dependency Review 上传、Public ruleset/branch protection 和 PVR 验收；这些控制、上述单维护者 ruleset 的真实远程配置及真正匿名 clone 必须在 Public 后、任何 tag/Release 前完成。当前 0 独立批准是已披露的治理事实，不再把无法实现的独立 review 作为单维护者阶段的虚假 Gate。Phase 8 的个人 fork 只能作为 same-maintainer canary，不能证明无目标写权限的独立外部贡献者路径；该路径以 `independentExternalActor=false` 记为 0.x 已知限制并在首个真实外部 PR 后补验。当前没有可用的签名 key；创建签名 annotated tag 前还需要建立、保护并验证签名身份。tag 与 GitHub Release 已获持续授权，Owner 又以“完成 Phase 8 后暂停”的明确指令批准了 Phase 8 Public 窗口；技术 Gate 仍未全部通过。
+- Phase 8 完成后必须暂停并记录执行证据；Phase 9 的 D+1、D+7 与 D+30 操作不会自动开始，只能由 Owner 另行决定进入时间。
 
 任一阻断项存在时，不允许把仓库切为 Public。
 

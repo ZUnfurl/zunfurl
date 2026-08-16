@@ -54,7 +54,7 @@ Authenticated Editorial/Draft Preview、生产 Backup 和灾难 Restore 尚未�
 - 维护方使用独立成员账号参与开发，交付后按支持合同降权或移除。
 - 日常操作手册与平台资产登记表分开交付，任何文档都不记录 secret 明文。
 
-统一政策见 [docs/project-startup-and-handoff.md](docs/project-startup-and-handoff.md)，平台细节见 [.agents/skills/gcss-v3-site-framework/references/platform-ownership-and-handoff.md](.agents/skills/gcss-v3-site-framework/references/platform-ownership-and-handoff.md)。
+统一政策见 [docs/project-startup-and-handoff.md](docs/project-startup-and-handoff.md)，客户仓库创建后的安全设置按 [docs/customer-repository-settings.md](docs/customer-repository-settings.md) 执行，平台细节见 [.agents/skills/gcss-v3-site-framework/references/platform-ownership-and-handoff.md](.agents/skills/gcss-v3-site-framework/references/platform-ownership-and-handoff.md)。
 
 ## 新项目启动
 
@@ -249,6 +249,7 @@ Copy-Item .env.example .env
 ## 文档入口
 
 - [docs/project-startup-and-handoff.md](docs/project-startup-and-handoff.md)：A1/A2/B/C 统一启动与完全交付规则。
+- [docs/customer-repository-settings.md](docs/customer-repository-settings.md)：客户 Private repository 的所有权、Actions、分支、Environment、secret 和部署安全 bootstrap 清单。
 - [docs/gcss-v3-site-framework-template-plan.md](docs/gcss-v3-site-framework-template-plan.md)：模板仓库计划。
 - [docs/customer-operations.md](docs/customer-operations.md)：客户手册总入口。
 - [docs/customer-operations-static-brand.md](docs/customer-operations-static-brand.md)：A 方案客户手册。

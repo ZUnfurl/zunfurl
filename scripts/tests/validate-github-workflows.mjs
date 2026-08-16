@@ -1,6 +1,7 @@
 import { readdir, readFile } from 'node:fs/promises';
 import { extname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { validateDcoWorkflow } from './validate-dco.mjs';
 
 const repositoryRoot = fileURLToPath(new URL('../../', import.meta.url));
 const workflowDir = new URL('../../.github/workflows/', import.meta.url);
@@ -8,6 +9,7 @@ const roadmapWorkflowDir = new URL('../../docs/roadmap/workflows/', import.meta.
 const dependabotPath = new URL('../../.github/dependabot.yml', import.meta.url);
 const requiredWorkflows = [
   'codeql.yml',
+  'dco.yml',
   'dependency-review.yml',
   'deploy.yml',
   'preview.yml',
@@ -168,7 +170,10 @@ function assertCommonBoundary(fileName, content) {
   );
   assert(!content.includes('permissions: write-all'), `${fileName} must not request write-all permissions.`);
   assert(!content.includes('permissions: read-all'), `${fileName} must keep permissions explicit.`);
-  assert(!content.includes('pull_request_target:'), `${fileName} must not execute untrusted code with base-repository privileges.`);
+  assert(
+    !content.includes('pull_request_target:') || fileName === 'dco.yml',
+    `${fileName} must not execute untrusted code with base-repository privileges.`,
+  );
   assert(!content.includes('GITHUB_STEP_SUMMARY'), `${fileName} must not publish custom summaries containing configuration or logs.`);
   assert(!/\b(toJson\(secrets\)|printenv\b|cat\s+\.env\b|Get-Content\s+\.env\b)/i.test(content), `${fileName} must not print secrets or environment files.`);
   assertApprovedActionPins(fileName, content);
@@ -251,6 +256,7 @@ const deployWorkflow = workflows.get('deploy.yml');
 const previewWorkflow = workflows.get('preview.yml');
 const rebuildRequestWorkflow = workflows.get('rebuild-request.yml');
 const dependencyReviewWorkflow = workflows.get('dependency-review.yml');
+const dcoWorkflow = workflows.get('dco.yml');
 const codeqlWorkflow = workflows.get('codeql.yml');
 const secretScanWorkflow = workflows.get('secret-scan.yml');
 
@@ -462,6 +468,15 @@ assert(
   'Dependency Review must skip unsupported Private/Free repositories and run immediately after Public.',
 );
 assert(!dependencyReviewWorkflow.includes('push:'), 'Dependency Review must only execute for pull requests.');
+
+validateDcoWorkflow(dcoWorkflow);
+assert(
+  !dcoWorkflow.includes('github.event.pull_request.head.sha') &&
+    !dcoWorkflow.includes('secrets.') &&
+    !dcoWorkflow.includes('GITHUB_ENV') &&
+    !dcoWorkflow.includes('GITHUB_OUTPUT'),
+  'dco.yml metadata-only exception must never checkout, execute, or export PR head-controlled data.',
+);
 
 assert(codeqlWorkflow.includes('security-events: write'), 'codeql.yml must grant only the CodeQL upload permission it needs.');
 assert(

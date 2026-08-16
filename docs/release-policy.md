@@ -89,7 +89,7 @@
 4. Security Gate：原始及公共历史扫描完成，npm critical/high 为 0，Actions 固定 SHA。
 5. Community Gate：Security、Support、Contributing、Governance 和 Issue/PR 入口可用。
 6. Private Reproducibility Gate：经授权的全新隔离 checkout 在无 production secret 的受支持 Node 环境可 `npm ci` 并通过 required checks。
-7. Public Anonymous Gate：Public 后、tag 前的真正匿名 clone、Quick Start 和外部 fork PR 可复现。
+7. Public Reproduction Gate：Public 后、tag 前的真正匿名 clone 与 Quick Start 可复现，并由 same-maintainer personal fork canary 验证 fork 拓扑、merge 测试和不暴露 production secret。当前 canary 的 actor 对目标仓库具有 admin 权限，因此 `independentExternalActor=false`；真正无目标写权限的外部贡献者路径是 0.x 已知限制，在首个此类 PR 后补验。
 8. Authorization Gate：Public、tag、GitHub Release 分别获得明确授权；已有授权不替代前述 Gate。
 
 详细停止条件见[开源执行计划](open-source-preview-release-plan.md)。
@@ -101,13 +101,14 @@
 - Preview 的 GitHub Release 必须标记 Pre-release。
 - Release note 必须包含：成熟度、Profile 范围、C 排除项、Known limitations、Roadmap、安全报告入口、支持的 Node/npm 和迁移说明。
 - Release 附加脱敏证据摘要、SBOM 和 SHA-256；不附加 secret scanner 原始命中或私有授权材料。
+- 发布前必须启用并审计 Immutable Releases。draft 阶段按 Release ID 运行 `validate:release-evidence -- --prepublish-file`，上传同一份 detached evidence 后发布 Pre-release，再立即按 tag 运行 `validate:release-evidence -- --file`，验证 release 已不可变且三个资产与本地证据逐字节一致；任一步失败即停止或撤下 Release 并记录事故。
 - tag、Release 和 Public 切换是三个独立授权操作。
 
 ## 9. 发布证据
 
 证据至少记录：
 
-- release commit 和 source commit SHA；
+- 公共 detached 摘要记录净化 candidate commit/tree SHA；原始私有 source commit SHA 只进入私有证据包；
 - lockfile、资产 manifest 和 SBOM SHA-256；
 - Node、npm、OS 和 scanner 版本；
 - A1/A2/B/C fixture 结果；

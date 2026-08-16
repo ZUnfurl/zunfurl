@@ -74,6 +74,7 @@ const upstreamDocuments = [
   'README.md',
   'AGENTS.md',
   'docs/project-startup-and-handoff.md',
+  'docs/customer-repository-settings.md',
   'docs/template-placeholder-audit.md',
   'docs/gcss-v3-site-framework-template-plan.md',
   'docs/customer-operations.md',

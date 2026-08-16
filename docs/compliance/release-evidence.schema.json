@@ -1,0 +1,431 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zunfurl:schema:release-evidence:v1",
+  "title": "ZUnfurl public detached release evidence v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "evidenceScope",
+    "release",
+    "repository",
+    "candidate",
+    "releaseSummary",
+    "gates",
+    "rulesets",
+    "authorizations",
+    "operatorAttestations",
+    "tagSignature",
+    "artifacts",
+    "knownLimitations"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "evidenceScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["classification", "privateSourceCommitIncluded"],
+      "properties": {
+        "classification": { "const": "public-detached" },
+        "privateSourceCommitIncluded": { "const": false }
+      }
+    },
+    "release": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "tag", "name", "releaseId", "lifecycleStage", "draft", "prerelease", "evidenceAssetName", "generatedAt", "releaseUrl", "schemaUrl"],
+      "properties": {
+        "version": { "const": "0.3.0-preview.1" },
+        "tag": { "const": "v0.3.0-preview.1" },
+        "name": { "const": "ZUnfurl v0.3.0-preview.1" },
+        "releaseId": { "type": "integer", "minimum": 1 },
+        "lifecycleStage": { "const": "published-prerelease" },
+        "draft": { "const": false },
+        "prerelease": { "const": true },
+        "evidenceAssetName": { "const": "release-evidence-v0.3.0-preview.1.json" },
+        "generatedAt": { "$ref": "#/$defs/timestamp" },
+        "releaseUrl": { "$ref": "#/$defs/httpsUrl" },
+        "schemaUrl": { "$ref": "#/$defs/httpsUrl" }
+      }
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "nameWithOwner", "visibility", "defaultBranch", "isTemplate", "webUrl", "anonymousCloneUrl"],
+      "properties": {
+        "id": { "const": 1292385902 },
+        "nameWithOwner": { "const": "ZUnfurl/zunfurl" },
+        "visibility": { "const": "public" },
+        "defaultBranch": { "const": "main" },
+        "isTemplate": { "const": true },
+        "webUrl": { "$ref": "#/$defs/httpsUrl" },
+        "anonymousCloneUrl": { "$ref": "#/$defs/httpsUrl" }
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["commitSha", "rootCommitSha", "publicTreeSha256", "fileCount", "sbomSha256", "packageLockSha256", "securityPolicySha256"],
+      "properties": {
+        "commitSha": { "$ref": "#/$defs/sha1" },
+        "rootCommitSha": { "$ref": "#/$defs/sha1" },
+        "publicTreeSha256": { "$ref": "#/$defs/sha256" },
+        "fileCount": { "type": "integer", "minimum": 1 },
+        "sbomSha256": { "$ref": "#/$defs/sha256" },
+        "packageLockSha256": { "$ref": "#/$defs/sha256" },
+        "securityPolicySha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "releaseSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assetManifestSha256", "environments", "fixtures", "npmAudit", "githubSecurityAlerts", "scanners", "checkedAt", "responsibleParty"],
+      "properties": {
+        "assetManifestSha256": { "$ref": "#/$defs/sha256" },
+        "environments": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": { "$ref": "#/$defs/environment" }
+        },
+        "fixtures": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["A1", "A2", "B", "C"],
+          "properties": {
+            "A1": { "const": "passed" },
+            "A2": { "const": "passed" },
+            "B": { "const": "passed" },
+            "C": { "const": "passed" }
+          }
+        },
+        "npmAudit": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["full", "production", "signaturesPassed"],
+          "properties": {
+            "full": { "$ref": "#/$defs/auditResult" },
+            "production": { "$ref": "#/$defs/auditResult" },
+            "signaturesPassed": { "const": true }
+          }
+        },
+        "githubSecurityAlerts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["codeScanningOpenCriticalHigh", "dependabotOpenCriticalHigh", "secretScanningOpen"],
+          "properties": {
+            "codeScanningOpenCriticalHigh": { "const": 0 },
+            "dependabotOpenCriticalHigh": { "const": 0 },
+            "secretScanningOpen": { "const": 0 }
+          }
+        },
+        "scanners": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": { "$ref": "#/$defs/scanner" }
+        },
+        "checkedAt": { "$ref": "#/$defs/timestamp" },
+        "responsibleParty": { "const": "Noodle Freeman" }
+      }
+    },
+    "gates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["g6a", "g6b", "phase8Security"],
+      "properties": {
+        "g6a": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "candidateCommitSha", "cleanRoomCheckout", "productionSecretsUsed", "dcoHistoryValidated", "operatorAttestationId", "startedAt", "completedAt", "evidenceUrl", "checks"],
+          "properties": {
+            "status": { "const": "passed" },
+            "candidateCommitSha": { "$ref": "#/$defs/sha1" },
+            "cleanRoomCheckout": { "const": true },
+            "productionSecretsUsed": { "const": false },
+            "dcoHistoryValidated": { "const": true },
+            "operatorAttestationId": { "const": "G6A_CLEAN_ROOM_NO_PRODUCTION_SECRETS" },
+            "startedAt": { "$ref": "#/$defs/timestamp" },
+            "completedAt": { "$ref": "#/$defs/timestamp" },
+            "evidenceUrl": { "$ref": "#/$defs/httpsUrl" },
+            "checks": { "type": "array", "minItems": 8, "maxItems": 8, "items": { "$ref": "#/$defs/check" } }
+          }
+        },
+        "g6b": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "baseSha", "headSha", "testMergeSha", "prState", "merged", "closedAt", "forkCanary", "anonymousHttpsClone", "credentialsPresent", "quickStartPassed", "forkCanaryPullRequestPassed", "productionSecretsExposed", "operatorAttestationIds", "startedAt", "completedAt", "cloneUrl", "prUrl", "checks"],
+          "properties": {
+            "status": { "const": "passed" },
+            "baseSha": { "$ref": "#/$defs/sha1" },
+            "headSha": { "$ref": "#/$defs/sha1" },
+            "testMergeSha": { "$ref": "#/$defs/sha1" },
+            "prState": { "const": "closed" },
+            "merged": { "const": false },
+            "closedAt": { "$ref": "#/$defs/timestamp" },
+            "forkCanary": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["actorLogin", "actorId", "repositoryId", "repositoryNameWithOwner", "independentExternalActor", "targetRepositoryPermission", "authorizationEvidenceSha256"],
+              "properties": {
+                "actorLogin": { "const": "mp4102" },
+                "actorId": { "type": "integer", "minimum": 1 },
+                "repositoryId": { "type": "integer", "minimum": 1 },
+                "repositoryNameWithOwner": { "const": "mp4102/zunfurl" },
+                "independentExternalActor": { "const": false },
+                "targetRepositoryPermission": { "const": "admin" },
+                "authorizationEvidenceSha256": { "$ref": "#/$defs/sha256" }
+              }
+            },
+            "anonymousHttpsClone": { "const": true },
+            "credentialsPresent": { "const": false },
+            "quickStartPassed": { "const": true },
+            "forkCanaryPullRequestPassed": { "const": true },
+            "productionSecretsExposed": { "const": false },
+            "operatorAttestationIds": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "prefixItems": [
+                { "const": "G6B_ANONYMOUS_CLONE_NO_CREDENTIALS" },
+                { "const": "G6B_NO_PRODUCTION_SECRET_EXPOSURE" },
+                { "const": "G6B_TEST_MERGE_OBSERVED_BEFORE_CLOSE" }
+              ],
+              "items": false
+            },
+            "startedAt": { "$ref": "#/$defs/timestamp" },
+            "completedAt": { "$ref": "#/$defs/timestamp" },
+            "cloneUrl": { "$ref": "#/$defs/httpsUrl" },
+            "prUrl": { "$ref": "#/$defs/httpsUrl" },
+            "checks": { "type": "array", "minItems": 11, "maxItems": 11, "items": { "$ref": "#/$defs/check" } }
+          }
+        },
+        "phase8Security": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "candidateCommitSha", "command", "completedAt", "evidenceUrl"],
+          "properties": {
+            "status": { "const": "passed" },
+            "candidateCommitSha": { "$ref": "#/$defs/sha1" },
+            "command": { "const": "npm.cmd run audit:phase8:github:security" },
+            "completedAt": { "$ref": "#/$defs/timestamp" },
+            "evidenceUrl": { "$ref": "#/$defs/httpsUrl" }
+          }
+        }
+      }
+    },
+    "rulesets": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": { "$ref": "#/$defs/rulesetEvidence" }
+    },
+    "authorizations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["public", "tag", "release"],
+      "properties": {
+        "public": { "$ref": "#/$defs/authorization" },
+        "tag": { "$ref": "#/$defs/authorization" },
+        "release": { "$ref": "#/$defs/authorization" }
+      }
+    },
+    "operatorAttestations": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": { "$ref": "#/$defs/operatorAttestation" }
+    },
+    "tagSignature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tag", "tagType", "targetCommitSha", "tagObjectSha", "signed", "signatureType", "keyFingerprint", "signerLogin", "signerPrincipal", "registeredSigningKeyId", "localVerification", "githubVerification", "signedAt", "tagUrl"],
+      "properties": {
+        "tag": { "const": "v0.3.0-preview.1" },
+        "tagType": { "const": "annotated" },
+        "targetCommitSha": { "$ref": "#/$defs/sha1" },
+        "tagObjectSha": { "$ref": "#/$defs/sha1" },
+        "signed": { "const": true },
+        "signatureType": { "enum": ["gpg", "ssh"] },
+        "keyFingerprint": { "type": "string", "minLength": 16, "maxLength": 128 },
+        "signerLogin": { "const": "mp4102" },
+        "signerPrincipal": {
+          "type": "string",
+          "pattern": "^36223737[+]mp4102\\u0040users[.]noreply[.]github[.]com$"
+        },
+        "registeredSigningKeyId": { "type": "integer", "minimum": 1 },
+        "localVerification": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "command", "trustSource", "trustMaterialSha256"],
+          "properties": {
+            "status": { "const": "verified" },
+            "command": { "const": "git verify-tag v0.3.0-preview.1" },
+            "trustSource": { "enum": ["github-registered-gpg-key", "github-registered-ssh-signing-key"] },
+            "trustMaterialSha256": { "$ref": "#/$defs/sha256" }
+          }
+        },
+        "githubVerification": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["verified", "reason", "verifiedAt"],
+          "properties": {
+            "verified": { "const": true },
+            "reason": { "const": "valid" },
+            "verifiedAt": { "$ref": "#/$defs/timestamp" }
+          }
+        },
+        "signedAt": { "$ref": "#/$defs/timestamp" },
+        "tagUrl": { "$ref": "#/$defs/httpsUrl" }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "$ref": "#/$defs/artifact" }
+    },
+    "knownLimitations": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": { "$ref": "#/$defs/knownLimitation" }
+    }
+  },
+  "$defs": {
+    "sha1": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "timestamp": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$" },
+    "httpsUrl": { "type": "string", "pattern": "^https://[^\\s]+$", "maxLength": 2048 },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["runner", "osName", "osVersion", "nodeVersion", "npmVersion"],
+      "properties": {
+        "runner": { "enum": ["linux-node-22", "linux-node-24", "windows-node-22"] },
+        "osName": { "enum": ["Linux", "Windows"] },
+        "osVersion": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "nodeVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+        "npmVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" }
+      }
+    },
+    "auditResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["critical", "high", "moderate", "low", "total"],
+      "properties": {
+        "critical": { "const": 0 },
+        "high": { "const": 0 },
+        "moderate": { "type": "integer", "minimum": 0 },
+        "low": { "type": "integer", "minimum": 0 },
+        "total": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "scanner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "scope", "findingCount"],
+      "properties": {
+        "id": { "enum": ["gitleaks", "trufflehog", "zunfurl-pii-ip-rules"] },
+        "version": { "type": "string", "minLength": 1, "maxLength": 50 },
+        "scope": { "const": "candidate-and-origin" },
+        "findingCount": { "const": 0 }
+      }
+    },
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["context", "conclusion", "event", "runHeadSha", "jobCheckSha", "resultSha", "workflowId", "workflowPath", "workflowRunId", "runAttempt", "jobId", "checkRunId", "observedJobName", "sourceKind", "detailsUrl"],
+      "properties": {
+        "context": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "conclusion": { "const": "success" },
+        "event": { "enum": ["pull_request", "pull_request_target", "push", "workflow_dispatch"] },
+        "runHeadSha": { "$ref": "#/$defs/sha1" },
+        "jobCheckSha": { "$ref": "#/$defs/sha1" },
+        "resultSha": { "$ref": "#/$defs/sha1" },
+        "workflowId": { "type": "integer", "minimum": 1 },
+        "workflowPath": {
+          "enum": [
+            ".github/workflows/codeql.yml",
+            ".github/workflows/dco.yml",
+            ".github/workflows/dependency-review.yml",
+            ".github/workflows/preview.yml",
+            ".github/workflows/secret-scan.yml"
+          ]
+        },
+        "workflowRunId": { "type": "integer", "minimum": 1 },
+        "runAttempt": { "type": "integer", "minimum": 1 },
+        "jobId": { "type": "integer", "minimum": 1 },
+        "checkRunId": { "type": "integer", "minimum": 1 },
+        "observedJobName": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "sourceKind": { "enum": ["actions-job", "commit-status"] },
+        "detailsUrl": { "$ref": "#/$defs/httpsUrl" }
+      }
+    },
+    "rulesetEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "target", "enforcement", "bypassActorCount", "verifiedAt", "settingsUrl"],
+      "properties": {
+        "id": { "type": "integer", "minimum": 1 },
+        "name": { "enum": ["main-protection", "release-tag-creation", "release-tag-immutability"] },
+        "target": { "enum": ["branch", "tag"] },
+        "enforcement": { "const": "active" },
+        "bypassActorCount": { "type": "integer", "minimum": 0, "maximum": 1 },
+        "verifiedAt": { "$ref": "#/$defs/timestamp" },
+        "settingsUrl": { "$ref": "#/$defs/httpsUrl" }
+      }
+    },
+    "authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "scope", "grantedAt", "grantedByRole", "evidenceSha256"],
+      "properties": {
+        "status": { "const": "granted" },
+        "scope": { "enum": ["github-release-publish", "repository-visibility-public", "signed-tag-create-and-push"] },
+        "grantedAt": { "$ref": "#/$defs/timestamp" },
+        "grantedByRole": { "const": "repository-owner" },
+        "evidenceSha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "operatorAttestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "status", "subjectSha", "attestedAt", "attestedBy", "privateEvidenceSha256"],
+      "properties": {
+        "id": { "enum": ["G6A_CLEAN_ROOM_NO_PRODUCTION_SECRETS", "G6B_ANONYMOUS_CLONE_NO_CREDENTIALS", "G6B_NO_PRODUCTION_SECRET_EXPOSURE", "G6B_TEST_MERGE_OBSERVED_BEFORE_CLOSE"] },
+        "status": { "const": "operator-attested" },
+        "subjectSha": { "$ref": "#/$defs/sha1" },
+        "attestedAt": { "$ref": "#/$defs/timestamp" },
+        "attestedBy": { "const": "Noodle Freeman" },
+        "privateEvidenceSha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assetId", "name", "mediaType", "sizeBytes", "digestAlgorithm", "sha256", "apiUrl", "downloadUrl"],
+      "properties": {
+        "assetId": { "type": "integer", "minimum": 1 },
+        "name": { "enum": ["SHA256SUMS", "sbom.cdx.json"] },
+        "mediaType": { "enum": ["application/json", "text/plain"] },
+        "sizeBytes": { "type": "integer", "minimum": 1 },
+        "digestAlgorithm": { "const": "sha256" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "apiUrl": { "$ref": "#/$defs/httpsUrl" },
+        "downloadUrl": { "$ref": "#/$defs/httpsUrl" }
+      }
+    },
+    "knownLimitation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "status", "summary", "documentationUrl"],
+      "properties": {
+        "id": { "enum": ["BACKUP_RESTORE_ROADMAP", "G6B_SAME_MAINTAINER_TEST_IDENTITY", "PREVIEW_STABILITY", "RETAIL_NO_TRANSACTION"] },
+        "status": { "const": "known" },
+        "summary": { "type": "string", "minLength": 20, "maxLength": 500 },
+        "documentationUrl": { "$ref": "#/$defs/httpsUrl" }
+      }
+    }
+  }
+}

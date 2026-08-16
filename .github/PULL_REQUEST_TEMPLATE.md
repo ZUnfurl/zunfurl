@@ -40,7 +40,7 @@ git diff --check
 
 ## 权利、安全与隐私
 
-- [ ] 所有 commit 都包含本人有效的 DCO `Signed-off-by` trailer
+- [ ] 所有人类贡献 commit 都包含本人有效的 DCO `Signed-off-by` trailer；未使用 `Co-authored-by`，或本 PR 仅为 GitHub 精确认证的 Dependabot 自动更新
 - [ ] 未提交客户数据、真实生产标识、token、secret、私钥或未脱敏日志
 - [ ] 新增代码和文档可按 Apache-2.0 inbound=outbound
 - [ ] 新增媒体已进入逐文件资产许可清单并有公开权利证据，或本 PR 未新增媒体

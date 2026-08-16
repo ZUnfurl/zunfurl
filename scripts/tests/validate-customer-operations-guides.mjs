@@ -17,6 +17,7 @@ const guides = {
   retail: read('docs/customer-operations-retail.md'),
   page: read('docs/customer-page-operations.md'),
   product: read('docs/customer-product-operations.md'),
+  repositorySettings: read('docs/customer-repository-settings.md'),
   readme: read('README.md'),
 };
 
@@ -27,9 +28,80 @@ for (const fileName of [
   'customer-operations-retail.md',
   'customer-page-operations.md',
   'customer-product-operations.md',
+  'customer-repository-settings.md',
 ]) {
   assert(guides.readme.includes(`docs/${fileName}`), `README must link docs/${fileName}.`);
 }
+
+for (const expected of [
+  'A1',
+  'A2',
+  'B',
+  'C 零售目录与内容运营基础框架',
+  '`static-brand` + `contactForm=false`',
+  '`static-brand` + `contactForm=true`',
+  '`cms-brand`',
+  '`retail`',
+]) {
+  assert(
+    guides.repositorySettings.includes(expected),
+    `Customer repository settings must include profile boundary ${expected}.`,
+  );
+}
+
+for (const expected of [
+  '不会随 Template 自动继承',
+  'secrets',
+  'Environments',
+  'rulesets',
+  'Actions 运行历史',
+  '外部平台',
+  'Default workflow permissions',
+  'trufflesecurity/trufflehog',
+  'full-length commit SHA',
+  '不发送 secrets 或 variables',
+  'metadata-only `pull_request_target`',
+  '`statuses: write`',
+  '绝不 checkout、fetch 或执行 PR head',
+  '`DCO / Signed-off-by`',
+  'status source 绑定不证明',
+  '不要启用自动合并或自动生产发布',
+  'PRODUCTION_DEPLOYMENT_ARMED',
+  'Cloudflare',
+  'Sanity',
+  'Shopify',
+  'Resend',
+  'Production Backup',
+  'Disaster Recovery Restore',
+]) {
+  assert(
+    guides.repositorySettings.includes(expected),
+    `Customer repository settings must preserve ${expected}.`,
+  );
+}
+
+assert(
+  guides.repositorySettings.includes('客户专属 GitHub Organization') &&
+    guides.repositorySettings.includes('独立 Private repository') &&
+    guides.repositorySettings.includes('两名真实、可独立登录的客户 Organization Owner'),
+  'Customer repository settings must establish client ownership, private isolation, and continuity.',
+);
+assert(
+  guides.repositorySettings.includes('单人维护不能伪造第二名 reviewer') &&
+    guides.repositorySettings.includes('当前 GitHub 计划'),
+  'Customer repository settings must keep reviewer claims plan-aware and independently achievable.',
+);
+assert(
+  guides.repositorySettings.includes('默认 arming 为 `false`') &&
+    guides.repositorySettings.includes('立即把 `PRODUCTION_DEPLOYMENT_ARMED` 恢复为 `false`'),
+  'Customer repository settings must make Deploy arming temporary and fail closed by default.',
+);
+assert(
+  guides.repositorySettings.includes('唯一 write token 例外') &&
+    guides.repositorySettings.includes('冻结的 metadata-only DCO publisher 是唯一例外') &&
+    !guides.repositorySettings.includes('不发送 write token；'),
+  'Customer repository settings must describe the exact trusted DCO status-write exception.',
+);
 
 for (const expected of ['A1/A2 静态品牌官网', 'B 可自维护品牌官网', 'C 零售目录与内容运营基础框架']) {
   assert(guides.index.includes(expected), `Customer operations index must include ${expected}.`);
@@ -106,4 +178,6 @@ assert(
   'Product operations guide must not promise recoverability for archive or delete.',
 );
 
-console.log('Customer operations guides OK: A/B/C customer-facing scopes are separated.');
+console.log(
+  'Customer operations guides OK: A/B/C scopes and customer repository security bootstrap are separated.',
+);

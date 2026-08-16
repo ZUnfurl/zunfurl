@@ -1,0 +1,183 @@
+{
+  "schemaVersion": 1,
+  "githubApiVersion": "2026-03-10",
+  "repository": {
+    "id": 1292385902,
+    "nameWithOwner": "ZUnfurl/zunfurl",
+    "originUrl": "https://github.com/ZUnfurl/zunfurl.git",
+    "ownerType": "Organization",
+    "description": "Static-first Astro framework for brand sites, Sanity CMS, and read-only Shopify retail catalogs. 0.x preview.",
+    "homepage": "",
+    "visibility": "public",
+    "isTemplate": true,
+    "defaultBranch": "main",
+    "archived": false,
+    "disabled": false,
+    "topics": [
+      "astro",
+      "brand-site",
+      "cloudflare-workers",
+      "headless-cms",
+      "product-catalog",
+      "sanity",
+      "shopify",
+      "site-framework",
+      "static-site",
+      "typescript",
+      "website-template"
+    ],
+    "hasIssues": true,
+    "hasProjects": false,
+    "hasWiki": false,
+    "hasDiscussions": false,
+    "deleteBranchOnMerge": true,
+    "allowSquashMerge": true,
+    "allowRebaseMerge": false,
+    "allowMergeCommit": false,
+    "webCommitSignoffRequired": true
+  },
+  "organization": {
+    "login": "ZUnfurl",
+    "defaultRepositoryPermission": "read",
+    "effectiveWriteMaintainers": [
+      "mp4102"
+    ]
+  },
+  "rulesets": {
+    "expectedCollectionCount": 3,
+    "main": {
+      "name": "main-protection",
+      "target": "branch",
+      "sourceType": "Repository",
+      "source": "ZUnfurl/zunfurl",
+      "enforcement": "active",
+      "bypassActors": [],
+      "conditions": {
+        "include": [
+          "refs/heads/main"
+        ],
+        "exclude": []
+      },
+      "rules": {
+        "deletion": true,
+        "nonFastForward": true,
+        "requiredLinearHistory": true,
+        "pullRequest": {
+          "allowedMergeMethods": [
+            "squash"
+          ],
+          "dismissStaleReviewsOnPush": false,
+          "requireCodeOwnerReview": false,
+          "requireLastPushApproval": false,
+          "requiredApprovingReviewCount": 0,
+          "requiredReviewThreadResolution": true
+        },
+        "requiredStatusChecks": {
+          "doNotEnforceOnCreate": false,
+          "strictRequiredStatusChecksPolicy": true,
+          "integrationSlug": "github-actions",
+          "contexts": [
+            "DCO / Signed-off-by",
+            "Fixture A1 / Node 22.12",
+            "Fixture A2 / Node 22.12",
+            "Fixture B / Node 22.12",
+            "Fixture C / Node 22.12",
+            "JavaScript and TypeScript analysis",
+            "Node 22.12 primary validation",
+            "Node 24 compatibility",
+            "TruffleHog verified and unknown results",
+            "Vulnerability and license policy",
+            "Windows / Node 22.12 validation"
+          ]
+        }
+      }
+    },
+    "releaseTagCreation": {
+      "name": "release-tag-creation",
+      "target": "tag",
+      "sourceType": "Repository",
+      "source": "ZUnfurl/zunfurl",
+      "enforcement": "active",
+      "bypassActors": [
+        {
+          "actorType": "Team",
+          "bypassMode": "always",
+          "childTeams": [],
+          "organization": "ZUnfurl",
+          "repositoryPermission": "write",
+          "teamSlug": "release-maintainers",
+          "members": [
+            "mp4102"
+          ]
+        }
+      ],
+      "conditions": {
+        "include": [
+          "refs/tags/v*"
+        ],
+        "exclude": []
+      },
+      "rules": {
+        "creation": true
+      }
+    },
+    "releaseTagImmutability": {
+      "name": "release-tag-immutability",
+      "target": "tag",
+      "sourceType": "Repository",
+      "source": "ZUnfurl/zunfurl",
+      "enforcement": "active",
+      "bypassActors": [],
+      "conditions": {
+        "include": [
+          "refs/tags/v*"
+        ],
+        "exclude": []
+      },
+      "rules": {
+        "deletion": true,
+        "update": {
+          "updateAllowsFetchAndMerge": false
+        }
+      }
+    }
+  },
+  "actions": {
+    "enabled": true,
+    "allowedActions": "selected",
+    "shaPinningRequired": true,
+    "selectedActions": {
+      "githubOwnedAllowed": true,
+      "verifiedAllowed": false,
+      "patternsAllowed": [
+        "trufflesecurity/trufflehog@bcfcf73aaf4759d4dadc2783177c245a02792318"
+      ]
+    },
+    "workflowPermissions": {
+      "defaultWorkflowPermissions": "read",
+      "canApprovePullRequestReviews": false
+    }
+  },
+  "security": {
+    "alertGates": {
+      "codeScanningOpenCriticalHigh": 0,
+      "dependabotOpenCriticalHigh": 0,
+      "secretScanningOpen": 0
+    },
+    "advancedSecurity": "enabled",
+    "secretScanning": "enabled",
+    "secretScanningPushProtection": "enabled",
+    "vulnerabilityAlertsAndDependencyGraph": true,
+    "dependabotSecurityUpdates": {
+      "enabled": true,
+      "paused": false
+    },
+    "immutableReleases": true,
+    "privateVulnerabilityReporting": true,
+    "requiredReadableApis": [
+      "code-scanning-alerts",
+      "dependabot-alerts",
+      "secret-scanning-alerts"
+    ]
+  }
+}

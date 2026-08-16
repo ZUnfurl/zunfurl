@@ -59,7 +59,7 @@ npm.cmd run test:profile:retail
 
 ## DCO 1.1 与贡献许可
 
-本项目使用 [Developer Certificate of Origin 1.1](https://developercertificate.org/)（DCO），不要求 Contributor License Agreement（CLA）。每个 commit 都必须包含贡献者本人添加的 `Signed-off-by` trailer：
+本项目使用 [Developer Certificate of Origin 1.1](https://developercertificate.org/)（DCO），不要求 Contributor License Agreement（CLA）。每个人类贡献者的每个 commit 都必须包含本人添加的 `Signed-off-by` trailer：
 
 ```text
 Signed-off-by: Contributor Name <contributor@example.com>
@@ -71,7 +71,9 @@ Git 可以自动添加：
 git commit -s -m "fix(scope): 简短说明"
 ```
 
-遗漏时可在尚未发布且不会覆盖他人工作的前提下为自己的 commit 补签；一个 PR 中的每个 commit 都必须分别满足 DCO。不得替他人签署，也不得复制无法代表本人确认的身份。签署使用你有权用于这一确认的姓名或稳定公开身份及有效邮箱；DCO 记录会随公开 Git 历史长期保存并可能再分发。
+遗漏时可在尚未发布且不会覆盖他人工作的前提下为自己的 commit 补签；一个 PR 中的每个人类贡献 commit 都必须分别满足 DCO。不得替他人签署，也不得复制无法代表本人确认的身份。签署使用你有权用于这一确认的姓名或稳定公开身份及有效邮箱；DCO 记录会随公开 Git 历史长期保存并可能再分发。首个 Preview 不接受 `Co-authored-by` 多作者 commit；请把不同作者的工作拆成各自签署的 commit。
+
+唯一自动化例外是 GitHub REST metadata 同时证明为 GitHub 官方 `dependabot[bot]` 身份、固定 bot ID、固定 noreply 身份且 GitHub signature verification 为 `verified/valid` 的 Dependabot 依赖更新。它被视为仓库配置触发的机器更新，不冒充自然人的 DCO 声明；合并前仍必须通过依赖许可、SBOM、漏洞和完整 required checks。显示名称、邮箱或提交内容相似的其他 bot 不得使用该例外。除这一精确例外外，所有 commit 都按前述 DCO 规则处理。
 
 所有被接受的代码、文档、Skill、示例和法律文本示例均按 [Apache License 2.0](LICENSE) inbound=outbound。PR 描述中的单方附加条款不能改变该规则。媒体资产必须进入逐文件 [资产许可清单](docs/compliance/ASSET_LICENSES.yml)；第三方材料必须保留上游许可和来源，并通过依赖、SBOM 与 notices 门禁。无法证明有权贡献的材料不要提交。
 
@@ -85,8 +87,10 @@ git commit -s -m "fix(scope): 简短说明"
 - 最小复现或验证命令及实际结果；
 - Schema、迁移、兼容性、文档、Skill、客户手册和 roadmap 影响；
 - 新增媒体或第三方材料的公开权利证据；
-- 所有 commit 的 DCO sign-off。
+- 所有人类贡献 commit 的 DCO sign-off；若使用唯一 Dependabot 自动化例外，PR 必须确实来自 GitHub 已认证 bot，且仍通过完整供应链门禁。
 
 不要在 PR 中粘贴真实 secret、完整环境变量、客户数据或未脱敏日志。测试失败、未运行或依赖外部权限时要如实说明；不要用“应该通过”替代证据。
+
+普通 `pull_request` 的 GitHub Actions required check 使用 PR 中的 workflow 定义；GitHub Actions App source 绑定不证明 workflow、validator 或供应链策略未被 PR 改写。因此，修改 `.github/workflows/**`、`package.json`、lockfile、`scripts/tests/**`、`scripts/compliance/**` 或安全/许可策略时必须在 PR 摘要中单列，并由维护者人工审阅；绿色状态不能替代该人工审阅。当前单维护者阶段不启用自动合并或自动发布。
 
 维护者可要求缩小范围、补充 fixture、更新迁移说明或拆分 PR。合并、版本、release 和安全披露由 [治理政策](GOVERNANCE.md) 规定；提交 PR 不保证合并、发布时间或免费支持响应时限。

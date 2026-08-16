@@ -45,7 +45,7 @@ Apache-2.0 和 CC0-1.0 都不授予对 `ZUnfurl` 名称、项目 logo、商号�
 
 ## 6. 外部贡献
 
-项目采用 DCO 1.1 sign-off，不要求 CLA。贡献者通过 `Signed-off-by` 确认其有权依据仓库相同的 Apache-2.0 条款提交贡献；所有被接受的贡献均遵循 inbound=outbound，PR 中的单方附加条款不会改变该规则。具体流程由 [`CONTRIBUTING.md`](../../CONTRIBUTING.md) 定义。
+项目采用 DCO 1.1 sign-off，不要求 CLA。人类贡献者通过逐 commit 的 `Signed-off-by` 确认其有权依据仓库相同的 Apache-2.0 条款提交贡献；所有被接受的贡献均遵循 inbound=outbound，PR 中的单方附加条款不会改变该规则。首个 Preview 不接受 `Co-authored-by` 多作者 commit。唯一免签对象是 GitHub REST metadata 精确认证、固定 bot ID 与 noreply 身份且 GitHub signature verification 为 `verified/valid` 的 `dependabot[bot]` 自动依赖更新；它被视为仓库配置触发的机器更新而非自然人的权利声明，并且仍须通过依赖许可、SBOM、漏洞和 required checks。具体流程由 [`CONTRIBUTING.md`](../../CONTRIBUTING.md) 定义。
 
 不得提交客户数据、真实凭据、未获再许可的代码或资产。维护者可要求补充权利来源，或在来源无法确认时拒绝合并。
 
