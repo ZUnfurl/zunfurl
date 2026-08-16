@@ -742,7 +742,7 @@ G1 至 G5 全部通过。所有远程写入仍需用户明确授权。
 7. 保存私有映射：原 HEAD、原历史 bundle hash、候选 commit、tree manifest、扫描器版本和结果。
 8. 只有取得独立 commit 授权后，才使用批准的组织或 noreply 身份创建单一根提交。当前拟定的根提交身份为 `Noodle Freeman` 加 GitHub ID-based noreply 邮箱，并使用 DCO `Signed-off-by`；把该身份写入计划不构成 commit 授权，授权时仍须连同精确作者、邮箱和提交消息一并确认。
 
-执行结果：原全部 refs 的私有离线 bundle 已生成并通过完整性验证；唯一净化根提交为 `e50b0cec829cee08397bbc87b7ed483e8ee7afda`，无父提交，Author/Committer 与 DCO 均为批准的 `Noodle Freeman` GitHub noreply 身份。根提交的 303 个 blob 与冻结 manifest 逐字节一致，Gitleaks `8.30.1`、TruffleHog `3.97.0` 和脱敏 PII/IP 规则对本地根历史与实际 GitHub origin 均为 0 finding。
+执行结果：原全部 refs 的私有离线 bundle 已生成并通过完整性验证；唯一净化根提交为 `e50b0cec829cee08397bbc87b7ed483e8ee7afda`，无父提交，Author/Committer 与 DCO 均为批准的 `Noodle Freeman` GitHub noreply 身份。根提交的 303 个 blob 与冻结 manifest 逐字节一致，Gitleaks `8.30.1`、TruffleHog `3.97.0` 和脱敏 PII/IP 规则对本地根历史与实际 GitHub origin 均为 0 finding。后续 Release evidence schema 的固定 `operatorAttestation` 枚举行被 Gitleaks `generic-api-key` 规则误判；Phase 8 采用逐字节冻结的 `.gitleaks.toml`，只在精确规则、唯一 schema 路径和整条固定枚举行三者同时匹配时排除，并让本地历史、origin、额外 refs 与 Actions 日志扫描统一使用该策略。任何扩大路径、规则、条件或整行内容的改动都会 fail-closed；每次真实扫描还会以正确行、错误路径和错误行三组探针验证 Gitleaks `8.30.1` 的实际行为。
 
 不得把含旧历史的当前仓库直接设置为 Public。净化根提交替换远程前，当前仓库必须保持 Private；旧提交不得重新合并进候选历史。
 

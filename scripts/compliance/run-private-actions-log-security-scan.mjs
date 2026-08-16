@@ -19,7 +19,12 @@ import {
 } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { SCAN_CONTRACT } from './run-private-history-security-scan.mjs';
+import {
+  assertGitleaksConfig,
+  buildGitleaksArguments,
+  SCAN_CONTRACT,
+  verifyGitleaksPolicySemantics,
+} from './run-private-history-security-scan.mjs';
 
 const SCRIPT_DIRECTORY = path.dirname(fileURLToPath(import.meta.url));
 const REPOSITORY_ROOT = path.resolve(SCRIPT_DIRECTORY, '..', '..');
@@ -185,6 +190,7 @@ async function main() {
     assertExternalDirectory(options.evidenceDirectory, 'Evidence directory'),
     assertExternalDirectory(options.logDirectory, 'Actions log directory'),
   ]);
+  const gitleaksConfigPath = await assertGitleaksConfig(REPOSITORY_ROOT);
   if (isWithin(logDirectory, evidenceDirectory) || isWithin(evidenceDirectory, logDirectory)) {
     throw new Error('Actions log directory and Evidence directory must be separate.');
   }
@@ -201,17 +207,19 @@ async function main() {
     SCAN_CONTRACT.trufflehogVersion,
     'TruffleHog',
   );
+  await verifyGitleaksPolicySemantics({
+    binaryPath: options.gitleaksPath,
+    configPath: gitleaksConfigPath,
+    evidenceDirectory,
+  });
 
   const rawGitleaksPath = path.join(evidenceDirectory, '.gitleaks.raw-redacted.json');
-  const gitleaksResult = runCaptured(options.gitleaksPath, [
-    'dir',
-    '--redact=100',
-    '--report-format=json',
-    `--report-path=${rawGitleaksPath}`,
-    '--exit-code=0',
-    '--log-level=error',
-    logDirectory,
-  ]);
+  const gitleaksResult = runCaptured(options.gitleaksPath, buildGitleaksArguments({
+    configPath: gitleaksConfigPath,
+    mode: 'dir',
+    rawReportPath: rawGitleaksPath,
+    targetPath: '.',
+  }), { cwd: logDirectory });
   if (gitleaksResult.status !== 0) {
     throw new Error(`Gitleaks Actions log scan failed with status ${gitleaksResult.status}.`);
   }
@@ -315,6 +323,8 @@ async function main() {
       gitleaks: {
         version: gitleaksVersion,
         binarySha256: await sha256File(options.gitleaksPath),
+        configurationSha256: await sha256File(gitleaksConfigPath),
+        policySemanticsValidated: true,
       },
       trufflehog: {
         version: trufflehogVersion,
@@ -333,7 +343,7 @@ async function main() {
   console.log('Sensitive values and run identifiers were not printed or included in the public summary.');
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   main().catch((error) => {
     console.error(`Private Actions log scan failed: ${error.message}`);
     process.exitCode = 1;

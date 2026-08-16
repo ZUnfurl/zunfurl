@@ -38,9 +38,10 @@
 - 不包含 Cart、Checkout、支付、订单、税务、配送、履约、实时价格或实时库存。
 - Authenticated Editorial/Draft Preview、生产 Backup 和灾难 Restore 仍是 Roadmap。
 - 只支持最新公开的 `0.x` Preview；社区支持为 best effort，不提供免费 SLA。
-- 净化根历史已替换 Private 远端；正式发布仍需目标 Organization 迁移、托管 CI、Public 后匿名 clone、远程仓库保护和 Public 独立授权 Gate。tag 与 GitHub Release 已获授权，但只能在全部 Gate 通过后执行。
+- 净化根历史已替换 Private 远端，目标仓库已迁移至 `ZUnfurl/zunfurl`；正式发布仍需最终精确 SHA 的托管 CI、Public 后匿名 clone 和远程仓库保护 Gate。tag 与 GitHub Release 已获授权，但只能在全部 Gate 通过后执行。
 
 ### Security
 
 - 当前依赖审计为 `0 critical / 0 high / 7 moderate / 0 low`；剩余项已进入后续升级跟踪，不表示零风险。
+- Gitleaks 的唯一误报例外同时绑定 `generic-api-key` 规则、Release evidence schema 唯一路径与完整 `operatorAttestation` 枚举行，并在每次真实历史/Actions 日志扫描前运行正确行、错误路径和错误行语义探针；不存在目录级或规则级 blanket allowlist。
 - 安全问题请按 [SECURITY.md](SECURITY.md) 私密报告，不要创建公开 Issue。

@@ -27,6 +27,7 @@
     ".github/workflows/dependency-review.yml",
     ".github/workflows/rebuild-request.yml",
     ".github/workflows/secret-scan.yml",
+    ".gitleaks.toml",
     ".node-version",
     "CHANGELOG.md",
     "CODE_OF_CONDUCT.md",

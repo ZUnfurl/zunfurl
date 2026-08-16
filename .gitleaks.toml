@@ -1,0 +1,16 @@
+title = "ZUnfurl exact false-positive policy"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Release evidence operator-attestation enum; not a credential."
+targetRules = ["generic-api-key"]
+condition = "AND"
+paths = [
+  '''^docs/compliance/release-evidence\.schema\.json$''',
+]
+regexTarget = "line"
+regexes = [
+  '''^\s*"id": \{ "enum": \["G6A_CLEAN_ROOM_NO_PRODUCTION_[S]ECRETS", "G6B_ANONYMOUS_CLONE_NO_[C]REDENTIALS", "G6B_NO_PRODUCTION_[S]ECRET_EXPOSURE", "G6B_TEST_MERGE_OBSERVED_BEFORE_CLOSE"\] \},$''',
+]

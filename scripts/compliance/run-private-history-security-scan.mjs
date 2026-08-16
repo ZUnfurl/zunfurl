@@ -25,6 +25,44 @@ const SCRIPT_DIRECTORY = path.dirname(fileURLToPath(import.meta.url));
 const REPOSITORY_ROOT = path.resolve(SCRIPT_DIRECTORY, '..', '..');
 const PUBLIC_TEXT_SCANNER = path.join(REPOSITORY_ROOT, 'scripts', 'tests', 'validate-public-text.mjs');
 const PUBLIC_TEXT_ALLOWLIST = path.join(REPOSITORY_ROOT, 'docs', 'compliance', 'public-text-allowlist.json');
+const GITLEAKS_CONFIG_RELATIVE_PATH = '.gitleaks.toml';
+const GITLEAKS_ATTESTATION_ENUMS = [
+  ['G6A', 'CLEAN', 'ROOM', 'NO', 'PRODUCTION', 'SECRETS'],
+  ['G6B', 'ANONYMOUS', 'CLONE', 'NO', 'CREDENTIALS'],
+  ['G6B', 'NO', 'PRODUCTION', 'SECRET', 'EXPOSURE'],
+  ['G6B', 'TEST', 'MERGE', 'OBSERVED', 'BEFORE', 'CLOSE'],
+].map((segments) => segments.join('_'));
+const GITLEAKS_ATTESTATION_LINE =
+  `        "id": { "enum": [${GITLEAKS_ATTESTATION_ENUMS.map(JSON.stringify).join(', ')}] },`;
+const GITLEAKS_DETECTOR_BREAK_WORDS = ['SECRETS', 'CREDENTIALS', 'SECRET'];
+const GITLEAKS_ATTESTATION_LINE_REGEX = (() => {
+  let pattern = GITLEAKS_ATTESTATION_LINE.trimStart().replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
+  for (let index = 0; index < GITLEAKS_DETECTOR_BREAK_WORDS.length; index += 1) {
+    const literal = GITLEAKS_ATTESTATION_ENUMS[index];
+    const word = GITLEAKS_DETECTOR_BREAK_WORDS[index];
+    pattern = pattern.replace(literal, literal.replace(word, `[${word[0]}]${word.slice(1)}`));
+  }
+  return `^\\s*${pattern}$`;
+})();
+const EXPECTED_GITLEAKS_CONFIG = [
+  'title = "ZUnfurl exact false-positive policy"',
+  '',
+  '[extend]',
+  'useDefault = true',
+  '',
+  '[[allowlists]]',
+  'description = "Release evidence operator-attestation enum; not a credential."',
+  'targetRules = ["generic-api-key"]',
+  'condition = "AND"',
+  'paths = [',
+  "  '''^docs/compliance/release-evidence\\.schema\\.json$''',",
+  ']',
+  'regexTarget = "line"',
+  'regexes = [',
+  `  '''${GITLEAKS_ATTESTATION_LINE_REGEX}''',`,
+  ']',
+  '',
+].join('\n');
 
 export const SCAN_CONTRACT = Object.freeze({
   schemaVersion: 1,
@@ -34,6 +72,13 @@ export const SCAN_CONTRACT = Object.freeze({
 });
 
 function parseArguments(argv) {
+  if (argv.includes('--self-test')) {
+    if (argv.length !== 1) {
+      throw new Error('--self-test cannot be combined with scan arguments.');
+    }
+    return { selfTest: true };
+  }
+
   const options = {
     evidenceDirectory: null,
     gitleaksPath: null,
@@ -69,6 +114,122 @@ function parseArguments(argv) {
   }
 
   return options;
+}
+
+function assertGitleaksConfigText(content) {
+  if (content !== EXPECTED_GITLEAKS_CONFIG) {
+    throw new Error(
+      'Gitleaks policy differs from the exact approved rule/path/line false-positive exception.',
+    );
+  }
+}
+
+export async function assertGitleaksConfig(repositoryRoot = REPOSITORY_ROOT) {
+  const configPath = path.join(repositoryRoot, GITLEAKS_CONFIG_RELATIVE_PATH);
+  assertGitleaksConfigText(await readFile(configPath, 'utf8'));
+  return configPath;
+}
+
+export function buildGitleaksArguments({ configPath, mode, rawReportPath, targetPath }) {
+  if (!['dir', 'git'].includes(mode)) throw new Error(`Unsupported Gitleaks mode: ${mode}`);
+  const argumentsList = [mode];
+  if (mode === 'git') argumentsList.push('--log-opts=--all --full-history');
+  argumentsList.push(
+    `--config=${configPath}`,
+    '--redact=100',
+    '--report-format=json',
+    `--report-path=${rawReportPath}`,
+    '--exit-code=0',
+    '--log-level=error',
+    targetPath,
+  );
+  return argumentsList;
+}
+
+async function runSelfTest() {
+  const configPath = await assertGitleaksConfig(REPOSITORY_ROOT);
+  for (const mutation of [
+    EXPECTED_GITLEAKS_CONFIG.replace('condition = "AND"', 'condition = "OR"'),
+    EXPECTED_GITLEAKS_CONFIG.replace('targetRules = ["generic-api-key"]', 'targetRules = []'),
+    EXPECTED_GITLEAKS_CONFIG.replace(
+      '^docs/compliance/release-evidence\\.schema\\.json$',
+      '^docs/compliance/.*$',
+    ),
+    EXPECTED_GITLEAKS_CONFIG.replace(GITLEAKS_ATTESTATION_LINE_REGEX, '.*'),
+  ]) {
+    let blocked = false;
+    try {
+      assertGitleaksConfigText(mutation);
+    } catch {
+      blocked = true;
+    }
+    if (!blocked) throw new Error('A broadened Gitleaks policy mutation was not blocked.');
+  }
+
+  for (const mode of ['git', 'dir']) {
+    const args = buildGitleaksArguments({
+      configPath,
+      mode,
+      rawReportPath: 'report.json',
+      targetPath: 'target',
+    });
+    const configArguments = args.filter((argument) => argument === `--config=${configPath}`);
+    if (configArguments.length !== 1) {
+      throw new Error(`Gitleaks ${mode} arguments do not bind the exact approved config.`);
+    }
+  }
+
+  console.log('Gitleaks policy self-test passed: 4 broadened mutations blocked; git/dir config bound.');
+}
+
+export async function verifyGitleaksPolicySemantics({ binaryPath, configPath, evidenceDirectory }) {
+  const probeRoot = path.join(evidenceDirectory, '.gitleaks-policy-probe');
+  const cases = [
+    {
+      name: 'approved',
+      relativePath: 'docs/compliance/release-evidence.schema.json',
+      line: GITLEAKS_ATTESTATION_LINE,
+      expectedFindingCount: 0,
+    },
+    {
+      name: 'wrong-path',
+      relativePath: 'docs/compliance/release-evidence-schema.json',
+      line: GITLEAKS_ATTESTATION_LINE,
+      expectedFindingCount: 1,
+    },
+    {
+      name: 'wrong-line',
+      relativePath: 'docs/compliance/release-evidence.schema.json',
+      line: GITLEAKS_ATTESTATION_LINE.replace('G6A_CLEAN_ROOM', 'G6A_CLEANROOM'),
+      expectedFindingCount: 1,
+    },
+  ];
+
+  await mkdir(probeRoot, { recursive: true, mode: 0o700 });
+  try {
+    for (const probe of cases) {
+      const caseRoot = path.join(probeRoot, probe.name);
+      const targetPath = path.join(caseRoot, ...probe.relativePath.split('/'));
+      const rawReportPath = path.join(probeRoot, `${probe.name}.json`);
+      await mkdir(path.dirname(targetPath), { recursive: true, mode: 0o700 });
+      await writeFile(targetPath, `${probe.line}\n`, { encoding: 'utf8', mode: 0o600 });
+      const findings = await runGitleaksDirectory({
+        binaryPath,
+        configPath,
+        directoryPath: caseRoot,
+        rawReportPath,
+      });
+      if (findings.length !== probe.expectedFindingCount ||
+          findings.some((finding) => finding.ruleId !== 'generic-api-key')) {
+        throw new Error(
+          `Gitleaks policy probe ${probe.name} expected ${probe.expectedFindingCount} ` +
+          'generic-api-key finding(s).',
+        );
+      }
+    }
+  } finally {
+    await rm(probeRoot, { force: true, recursive: true });
+  }
 }
 
 function run(command, args, options = {}) {
@@ -202,18 +363,14 @@ function deduplicateFindings(findings, fields) {
   });
 }
 
-async function runGitleaks({ binaryPath, evidenceDirectory, repositoryPath, scope }) {
+async function runGitleaks({ binaryPath, configPath, evidenceDirectory, repositoryPath, scope }) {
   const rawReportPath = path.join(evidenceDirectory, `${scope}.gitleaks.raw-redacted.json`);
-  const result = runCaptured(binaryPath, [
-    'git',
-    '--log-opts=--all --full-history',
-    '--redact=100',
-    '--report-format=json',
-    `--report-path=${rawReportPath}`,
-    '--exit-code=0',
-    '--log-level=error',
-    repositoryPath,
-  ]);
+  const result = runCaptured(binaryPath, buildGitleaksArguments({
+    configPath,
+    mode: 'git',
+    rawReportPath,
+    targetPath: repositoryPath,
+  }));
 
   if (result.status !== 0) {
     throw new Error(`Gitleaks ${scope} scan failed with status ${result.status}.`);
@@ -237,16 +394,13 @@ async function runGitleaks({ binaryPath, evidenceDirectory, repositoryPath, scop
   return { report, reportPath };
 }
 
-async function runGitleaksDirectory({ binaryPath, directoryPath, rawReportPath }) {
-  const result = runCaptured(binaryPath, [
-    'dir',
-    '--redact=100',
-    '--report-format=json',
-    `--report-path=${rawReportPath}`,
-    '--exit-code=0',
-    '--log-level=error',
-    directoryPath,
-  ]);
+async function runGitleaksDirectory({ binaryPath, configPath, directoryPath, rawReportPath }) {
+  const result = runCaptured(binaryPath, buildGitleaksArguments({
+    configPath,
+    mode: 'dir',
+    rawReportPath,
+    targetPath: '.',
+  }), { cwd: directoryPath });
   if (result.status !== 0) {
     throw new Error(`Gitleaks ref snapshot scan failed with status ${result.status}.`);
   }
@@ -327,6 +481,7 @@ function localOnlyCommitObjects(repositoryRoot, localRefs) {
 async function scanAdditionalLocalRefSnapshots({
   evidenceDirectory,
   gitleaksPath,
+  gitleaksConfigPath,
   localRefs,
   repositoryRoot,
   trufflehogPath,
@@ -357,6 +512,7 @@ async function scanAdditionalLocalRefSnapshots({
       });
       allGitleaksFindings.push(...await runGitleaksDirectory({
         binaryPath: gitleaksPath,
+        configPath: gitleaksConfigPath,
         directoryPath: snapshotDirectory,
         rawReportPath: path.join(snapshotRoot, `gitleaks-${index}.raw-redacted.json`),
       }));
@@ -533,6 +689,7 @@ async function summarizeScope(scope, refCount, results) {
 async function scanScope({
   evidenceDirectory,
   gitleaksPath,
+  gitleaksConfigPath,
   repositoryPath,
   scope,
   trufflehogGitUri,
@@ -541,6 +698,7 @@ async function scanScope({
   const [gitleaks, trufflehog, publicText] = await Promise.all([
     runGitleaks({
       binaryPath: gitleaksPath,
+      configPath: gitleaksConfigPath,
       evidenceDirectory,
       repositoryPath,
       scope,
@@ -558,7 +716,12 @@ async function scanScope({
 
 async function main() {
   const options = parseArguments(process.argv.slice(2));
+  if (options.selfTest) {
+    await runSelfTest();
+    return;
+  }
   const repositoryRoot = await realpath(options.repositoryRoot);
+  const gitleaksConfigPath = await assertGitleaksConfig(REPOSITORY_ROOT);
   const evidenceDirectory = await prepareEvidenceDirectory(
     repositoryRoot,
     options.evidenceDirectory,
@@ -577,10 +740,17 @@ async function main() {
     SCAN_CONTRACT.trufflehogVersion,
     'TruffleHog',
   );
+  await verifyGitleaksPolicySemantics({
+    binaryPath: options.gitleaksPath,
+    configPath: gitleaksConfigPath,
+    evidenceDirectory,
+  });
   const toolEvidence = {
     gitleaks: {
       version: gitleaksVersion,
       binarySha256: await sha256File(options.gitleaksPath),
+      configurationSha256: await sha256File(gitleaksConfigPath),
+      policySemanticsValidated: true,
     },
     trufflehog: {
       version: trufflehogVersion,
@@ -613,6 +783,7 @@ async function main() {
     const localResults = await scanScope({
       evidenceDirectory,
       gitleaksPath: options.gitleaksPath,
+      gitleaksConfigPath,
       repositoryPath: repositoryRoot,
       scope: 'local',
       trufflehogGitUri: originUrl,
@@ -622,6 +793,7 @@ async function main() {
     const originResults = await scanScope({
       evidenceDirectory,
       gitleaksPath: options.gitleaksPath,
+      gitleaksConfigPath,
       repositoryPath: mirrorPath,
       scope: 'origin',
       trufflehogGitUri: originUrl,
@@ -631,6 +803,7 @@ async function main() {
     const localAdditionalRefs = await scanAdditionalLocalRefSnapshots({
       evidenceDirectory,
       gitleaksPath: options.gitleaksPath,
+      gitleaksConfigPath,
       localRefs,
       repositoryRoot,
       trufflehogPath: options.trufflehogPath,
@@ -679,7 +852,7 @@ async function main() {
   }
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   main().catch((error) => {
     console.error(`Private history security scan failed: ${error.message}`);
     process.exitCode = 1;
