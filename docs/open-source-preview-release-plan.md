@@ -915,9 +915,13 @@ Phase 8 Lite 的远程设置以 `docs/compliance/github-public-security-policy.j
 
 发布成功的定义不是“仓库已经 Public”，而是：净化后的精确 commit 已公开、可由匿名环境复现、功能声明与实现一致、漏洞报告入口可用，并且维护者具备持续响应能力。
 
+执行结果：Phase 8 Lite 已于 2026-08-16 完成。Public Template repository、单一 `main-protection` ruleset、PVR、Dependabot、CodeQL、Secret Protection、push protection 与 Immutable Releases 已启用；公开后的 3 个 CodeQL high finding 已通过 PR #11 修复。普通 annotated tag `v0.3.0-preview.1` 与 Immutable Pre-release 均精确指向 `edc1630996aeba8582430e8f781d9e884da7885a`，Release 只附带经摘要核对的 `sbom.cdx.json` 与 `SHA256SUMS`。最终匿名 clone、`npm ci --ignore-scripts` 和 `test:phase5:metadata` 通过，开放 CodeQL/secret finding 与 Dependabot critical/high 均为 0。
+
 ## Phase 9：发布后观察与收口
 
-Owner 已决定：完成 Phase 8 并记录执行情况后暂停。D+1、D+7 与 D+30 任务不自动启动，只有收到新的明确指令才进入 Phase 9。
+Owner 已于 2026-08-16 明确指令进入 Phase 9。发布后即时基线从同日开始；D+1、D+7 与 D+30 仍按真实日历分别在 2026-08-17、2026-08-23 与 2026-09-15 验收，不提前勾选或用发布日状态替代观察期证据。
+
+即时基线：GitHub 已识别 Apache-2.0；Community Profile 为 87%，缺失项只是旧 `issue_template` 字段未计入已实际可访问的 3 个 Issue Forms；Template generate、PVR、Release、source ZIP、SECURITY.md 和 159 个仓库 Markdown 链接均可用。发布后截至本次检查没有失败 Actions、开放 Issue/PR、安全报告、CodeQL/secret finding 或 Dependabot critical/high。
 
 ### D+1
 

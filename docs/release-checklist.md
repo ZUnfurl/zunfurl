@@ -8,9 +8,7 @@
 
 本清单是发布操作门禁，不是当前完成证明。只有证据存在时才可勾选。Owner 已授权完成 Phase 9 前所需的 tag 与 GitHub Release，并以“完成 Phase 8 后暂停”的明确指令单独批准 Phase 8 Public 窗口；授权不替代技术 Gate，Phase 9 仍需新的进入指令。
 
-当前事实（不构成最终 Gate 通过）：目标为 `ZUnfurl/zunfurl` Private Template repository，默认分支 `main`；Organization 创建、仓库转移和改名已获单独确认并完成。GitHub sudo-protected UI 显示仓库和 Organization 均无已安装 App；Codespaces secrets UI 显示仓库无 secrets。Codespaces REST API 因当前 token scope 返回 `404`，零 secret 结论仅以精确人工 UI 证据补足。
-
-截至 2026-08-16、源候选 `2b7aa20...` 的转移后审计快照为 4 个只读 closed-PR head refs、23 个只使用净化历史的 Actions runs、4 个 caches、2 个精确 GitHub-managed dynamic workflows 和 1 个空 `copilot` Environment。该快照不是冻结计数；本轮修复 PR/CI 会继续增加净化对象，最终只以合并后审计为准。快照中的 4 个及随后生成的全部 caches 必须在最终 G6a 后清空并复审为 0；这些对象不得与已清除的旧历史对象混称。
+当前事实：目标为 Public Template repository `ZUnfurl/zunfurl`，默认分支 `main`；首个 Preview 已发布。发布 tag 与 Release 精确绑定 `edc1630996aeba8582430e8f781d9e884da7885a`，开放 CodeQL/secret finding 和 Dependabot critical/high 均为 0。原私有历史与日志仍只保留在私有归档，不因 Public 或 Release 状态改变其不得公开的结论。
 
 PR #5 由当前唯一维护者 `@mp4102` 提交并合并；合并前所有实际执行的自动门禁均为 `SUCCESS`，合格独立维护者批准为 `0`。Private 计划下 `SKIPPED` 的 CodeQL/Dependency Review 与合并后的 Copilot `COMMENTED` review 均不计作独立批准。
 
@@ -69,16 +67,17 @@ PR #5 由当前唯一维护者 `@mp4102` 提交并合并；合并前所有实际
 ## 7. 三次授权与发布
 
 - [x] **Public 授权**：Owner 已以“完成 Phase 8 后暂停”的明确指令批准将净化后的目标仓库设为 Public。
-- [ ] Template repository 标记、描述、topics 与默认分支设置已复核。
+- [x] Template repository 标记、描述、topics 与默认分支设置已复核。
 - [x] **Tag 授权**：Owner 已明确批准在全部 Gate 通过后创建 annotated tag `v0.3.0-preview.1`；首个 Preview 不要求签名 key。
-- [ ] tag 精确指向唯一候选 commit，且没有移动或复用既有 tag。
+- [x] tag 精确指向唯一候选 commit `edc1630996aeba8582430e8f781d9e884da7885a`，且没有移动或复用既有 tag。
 - [x] **Release 授权**：Owner 已明确批准在全部 Gate 通过后发布 `ZUnfurl v0.3.0-preview.1`。
-- [ ] 启用并审计 Immutable Releases；创建 draft Pre-release，上传 `sbom.cdx.json` 与 `SHA256SUMS` 并逐项核对摘要和 content type。
-- [ ] GitHub Release 标记为 Pre-release，仅附源码、SBOM 与 `SHA256SUMS`；发布后复核 `immutable=true`、tag target 和资产摘要。
-- [ ] Release note 包含成熟度、Profile 范围、C 排除项、Known limitations、Roadmap、安全入口和迁移说明。
+- [x] 已启用并审计 Immutable Releases；draft Pre-release 上传 `sbom.cdx.json` 与 `SHA256SUMS` 后逐项核对摘要、size 和 content type。
+- [x] GitHub Release 已标记为 Pre-release，仅由 GitHub 提供源码并附带 SBOM 与 `SHA256SUMS`；发布后 `immutable=true`，tag target 和资产摘要通过复核。
+- [x] Release note 包含成熟度、Profile 范围、C 排除项、Known limitations、Roadmap、安全入口和迁移说明。
 
 ## 8. 发布后
 
+- [x] Phase 9 已由 Owner 于 2026-08-16 明确启动；即时基线确认 License、Community Profile、3 个 Issue Forms、Template、PVR、Release、源码下载和公开安全状态可用。
 - [ ] D+1：验证 License、Template 按钮、PVR、匿名 Quick Start 和下载源码。
 - [ ] D+7：从 Template 创建独立 Private 仓库，复核四 Profile 与 fork PR 边界。
 - [ ] D+30：复盘依赖、许可证、资产、Issues 与维护负担，并决定下一 Preview。
