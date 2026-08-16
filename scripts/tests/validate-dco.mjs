@@ -273,14 +273,23 @@ const STATUS_DESCRIPTIONS = Object.freeze({
   failure: 'DCO validation failed; inspect the trusted workflow run.',
 });
 
-export function validateStatusResponse(response, expected) {
-  requireObject(response, 'commit status response');
-  requirePositiveInteger(requireOwn(response, 'id', 'commit status response'), 'commit status response.id');
-  for (const [key, value] of Object.entries(expected)) {
-    if (requireOwn(response, key, 'commit status response') !== value) {
-      fail(`commit status response.${key} differs from the requested status.`);
+function validateStatusFields(response, expected, label) {
+  requireObject(response, label);
+  for (const key of ['url', 'state', 'context', 'description', 'target_url']) {
+    if (requireOwn(response, key, label) !== expected[key]) {
+      fail(`${label}.${key} differs from the requested status.`);
     }
   }
+  if (Object.hasOwn(response, 'commit_url') &&
+      requireOwn(response, 'commit_url', label) !== expected.commitUrl) {
+    fail(`${label}.commit_url differs from the exact target commit.`);
+  }
+  return response;
+}
+
+export function validateStatusResponse(response, expected) {
+  validateStatusFields(response, expected, 'commit status response');
+  requirePositiveInteger(requireOwn(response, 'id', 'commit status response'), 'commit status response.id');
   const creator = requireOwn(response, 'creator', 'commit status response');
   if (requireOwn(creator, 'login', 'commit status response.creator') !== 'github-actions[bot]' ||
       requireOwn(creator, 'id', 'commit status response.creator') !== 41898282 ||
@@ -291,26 +300,95 @@ export function validateStatusResponse(response, expected) {
   return response;
 }
 
+function validateCombinedStatusBinding(response, expected, createdStatusId) {
+  requireObject(response, 'combined commit status response');
+  if (requireOwn(response, 'sha', 'combined commit status response') !== expected.headSha ||
+      requireOwn(response, 'commit_url', 'combined commit status response') !== expected.commitUrl ||
+      requireOwn(response, 'url', 'combined commit status response') !== expected.combinedUrl) {
+    fail('combined commit status response differs from the exact target commit URL/head binding.');
+  }
+  const statuses = requireOwn(response, 'statuses', 'combined commit status response');
+  const totalCount = requireOwn(response, 'total_count', 'combined commit status response');
+  if (!Array.isArray(statuses) || !Number.isSafeInteger(totalCount) || totalCount < 0 || totalCount !== statuses.length) {
+    fail('combined commit status response cardinality is invalid.');
+  }
+  const matches = statuses.filter((status) => {
+    requireObject(status, 'combined commit status entry');
+    const context = requireString(requireOwn(status, 'context', 'combined commit status entry'), 'combined commit status entry.context');
+    return context.toLowerCase() === STATUS_CONTEXT.toLowerCase();
+  });
+  if (matches.length !== 1) fail('combined commit status response must contain one exact latest DCO context.');
+  validateStatusFields(matches[0], expected, 'combined DCO status entry');
+  if (requirePositiveInteger(requireOwn(matches[0], 'id', 'combined DCO status entry'), 'combined DCO status entry.id') !==
+      createdStatusId) {
+    fail('combined DCO status entry does not bind the newly created status ID.');
+  }
+}
+
+async function readBackCreatedStatus(event, token, expected, createdStatusId, request) {
+  const [owner, repo] = event.repositoryFullName.split('/');
+  const encodedRepository = `${encodeURIComponent(owner)}/${encodeURIComponent(repo)}`;
+  const matching = [];
+  const seenIds = new Set();
+  for (let page = 1; page <= MAX_PAGES; page += 1) {
+    const url = `${API_ORIGIN}/repos/${encodedRepository}/commits/${event.headSha}` +
+      `/statuses?per_page=${PAGE_SIZE}&page=${page}`;
+    const records = await request(url, token, { expectedStatus: 200 });
+    if (!Array.isArray(records) || records.length > PAGE_SIZE) {
+      fail(`commit status readback page ${page} has invalid cardinality.`);
+    }
+    for (const [index, record] of records.entries()) {
+      requireObject(record, `commit status readback page[${page}][${index}]`);
+      const context = requireString(
+        requireOwn(record, 'context', `commit status readback page[${page}][${index}]`),
+        `commit status readback page[${page}][${index}].context`,
+      );
+      if (context.toLowerCase() !== STATUS_CONTEXT.toLowerCase()) continue;
+      const id = requirePositiveInteger(
+        requireOwn(record, 'id', `commit status readback page[${page}][${index}]`),
+        `commit status readback page[${page}][${index}].id`,
+      );
+      if (seenIds.has(id)) fail('commit status readback contains a duplicate DCO status ID.');
+      seenIds.add(id);
+      matching.push(record);
+    }
+    if (records.length < PAGE_SIZE) break;
+    if (page === MAX_PAGES) fail('commit status readback pagination did not terminate within the fail-closed bound.');
+  }
+  if (matching.length === 0) fail('commit status readback did not return the newly created DCO status.');
+  matching.sort((left, right) => right.id - left.id);
+  const latest = validateStatusResponse(matching[0], expected);
+  if (latest.id !== createdStatusId) fail('newly created DCO status is not the maximum-ID latest status on the exact head.');
+
+  const combined = await request(expected.combinedUrl, token, { expectedStatus: 200 });
+  validateCombinedStatusBinding(combined, expected, createdStatusId);
+  return latest;
+}
+
 export async function publishCommitStatus(event, state, token, runId, request = requestGithubJson) {
   if (!Object.hasOwn(STATUS_DESCRIPTIONS, state)) fail('Commit status state is not approved.');
   if (typeof runId !== 'string' || !/^[1-9][0-9]*$/.test(runId)) fail('GITHUB_RUN_ID must be a positive integer string.');
   const targetUrl = `https://github.com/${event.repositoryFullName}/actions/runs/${runId}`;
   const expected = {
-    sha: event.headSha,
+    headSha: event.headSha,
     state,
     context: STATUS_CONTEXT,
     description: STATUS_DESCRIPTIONS[state],
     target_url: targetUrl,
   };
   const [owner, repo] = event.repositoryFullName.split('/');
-  const url = `${API_ORIGIN}/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/statuses/${event.headSha}`;
-  const response = await request(url, token, { method: 'POST', body: {
+  const encodedRepository = `${encodeURIComponent(owner)}/${encodeURIComponent(repo)}`;
+  expected.url = `${API_ORIGIN}/repos/${encodedRepository}/statuses/${event.headSha}`;
+  expected.commitUrl = `${API_ORIGIN}/repos/${encodedRepository}/commits/${event.headSha}`;
+  expected.combinedUrl = `${expected.commitUrl}/status`;
+  const response = await request(expected.url, token, { method: 'POST', body: {
     state,
     context: STATUS_CONTEXT,
     description: STATUS_DESCRIPTIONS[state],
     target_url: targetUrl,
   }, expectedStatus: 201 });
-  return validateStatusResponse(response, expected);
+  const created = validateStatusResponse(response, expected);
+  return readBackCreatedStatus(event, token, expected, created.id, request);
 }
 
 async function readAllCommitPages(event, token, fetchPage = defaultFetchPage) {
@@ -425,9 +503,12 @@ async function runSelfTest() {
 
   const projected = projectEvent(event);
   const statusTargetUrl = 'https://github.com/ZUnfurl/zunfurl/actions/runs/123';
+  const statusApiUrl = `${API_ORIGIN}/repos/ZUnfurl/zunfurl/statuses/${headSha}`;
+  const statusCommitUrl = `${API_ORIGIN}/repos/ZUnfurl/zunfurl/commits/${headSha}`;
+  const statusCombinedUrl = `${statusCommitUrl}/status`;
   const statusResponse = (state, overrides = {}) => ({
     id: 99,
-    sha: headSha,
+    url: statusApiUrl,
     state,
     context: STATUS_CONTEXT,
     description: STATUS_DESCRIPTIONS[state],
@@ -435,16 +516,67 @@ async function runSelfTest() {
     creator: { login: 'github-actions[bot]', id: 41898282, type: 'Bot', site_admin: false },
     ...overrides,
   });
-  await publishCommitStatus(projected, 'pending', 'test-token', '123', async (url, token, options) => {
-    if (token !== 'test-token' || options.method !== 'POST' || options.expectedStatus !== 201 ||
-        options.body.context !== STATUS_CONTEXT || !url.endsWith(`/statuses/${headSha}`)) {
-      fail('status publisher request projection drifted.');
-    }
-    return statusResponse('pending');
+  const combinedResponse = (state, status, overrides = {}) => ({
+    sha: headSha,
+    total_count: 1,
+    commit_url: statusCommitUrl,
+    url: statusCombinedUrl,
+    state,
+    statuses: [{
+      id: status.id,
+      url: status.url,
+      state: status.state,
+      context: status.context,
+      description: status.description,
+      target_url: status.target_url,
+    }],
+    ...overrides,
   });
+  const statusRequest = (state, { postOverrides = {}, listRecords, combinedOverrides = {} } = {}) => {
+    const posted = statusResponse(state, postOverrides);
+    return async (url, token, options) => {
+      if (token !== 'test-token') fail('status publisher token projection drifted.');
+      if (options.method === 'POST') {
+        if (url !== statusApiUrl || options.expectedStatus !== 201 || options.body.context !== STATUS_CONTEXT ||
+            options.body.state !== state || options.body.target_url !== statusTargetUrl) {
+          fail('status publisher POST projection drifted.');
+        }
+        return posted;
+      }
+      if (options.expectedStatus !== 200 || Object.hasOwn(options, 'method')) {
+        fail('status publisher GET projection drifted.');
+      }
+      if (url === `${statusCommitUrl}/statuses?per_page=${PAGE_SIZE}&page=1`) {
+        return listRecords ?? [posted];
+      }
+      if (url === statusCombinedUrl) return combinedResponse(state, posted, combinedOverrides);
+      fail('status publisher readback escaped the exact event head.');
+    };
+  };
+  const realShapeResponse = statusResponse('pending');
+  if (Object.hasOwn(realShapeResponse, 'sha')) {
+    fail('real-shape commit status fixture must model GitHub 201 without a sha field.');
+  }
+  await publishCommitStatus(projected, 'pending', 'test-token', '123', statusRequest('pending'));
   const statusCases = [
-    ['wrong status head', () => publishCommitStatus(projected, 'success', 'test-token', '123', async () => statusResponse('success', { sha: '4'.repeat(40) })), /response\.sha differs/],
-    ['wrong status creator', () => publishCommitStatus(projected, 'success', 'test-token', '123', async () => statusResponse('success', { creator: { login: 'attacker', id: 1, type: 'User', site_admin: false } })), /exact GitHub Actions bot/],
+    ['wrong status API URL', () => publishCommitStatus(projected, 'success', 'test-token', '123', statusRequest('success', {
+      postOverrides: { url: `${API_ORIGIN}/repos/ZUnfurl/zunfurl/statuses/${'4'.repeat(40)}` },
+    })), /response\.url differs/],
+    ['wrong combined status head', () => publishCommitStatus(projected, 'success', 'test-token', '123', statusRequest('success', {
+      combinedOverrides: { sha: '4'.repeat(40) },
+    })), /exact target commit URL\/head binding/],
+    ['wrong combined commit URL', () => publishCommitStatus(projected, 'success', 'test-token', '123', statusRequest('success', {
+      combinedOverrides: { commit_url: `${API_ORIGIN}/repos/ZUnfurl/zunfurl/commits/${'4'.repeat(40)}` },
+    })), /exact target commit URL\/head binding/],
+    ['newer conflicting status', () => {
+      const posted = statusResponse('success');
+      return publishCommitStatus(projected, 'success', 'test-token', '123', statusRequest('success', {
+        listRecords: [posted, statusResponse('success', { id: posted.id + 1 })],
+      }));
+    }, /maximum-ID latest status/],
+    ['wrong status creator', () => publishCommitStatus(projected, 'success', 'test-token', '123', statusRequest('success', {
+      postOverrides: { creator: { login: 'attacker', id: 1, type: 'User', site_admin: false } },
+    })), /exact GitHub Actions bot/],
     ['empty status token', () => requestGithubJson(`${API_ORIGIN}/repos/ZUnfurl/zunfurl`, '', { fetchImpl: async () => null }), /GITHUB_TOKEN/],
     ['redirected status request', () => requestGithubJson(`${API_ORIGIN}/repos/ZUnfurl/zunfurl`, 'token', { fetchImpl: async (url) => ({ status: 200, redirected: true, url, headers: { get: () => 'application/json' }, json: async () => ({}) }) }), /failed closed/],
     ['wrong HTTP status', () => requestGithubJson(`${API_ORIGIN}/repos/ZUnfurl/zunfurl`, 'token', { fetchImpl: async (url) => ({ status: 403, redirected: false, url, headers: { get: () => 'application/json' }, json: async () => ({}) }) }), /HTTP 403/],
