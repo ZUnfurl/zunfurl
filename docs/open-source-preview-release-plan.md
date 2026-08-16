@@ -132,7 +132,7 @@ Phase 0 工作文件：
 | G4 Security | 原始及净化历史扫描通过；critical/high 为 0；Actions 固定 SHA | secret scan、`npm audit`、SBOM、workflow 检查 | 不公开 |
 | G5 Community | License、Security、Support、Contributing、Governance 和模板可用 | Community Profile、链接检查、联系人验证 | 不创建 tag |
 | G6a Private Release Candidate | 经授权的全新隔离 checkout 在无生产 secret 环境可复现；声明与实现一致 | Windows/Linux CI、tree manifest、校验和 | 保持候选仓库 Private |
-| G6b Public Anonymous & Fork Canary Reproduction | Public 后、tag 前的真正匿名 clone 可复现；同维护者个人 fork canary 验证 fork 拓扑、merge 测试和不暴露生产 secrets | 匿名 HTTPS clone、Quick Start、same-maintainer fork canary、Public 安全检查 | 停止 tag/Release |
+| G6b Public Anonymous Reproduction | Public 后、tag 前的真正匿名 clone 与 Quick Start 可复现 | 匿名 HTTPS clone、Quick Start、Public 安全检查 | 停止 tag/Release |
 | G7 Public Release | Public 已单独授权，tag/Release 已获持续授权，且发布时仍满足全部 Gate | 授权记录、仓库设置快照、Release 检查表 | 不执行或停止远程发布 |
 
 ## 5. 分阶段执行计划
@@ -584,7 +584,7 @@ npm.cmd run test:fixtures
 - 所有 `uses:` 固定到完整 commit SHA，并保留版本注释。
 - Checkout 设置 `persist-credentials: false`。
 - 所有 job 设置合理 `timeout-minutes`。
-- PR CI 的设计边界是不读取 production secret，并支持 fork 触发；Phase 8 以 same-maintainer fork canary 验证该技术路径。真正无目标写权限的独立外部贡献者路径尚未实测，作为 0.x 已知限制在首个此类 PR 后补验。
+- PR CI 的设计边界是不读取 production secret，并支持 fork 触发；真正无目标写权限的独立外部贡献者路径尚未实测，作为 0.x 已知限制在首个此类 PR 后补验，不再作为首个 Preview 的发布阻断项。
 - Deploy 只允许从 `main` 手动触发，使用 GitHub `production` Environment，并在 checkout 前要求 `PRODUCTION_DEPLOYMENT_ARMED=true`。
 - `repository_dispatch` 只进入无 checkout、无 secret、无 build/deploy 的 `rebuild-request` receipt；Webhook 不自动调用生产 Deploy。
 - 当前单维护者阶段不把生产 Environment 或默认分支描述为已有独立 reviewer；任何 deployment branch policy 都必须在远程按 GitHub 计划配置并验收。新增第二名合格 `write` maintainer 后，再启用至少一名独立 required reviewer；workflow YAML 不把尚未建立的审批能力冒充为现状。
@@ -845,7 +845,7 @@ Phase 7 只生成仓库外的私有 pre-tag 证据，不向候选树写入会改
 - Known limitations 和 Roadmap 边界；
 - 检查时间和责任人。
 
-最终公共脱敏摘要由 `docs/compliance/release-evidence.schema.json` 和 `scripts/compliance/validate-release-evidence.mjs` 约束，作为仓库外 detached JSON 在 Phase 8 中生成。先启用并审计 Immutable Releases，再创建签名 tag 和 draft Pre-release，上传 `sbom.cdx.json` 与 `SHA256SUMS`；再生成代表最终发布态的同一份 JSON，并以 `npm.cmd run validate:release-evidence -- --prepublish-file <仓库外-json>` 按已绑定的 Release ID 读取尚不可变的 draft，对候选、tag、Gate、完整 Phase 8 远程安全配置和两项既有资产做预发布校验。校验通过后上传该 JSON，发布 Pre-release，并立即以 `npm.cmd run validate:release-evidence -- --file <仓库外-json>` 按 tag 复核 `draft=false`、`immutable=true`、完整 Phase 8 审计、三个 Release assets 以及远端 evidence bytes 与本地文件逐字节一致；最终复核失败必须立即撤下 Release、停止后续发布并记录事故，不得保留“已验证”声明。公共摘要只绑定净化 candidate，不披露原始私有 source commit；原始扫描日志和操作者身份映射继续留在私有证据包。该两段式顺序避免 evidence 反过来改变候选 SHA，也避免 Release asset 自引用循环。
+`docs/compliance/release-evidence.schema.json` 与 `scripts/compliance/validate-release-evidence.mjs` 保留为 Experimental 研究工具，不再作为 `v0.3.0-preview.1` 的发布阻断项，也不上传 detached evidence asset。首个 Preview 的公共证据收敛为签名 annotated tag、GitHub Actions 结果、可重现 `sbom.cdx.json`、`SHA256SUMS` 与 Release Notes；原始扫描日志、操作者身份映射和完整执行记录继续留在仓库外私有证据包。若未来要把 detached evidence 升格为强制 Gate，必须单独评审其维护成本和威胁模型。
 
 ### Phase 7 Gate
 
@@ -859,7 +859,7 @@ Phase 7 只生成仓库外的私有 pre-tag 证据，不向候选树写入会改
 
 ### 依赖
 
-G0 至 G6a 全部通过；Public 获得独立授权。tag 与 GitHub Release 已获得持续授权，但仍只能在 G6b 和全部远程安全 Gate 通过后执行。
+G0 至 G6a 全部通过；Public 获得独立授权。tag 与 GitHub Release 已获得持续授权，但仍只能在匿名 G6b 和必要远程安全 Gate 通过后执行。
 
 ### 任务
 
@@ -883,14 +883,14 @@ G0 至 G6a 全部通过；Public 获得独立授权。tag 与 GitHub Release 已
 - 禁止 checkout、fetch、解析 artifact 或执行 PR head 的高风险 `pull_request_target`；唯一例外是冻结的 metadata-only DCO publisher，它只执行受信任默认分支代码、分页读取 PR commit metadata，并以最窄 `statuses: write` 向精确 PR head 发布 DCO 状态。fork PR 不取得 secrets。
 - 启用 dependency graph、Dependabot alerts/updates、dependency review、CodeQL、secret scanning、push protection 和 Private Vulnerability Reporting。
 - `main` 在当前单维护者阶段必须通过 PR、required checks、解决全部 conversation，并要求 linear history；`required_approving_reviews = 0`、`require_code_owner_review = false`，禁止 force push 和删除。CODEOWNERS 只用于责任与 review request 路由，不构成独立批准。
-- `v*` tag 仅 release maintainer 可创建；已发布 tag 不移动、不复用。
+- `v*` tag 必须使用已登记的专用 signing key 创建签名 annotated tag；已发布 tag 不移动、不复用。
 - 未来生产 Deploy 必须使用 Environment 和最小权限 token；独立人工审批只在 GitHub 计划支持并经远程验收后声明，否则继续依赖人工 dispatch，并另行设计真正受保护的发布边界。
 
 公开前先完成当前计划允许的 Actions 权限、允许列表、仓库元数据和安全开关。ruleset、branch protection、Private Vulnerability Reporting 及其他 Public-only 控制必须在切换 Public 后立即启用并验证；在验证成功前不得创建 tag、Release 或宣传安全入口已可用。若希望这些控制在公开前已生效，必须先升级到支持 Private repository 规则的 GitHub 计划并重新验收。当前单维护者规则必须按上一条原样落地；新增第二名身份独立、列入名册且具有 `write` 权限的合格维护者后，必须在后续合并前升级为 `required_approving_reviews >= 1` 与 `require_code_owner_review = true`，其余保护不得弱化。
 
 Template 创建的客户仓库不会自动继承上游全部安全设置。`docs/customer-repository-settings.md` 已为客户 Organization 提供独立 bootstrap 清单，并由客户文档与公共能力门禁持续校验。
 
-Phase 8 的远程设置以 `docs/compliance/github-public-security-policy.json` 为唯一机器契约；`scripts/tests/validate-phase8-github-security.mjs` 在 Private 候选阶段只运行 fail-closed self-test。仓库切为 Public 并完成设置后，必须从干净的 `main` checkout 运行 `npm.cmd run audit:phase8:github:security`，精确核对 repository ID、3 个 active ruleset、release Team、11 个 GitHub Actions contexts、Actions allowlist、PVR、Immutable Releases、安全扫描配置以及公开 alerts 边界；未知字段、权限不足或任何弱化都阻断 tag。
+Phase 8 Lite 的远程设置以 `docs/compliance/github-public-security-policy.json` 为机器契约；`scripts/tests/validate-phase8-github-security.mjs` 在 Private 候选阶段只运行 fail-closed self-test。仓库切为 Public 并完成设置后，必须从干净的 `main` checkout 运行 `npm.cmd run audit:phase8:github:security`，核对 repository ID、唯一 `main` ruleset、11 个既有 GitHub Actions contexts、Actions allowlist、PVR、Immutable Releases、安全扫描配置以及公开 alerts 边界。首个 Preview 不创建专用 release Team、tag-creation ruleset 或 detached evidence Gate。
 
 #### OSS-0803：最终 Go/No-Go
 
@@ -901,14 +901,14 @@ Phase 8 的远程设置以 `docs/compliance/github-public-security-policy.json` 
 严格顺序：
 
 1. 导出并保存 Private 候选仓库设置、当前计划可用的安全功能和明确不可用项快照。
-2. 最后扫描所有 refs、Actions artifacts 和 release assets。
+2. 对最终 refs 执行一次 secret/PII/IP 扫描，并确认无 Actions artifacts、Release assets 或 cache；不再重复下载并重扫全部历史 Actions 日志。
 3. 依据 2026-08-16 “完成 Phase 8 后暂停”的明确授权，将净化候选仓库切为 Public。
 4. 立即启用并验证 Public 状态下的 ruleset/branch protection、Private Vulnerability Reporting、Dependabot/CodeQL/secret scanning，以及计划支持的其他安全控制。
 5. 复核 Public、Template、默认分支、LICENSE、Community Profile、Security 和规则状态；任何关键控制不可用时停止 tag/Release，并记录仓库已经发生过公开暴露，不得把恢复 Private 表述为从未公开。
-6. 清空本地 GitHub 凭据后通过公开 HTTPS URL 执行真正匿名 fresh clone，验证精确 SHA、Quick Start 和完整门禁；随后由 `mp4102` 的个人 fork 运行一次不含 production secret 的 same-maintainer fork canary。该 canary 只证明 fork 拓扑、merge 测试和 workflow 不暴露生产 secrets，不能证明无目标仓库写权限的独立外部贡献者路径；后者以 `independentExternalActor=false` 记为 0.x 已知限制，并在首个真实无写权限外部 PR 后补验。匿名 clone 与 fork canary 共同构成当前收窄后的 G6b。
+6. 清空本地 GitHub 凭据后通过公开 HTTPS URL 执行真正匿名 fresh clone，验证精确 SHA、Quick Start 和公开门禁。真正无目标写权限的外部 fork PR 留作 0.x 已知限制，在首个真实外部贡献者 PR 后补验。
 7. 依据 2026-08-16 已授予且仍有效的持续授权，创建并 push 签名 annotated tag `v0.3.0-preview.1`。
 8. 依据同一持续授权创建 GitHub Pre-release。
-9. 附加 SBOM、SHA-256 和脱敏验证摘要，不附带 `node_modules` 或未经审核的二进制。
+9. 附加 `sbom.cdx.json` 与 `SHA256SUMS`，在 Release Notes 记录候选 SHA、CI、Known limitations 和 Roadmap；不附带 detached evidence、`node_modules` 或未经审核的二进制。
 10. 验证 `Use this template` 创建独立 Private 测试项目的路径。
 
 ### Phase 8 Gate

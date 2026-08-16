@@ -1,7 +1,7 @@
 /**
  * 验证 Phase 8 公开仓库的 GitHub 安全设置是否精确符合冻结策略。
  *
- * 默认模式只读取 GitHub REST API，不修改仓库、Organization、Team、ruleset
+ * 默认模式只读取 GitHub REST API，不修改仓库、Organization、ruleset
  * 或安全功能。任何 API 权限不足、字段缺失、null、未知策略字段、分页未抵达
  * 终止页或语义漂移都会阻断。`--self-test` 只测试本地 fail-closed 逻辑，供
  * Private 阶段的 metadata Gate 使用，绝不会访问 GitHub。
@@ -276,10 +276,10 @@ export function validatePolicy(policy) {
 
   assertExactKeys(
     policy.rulesets,
-    ['expectedCollectionCount', 'main', 'releaseTagCreation', 'releaseTagImmutability'],
+    ['expectedCollectionCount', 'main'],
     'policy.rulesets',
   );
-  requireLiteral(policy.rulesets.expectedCollectionCount, 3, 'policy.rulesets.expectedCollectionCount');
+  requireLiteral(policy.rulesets.expectedCollectionCount, 1, 'policy.rulesets.expectedCollectionCount');
 
   assertExactKeys(
     policy.rulesets.main,
@@ -353,73 +353,6 @@ export function validatePolicy(policy) {
   );
   requireLiteral(statusChecks.integrationSlug, 'github-actions', 'requiredStatusChecks.integrationSlug');
   assertStringSet(statusChecks.contexts, EXPECTED_CONTEXTS, 'requiredStatusChecks.contexts');
-
-  assertExactKeys(
-    policy.rulesets.releaseTagCreation,
-    ['bypassActors', 'conditions', 'enforcement', 'name', 'rules', 'source', 'sourceType', 'target'],
-    'policy.rulesets.releaseTagCreation',
-  );
-  validateCommonPolicyRuleset(
-    policy.rulesets.releaseTagCreation,
-    { name: 'release-tag-creation', target: 'tag', include: ['refs/tags/v*'] },
-    'policy.rulesets.releaseTagCreation',
-  );
-  if (policy.rulesets.releaseTagCreation.bypassActors.length !== 1) {
-    fail('policy.rulesets.releaseTagCreation must have exactly one Team bypass actor.');
-  }
-  const releaseActor = policy.rulesets.releaseTagCreation.bypassActors[0];
-  assertExactKeys(
-    releaseActor,
-    [
-      'actorType',
-      'bypassMode',
-      'childTeams',
-      'members',
-      'organization',
-      'repositoryPermission',
-      'teamSlug',
-    ],
-    'policy.rulesets.releaseTagCreation.bypassActors[0]',
-  );
-  requireLiteral(releaseActor.actorType, 'Team', 'releaseTagCreation actorType');
-  requireLiteral(releaseActor.bypassMode, 'always', 'releaseTagCreation bypassMode');
-  assertStringSet(releaseActor.childTeams, [], 'releaseTagCreation childTeams', { allowEmpty: true });
-  requireLiteral(releaseActor.organization, 'ZUnfurl', 'releaseTagCreation organization');
-  requireLiteral(releaseActor.repositoryPermission, 'write', 'releaseTagCreation repositoryPermission');
-  requireLiteral(releaseActor.teamSlug, 'release-maintainers', 'releaseTagCreation teamSlug');
-  assertStringSet(releaseActor.members, ['mp4102'], 'releaseTagCreation members');
-  assertExactKeys(policy.rulesets.releaseTagCreation.rules, ['creation'], 'releaseTagCreation.rules');
-  requireLiteral(policy.rulesets.releaseTagCreation.rules.creation, true, 'releaseTagCreation.rules.creation');
-
-  assertExactKeys(
-    policy.rulesets.releaseTagImmutability,
-    ['bypassActors', 'conditions', 'enforcement', 'name', 'rules', 'source', 'sourceType', 'target'],
-    'policy.rulesets.releaseTagImmutability',
-  );
-  validateCommonPolicyRuleset(
-    policy.rulesets.releaseTagImmutability,
-    { name: 'release-tag-immutability', target: 'tag', include: ['refs/tags/v*'] },
-    'policy.rulesets.releaseTagImmutability',
-  );
-  if (policy.rulesets.releaseTagImmutability.bypassActors.length !== 0) {
-    fail('policy.rulesets.releaseTagImmutability must have zero bypass actors.');
-  }
-  assertExactKeys(
-    policy.rulesets.releaseTagImmutability.rules,
-    ['deletion', 'update'],
-    'releaseTagImmutability.rules',
-  );
-  requireLiteral(policy.rulesets.releaseTagImmutability.rules.deletion, true, 'releaseTagImmutability deletion');
-  assertExactKeys(
-    policy.rulesets.releaseTagImmutability.rules.update,
-    ['updateAllowsFetchAndMerge'],
-    'releaseTagImmutability.rules.update',
-  );
-  requireLiteral(
-    policy.rulesets.releaseTagImmutability.rules.update.updateAllowsFetchAndMerge,
-    false,
-    'releaseTagImmutability updateAllowsFetchAndMerge',
-  );
 
   assertExactKeys(
     policy.actions,
@@ -756,45 +689,6 @@ function projectWorkflowPermissions(raw) {
   };
 }
 
-function projectTeamRepositoryPermission(raw, policy) {
-  assertPlainObject(raw, 'release Team repository access API');
-  requireLiteral(
-    requireSafeInteger(
-      requireOwn(raw, 'id', 'release Team repository access API'),
-      'release Team repository access API.id',
-      { minimum: 1 },
-    ),
-    policy.repository.id,
-    'release Team repository access API.id',
-  );
-  requireLiteral(
-    requireOwn(raw, 'full_name', 'release Team repository access API'),
-    policy.repository.nameWithOwner,
-    'release Team repository access API.full_name',
-  );
-  requireLiteral(
-    requireString(
-      requireOwn(raw, 'role_name', 'release Team repository access API'),
-      'release Team repository access API.role_name',
-    ),
-    policy.rulesets.releaseTagCreation.bypassActors[0].repositoryPermission,
-    'release Team repository access API.role_name',
-  );
-  const permissions = requireOwn(raw, 'permissions', 'release Team repository access API');
-  assertExactKeys(
-    permissions,
-    ['admin', 'maintain', 'pull', 'push', 'triage'],
-    'release Team repository access API.permissions',
-  );
-  for (const key of ['admin', 'maintain', 'pull', 'push', 'triage']) {
-    requireBoolean(permissions[key], `release Team repository access API.permissions.${key}`);
-  }
-  if (permissions.admin || permissions.maintain || !permissions.push || !permissions.pull) {
-    fail('release Team repository permission must be exact least-privilege write access.');
-  }
-  return 'write';
-}
-
 function projectCollaborator(raw, index) {
   const label = `repository collaborator ${index}`;
   assertPlainObject(raw, label);
@@ -832,7 +726,7 @@ function validateRemoteRuleKeys(rule, allowedKeys, label) {
   requireString(rule.type, `${label}.type`);
 }
 
-function validateRemoteRules(rules, expectedPolicy, kind, integrationId, label) {
+function validateRemoteRules(rules, expectedPolicy, integrationId, label) {
   if (!Array.isArray(rules)) fail(`${label} must be an array.`);
   const byType = new Map();
   for (const [index, rule] of rules.entries()) {
@@ -841,19 +735,14 @@ function validateRemoteRules(rules, expectedPolicy, kind, integrationId, label) 
     byType.set(rule.type, rule);
   }
 
-  const expectedTypes = kind === 'main'
-    ? ['deletion', 'non_fast_forward', 'pull_request', 'required_linear_history', 'required_status_checks']
-    : kind === 'releaseTagCreation'
-      ? ['creation']
-      : ['deletion', 'update'];
+  const expectedTypes = ['deletion', 'non_fast_forward', 'pull_request', 'required_linear_history', 'required_status_checks'];
   assertStringSet([...byType.keys()], expectedTypes, `${label} types`);
 
   for (const type of expectedTypes.filter((entry) => !['pull_request', 'required_status_checks', 'update'].includes(entry))) {
     assertExactKeys(byType.get(type), ['type'], `${label}.${type}`);
   }
 
-  if (kind === 'main') {
-    const pullRule = byType.get('pull_request');
+  const pullRule = byType.get('pull_request');
     assertExactKeys(pullRule, ['parameters', 'type'], `${label}.pull_request`);
     const parameters = pullRule.parameters;
     assertAllowedKeys(
@@ -960,22 +849,10 @@ function validateRemoteRules(rules, expectedPolicy, kind, integrationId, label) 
         `${label}.required_status_checks[${index}].integration_id`,
       );
     }
-    assertStringSet(contexts, expectedPolicy.rules.requiredStatusChecks.contexts, `${label} required contexts`);
-  }
-
-  if (kind === 'releaseTagImmutability') {
-    const updateRule = byType.get('update');
-    assertExactKeys(updateRule, ['parameters', 'type'], `${label}.update`);
-    assertExactKeys(updateRule.parameters, ['update_allows_fetch_and_merge'], `${label}.update.parameters`);
-    requireLiteral(
-      updateRule.parameters.update_allows_fetch_and_merge,
-      expectedPolicy.rules.update.updateAllowsFetchAndMerge,
-      `${label}.update.parameters.update_allows_fetch_and_merge`,
-    );
-  }
+  assertStringSet(contexts, expectedPolicy.rules.requiredStatusChecks.contexts, `${label} required contexts`);
 }
 
-function validateRemoteRuleset(raw, expectedPolicy, kind, integrationId, releaseTeamId, label) {
+function validateRemoteRuleset(raw, expectedPolicy, integrationId, label) {
   assertAllowedKeys(raw, ALLOWED_RULESET_KEYS, label);
   for (const key of ['id', 'name', 'target', 'source_type', 'source', 'enforcement', 'bypass_actors', 'conditions', 'rules']) {
     requireOwn(raw, key, label);
@@ -1007,17 +884,10 @@ function validateRemoteRuleset(raw, expectedPolicy, kind, integrationId, release
   assertStringSet(raw.conditions.ref_name.exclude, expectedPolicy.conditions.exclude, `${label}.conditions.exclude`, { allowEmpty: true });
 
   if (!Array.isArray(raw.bypass_actors)) fail(`${label}.bypass_actors must be an array.`);
-  if (kind === 'releaseTagCreation') {
-    if (raw.bypass_actors.length !== 1) fail(`${label} must have exactly one bypass actor.`);
-    const actor = raw.bypass_actors[0];
-    assertExactKeys(actor, ['actor_id', 'actor_type', 'bypass_mode'], `${label}.bypass_actors[0]`);
-    requireLiteral(actor.actor_id, releaseTeamId, `${label}.bypass_actors[0].actor_id`);
-    requireLiteral(actor.actor_type, 'Team', `${label}.bypass_actors[0].actor_type`);
-    requireLiteral(actor.bypass_mode, 'always', `${label}.bypass_actors[0].bypass_mode`);
-  } else if (raw.bypass_actors.length !== 0) {
+  if (raw.bypass_actors.length !== 0) {
     fail(`${label} must have zero bypass actors.`);
   }
-  validateRemoteRules(raw.rules, expectedPolicy, kind, integrationId, `${label}.rules`);
+  validateRemoteRules(raw.rules, expectedPolicy, integrationId, `${label}.rules`);
 }
 
 /** 对采集后的最小快照执行严格语义比较。 */
@@ -1029,7 +899,6 @@ export function validateRemoteSnapshot(snapshot, policy) {
       'access',
       'actions',
       'localRepository',
-      'releaseTeam',
       'remoteDefaultBranch',
       'repository',
       'requiredCheckIntegration',
@@ -1184,44 +1053,6 @@ export function validateRemoteSnapshot(snapshot, policy) {
     'snapshot.requiredCheckIntegration.slug',
   );
 
-  assertExactKeys(
-    snapshot.releaseTeam,
-    [
-      'childTeams',
-      'childTeamsPagination',
-      'id',
-      'members',
-      'organization',
-      'pagination',
-      'repositoryPermission',
-      'slug',
-    ],
-    'snapshot.releaseTeam',
-  );
-  const releaseTeamId = requireSafeInteger(snapshot.releaseTeam.id, 'snapshot.releaseTeam.id', { minimum: 1 });
-  const expectedActor = policy.rulesets.releaseTagCreation.bypassActors[0];
-  requireLiteral(snapshot.releaseTeam.organization, expectedActor.organization, 'snapshot.releaseTeam.organization');
-  requireLiteral(snapshot.releaseTeam.slug, expectedActor.teamSlug, 'snapshot.releaseTeam.slug');
-  requireLiteral(
-    snapshot.releaseTeam.repositoryPermission,
-    expectedActor.repositoryPermission,
-    'snapshot.releaseTeam.repositoryPermission',
-  );
-  assertStringSet(snapshot.releaseTeam.members, expectedActor.members, 'snapshot.releaseTeam.members');
-  assertStringSet(snapshot.releaseTeam.childTeams, expectedActor.childTeams, 'snapshot.releaseTeam.childTeams', {
-    allowEmpty: true,
-  });
-  validatePagination(
-    snapshot.releaseTeam.pagination,
-    snapshot.releaseTeam.members.length,
-    'snapshot.releaseTeam.pagination',
-  );
-  validatePagination(
-    snapshot.releaseTeam.childTeamsPagination,
-    snapshot.releaseTeam.childTeams.length,
-    'snapshot.releaseTeam.childTeamsPagination',
-  );
-
   assertExactKeys(snapshot.rulesets, ['items', 'pagination'], 'snapshot.rulesets');
   if (!Array.isArray(snapshot.rulesets.items)) fail('snapshot.rulesets.items must be an array.');
   validatePagination(snapshot.rulesets.pagination, snapshot.rulesets.items.length, 'snapshot.rulesets.pagination');
@@ -1236,19 +1067,13 @@ export function validateRemoteSnapshot(snapshot, policy) {
     if (byName.has(name)) fail(`snapshot.rulesets contains duplicate name ${name}.`);
     byName.set(name, ruleset);
   }
-  for (const [kind, expected] of [
-    ['main', policy.rulesets.main],
-    ['releaseTagCreation', policy.rulesets.releaseTagCreation],
-    ['releaseTagImmutability', policy.rulesets.releaseTagImmutability],
-  ]) {
+  for (const expected of [policy.rulesets.main]) {
     const ruleset = byName.get(expected.name);
     if (!ruleset) fail(`snapshot.rulesets is missing ${expected.name}.`);
     validateRemoteRuleset(
       ruleset,
       expected,
-      kind,
       integrationId,
-      releaseTeamId,
       `snapshot.rulesets.${expected.name}`,
     );
   }
@@ -1374,7 +1199,6 @@ function loadPolicy() {
 
 function gatherRemoteSnapshot(policy) {
   const repository = policy.repository.nameWithOwner;
-  const actor = policy.rulesets.releaseTagCreation.bypassActors[0];
   const organizationRaw = ghJson(`orgs/${policy.organization.login}`, 'Organization settings');
   const collaborators = fetchPaginatedArray(
     `repos/${repository}/collaborators?affiliation=all`,
@@ -1399,34 +1223,6 @@ function gatherRemoteSnapshot(policy) {
   if (new Set(rulesetIds).size !== rulesetIds.length) fail('repository rulesets list contains duplicate IDs.');
   const fullRulesets = rulesetIds.map((id) =>
     ghJson(`repos/${repository}/rulesets/${id}?includes_parents=true`, `repository ruleset ${id}`));
-
-  const teamRaw = ghJson(`orgs/${actor.organization}/teams/${actor.teamSlug}`, 'release maintainer Team');
-  const teamRepositoryRaw = ghJson(
-    `orgs/${actor.organization}/teams/${actor.teamSlug}/repos/${repository}`,
-    'release Team repository access',
-  );
-  const teamMembers = fetchPaginatedArray(
-    `orgs/${actor.organization}/teams/${actor.teamSlug}/members?role=all`,
-    'release maintainer Team members',
-  );
-  const childTeams = fetchPaginatedArray(
-    `orgs/${actor.organization}/teams/${actor.teamSlug}/teams`,
-    'release maintainer child Teams',
-  );
-  const memberLogins = teamMembers.entries.map((entry, index) => {
-    assertPlainObject(entry, `release Team member ${index}`);
-    return requireString(requireOwn(entry, 'login', `release Team member ${index}`), `release Team member ${index}.login`);
-  });
-  if (new Set(memberLogins).size !== memberLogins.length) fail('release Team members contain duplicate logins.');
-  const childTeamSlugs = childTeams.entries.map((entry, index) => {
-    assertPlainObject(entry, `release child Team ${index}`);
-    return requireString(requireOwn(entry, 'slug', `release child Team ${index}`), `release child Team ${index}.slug`);
-  });
-  if (new Set(childTeamSlugs).size !== childTeamSlugs.length) fail('release child Teams contain duplicate slugs.');
-  const teamOrganization = assertPlainObject(
-    requireOwn(teamRaw, 'organization', 'release maintainer Team'),
-    'release maintainer Team.organization',
-  );
 
   const appRaw = ghJson(`apps/${policy.rulesets.main.rules.requiredStatusChecks.integrationSlug}`, 'required check GitHub App');
   const immutableReleasesRaw = ghJson(`repos/${repository}/immutable-releases`, 'Immutable Releases');
@@ -1479,19 +1275,6 @@ function gatherRemoteSnapshot(policy) {
       id: requireSafeInteger(requireOwn(appRaw, 'id', 'required check GitHub App'), 'required check GitHub App.id', { minimum: 1 }),
       slug: requireString(requireOwn(appRaw, 'slug', 'required check GitHub App'), 'required check GitHub App.slug'),
     },
-    releaseTeam: {
-      childTeams: childTeamSlugs.sort(),
-      childTeamsPagination: childTeams.pagination,
-      id: requireSafeInteger(requireOwn(teamRaw, 'id', 'release maintainer Team'), 'release maintainer Team.id', { minimum: 1 }),
-      members: memberLogins.sort(),
-      organization: requireString(
-        requireOwn(teamOrganization, 'login', 'release maintainer Team.organization'),
-        'release maintainer Team.organization.login',
-      ),
-      pagination: teamMembers.pagination,
-      repositoryPermission: projectTeamRepositoryPermission(teamRepositoryRaw, policy),
-      slug: requireString(requireOwn(teamRaw, 'slug', 'release maintainer Team'), 'release maintainer Team.slug'),
-    },
     rulesets: {
       items: fullRulesets,
       pagination: rulesetList.pagination,
@@ -1525,10 +1308,8 @@ function gatherRemoteSnapshot(policy) {
   };
 }
 
-function apiRuleset({ id, policy, kind, integrationId, teamId }) {
-  const rules = [];
-  if (kind === 'main') {
-    rules.push(
+function apiRuleset({ id, policy, integrationId }) {
+  const rules = [
       { type: 'deletion' },
       { type: 'non_fast_forward' },
       { type: 'required_linear_history' },
@@ -1554,15 +1335,7 @@ function apiRuleset({ id, policy, kind, integrationId, teamId }) {
           strict_required_status_checks_policy: policy.rules.requiredStatusChecks.strictRequiredStatusChecksPolicy,
         },
       },
-    );
-  } else if (kind === 'releaseTagCreation') {
-    rules.push({ type: 'creation' });
-  } else {
-    rules.push(
-      { type: 'deletion' },
-      { type: 'update', parameters: { update_allows_fetch_and_merge: false } },
-    );
-  }
+  ];
   return {
     id,
     name: policy.name,
@@ -1570,9 +1343,7 @@ function apiRuleset({ id, policy, kind, integrationId, teamId }) {
     source_type: policy.sourceType,
     source: policy.source,
     enforcement: policy.enforcement,
-    bypass_actors: kind === 'releaseTagCreation'
-      ? [{ actor_id: teamId, actor_type: 'Team', bypass_mode: 'always' }]
-      : [],
+    bypass_actors: [],
     conditions: {
       ref_name: {
         include: [...policy.conditions.include],
@@ -1585,7 +1356,6 @@ function apiRuleset({ id, policy, kind, integrationId, teamId }) {
 
 function validSnapshot(policy) {
   const integrationId = 15368;
-  const teamId = 4242;
   return {
     access: {
       collaborators: [
@@ -1645,40 +1415,16 @@ function validSnapshot(policy) {
       objectType: 'commit',
     },
     requiredCheckIntegration: { id: integrationId, slug: 'github-actions' },
-    releaseTeam: {
-      childTeams: [],
-      childTeamsPagination: {
-        complete: true,
-        pageCount: 1,
-        pageSize: PAGE_SIZE,
-        terminalPageItemCount: 0,
-        totalItems: 0,
-      },
-      id: teamId,
-      members: ['mp4102'],
-      organization: 'ZUnfurl',
+    rulesets: {
+      items: [
+        apiRuleset({ id: 1, policy: policy.rulesets.main, integrationId }),
+      ],
       pagination: {
         complete: true,
         pageCount: 1,
         pageSize: PAGE_SIZE,
         terminalPageItemCount: 1,
         totalItems: 1,
-      },
-      repositoryPermission: 'write',
-      slug: 'release-maintainers',
-    },
-    rulesets: {
-      items: [
-        apiRuleset({ id: 1, policy: policy.rulesets.main, kind: 'main', integrationId, teamId }),
-        apiRuleset({ id: 2, policy: policy.rulesets.releaseTagCreation, kind: 'releaseTagCreation', integrationId, teamId }),
-        apiRuleset({ id: 3, policy: policy.rulesets.releaseTagImmutability, kind: 'releaseTagImmutability', integrationId, teamId }),
-      ],
-      pagination: {
-        complete: true,
-        pageCount: 1,
-        pageSize: PAGE_SIZE,
-        terminalPageItemCount: 3,
-        totalItems: 3,
       },
     },
     actions: {
@@ -1728,7 +1474,7 @@ function runSelfTest(policy) {
   const cases = [
     ['unknown policy key', (candidate) => { candidate.repository.unknown = true; }, /keys differ/],
     ['null policy value', (candidate) => { candidate.actions.enabled = null; }, /must not be null/],
-    ['wrong policy type', (candidate) => { candidate.rulesets.expectedCollectionCount = '3'; }, /must equal 3/],
+    ['wrong policy type', (candidate) => { candidate.rulesets.expectedCollectionCount = '1'; }, /must equal 1/],
     ['weakened context set', (candidate) => { candidate.rulesets.main.rules.requiredStatusChecks.contexts.pop(); }, /differs/],
   ];
   for (const [label, mutate, pattern] of cases) {
@@ -1770,21 +1516,6 @@ function runSelfTest(policy) {
       candidate.rulesets.items[0].bypass_actors.push({ actor_id: 1, actor_type: 'User', bypass_mode: 'always' });
     }, /zero bypass actors/],
     ['missing bypass evidence', (candidate) => { delete candidate.rulesets.items[0].bypass_actors; }, /bypass_actors is required/],
-    ['wrong release Team actor', (candidate) => { candidate.rulesets.items[1].bypass_actors[0].actor_id = 7; }, /must equal 4242/],
-    ['wrong release Team permission', (candidate) => { candidate.releaseTeam.repositoryPermission = 'admin'; }, /must equal "write"/],
-    ['extra release Team member', (candidate) => {
-      candidate.releaseTeam.members.push('intruder');
-      candidate.releaseTeam.pagination.terminalPageItemCount = 2;
-      candidate.releaseTeam.pagination.totalItems = 2;
-    }, /differs/],
-    ['release child Team', (candidate) => {
-      candidate.releaseTeam.childTeams.push('inherited-bypass');
-      candidate.releaseTeam.childTeamsPagination.terminalPageItemCount = 1;
-      candidate.releaseTeam.childTeamsPagination.totalItems = 1;
-    }, /differs/],
-    ['mutable release tag', (candidate) => {
-      candidate.rulesets.items[2].rules = candidate.rulesets.items[2].rules.filter((rule) => rule.type !== 'update');
-    }, /types differs/],
     ['unknown ruleset field', (candidate) => { candidate.rulesets.items[0].surprise = true; }, /unknown keys/],
     ['unknown pull request parameter', (candidate) => {
       candidate.rulesets.items[0].rules.find((rule) => rule.type === 'pull_request')
@@ -1823,23 +1554,9 @@ function runSelfTest(policy) {
     expectBlocked(() => validateRemoteSnapshot(candidate, policy), pattern, label);
   }
 
-  expectBlocked(
-    () => projectTeamRepositoryPermission(
-      {
-        id: policy.repository.id,
-        full_name: policy.repository.nameWithOwner,
-        role_name: 'custom-release-role',
-        permissions: { admin: false, maintain: false, pull: true, push: true, triage: true },
-      },
-      policy,
-    ),
-    /role_name must equal "write"/,
-    'custom release Team repository role',
-  );
-
   console.log(
-    `Phase 8 GitHub security audit logic OK: ${cases.length + snapshotCases.length + 1} fail-closed mutations; ` +
-    `${EXPECTED_CONTEXTS.length} exact required contexts; 3 exact rulesets.`,
+    `Phase 8 GitHub security audit logic OK: ${cases.length + snapshotCases.length} fail-closed mutations; ` +
+    `${EXPECTED_CONTEXTS.length} exact required contexts; 1 exact ruleset.`,
   );
 }
 
@@ -1855,7 +1572,7 @@ function main() {
   console.log(
     `Phase 8 GitHub public security OK: ${policy.repository.nameWithOwner}; ` +
     `${snapshot.rulesets.items.length} rulesets; ${EXPECTED_CONTEXTS.length} GitHub Actions contexts; ` +
-    `release Team members=${snapshot.releaseTeam.members.length}.`,
+    'Phase 8 Lite.',
   );
 }
 

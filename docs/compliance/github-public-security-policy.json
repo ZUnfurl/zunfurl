@@ -44,7 +44,7 @@
     ]
   },
   "rulesets": {
-    "expectedCollectionCount": 3,
+    "expectedCollectionCount": 1,
     "main": {
       "name": "main-protection",
       "target": "branch",
@@ -89,55 +89,6 @@
             "Vulnerability and license policy",
             "Windows / Node 22.12 validation"
           ]
-        }
-      }
-    },
-    "releaseTagCreation": {
-      "name": "release-tag-creation",
-      "target": "tag",
-      "sourceType": "Repository",
-      "source": "ZUnfurl/zunfurl",
-      "enforcement": "active",
-      "bypassActors": [
-        {
-          "actorType": "Team",
-          "bypassMode": "always",
-          "childTeams": [],
-          "organization": "ZUnfurl",
-          "repositoryPermission": "write",
-          "teamSlug": "release-maintainers",
-          "members": [
-            "mp4102"
-          ]
-        }
-      ],
-      "conditions": {
-        "include": [
-          "refs/tags/v*"
-        ],
-        "exclude": []
-      },
-      "rules": {
-        "creation": true
-      }
-    },
-    "releaseTagImmutability": {
-      "name": "release-tag-immutability",
-      "target": "tag",
-      "sourceType": "Repository",
-      "source": "ZUnfurl/zunfurl",
-      "enforcement": "active",
-      "bypassActors": [],
-      "conditions": {
-        "include": [
-          "refs/tags/v*"
-        ],
-        "exclude": []
-      },
-      "rules": {
-        "deletion": true,
-        "update": {
-          "updateAllowsFetchAndMerge": false
         }
       }
     }

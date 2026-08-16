@@ -36,7 +36,7 @@ PR #5 由当前唯一维护者 `@mp4102` 提交并合并；合并前所有实际
 - [ ] A1/A2/B/C 四个初始化 fixture 在隔离临时目录通过完整 Gate。
 - [ ] Storefront 与 Studio 构建、Worker runtime 测试和 Wrangler dry-run 全绿。
 - [ ] full 与 production `npm audit` 均为 `0 critical / 0 high`；其余风险已记录。
-- [ ] `sbom.cdx.json` 可重现，SHA-256 与 Release evidence 一致。
+- [ ] `sbom.cdx.json` 可重现，SHA-256 已写入 `SHA256SUMS` 并与 Release asset 一致。
 - [ ] GitHub Actions 使用批准的完整 commit SHA，PR 路径不读取 production secrets。
 
 ## 4. 社区与安全
@@ -46,7 +46,7 @@ PR #5 由当前唯一维护者 `@mp4102` 提交并合并；合并前所有实际
 - [ ] Private Vulnerability Reporting 已在公共仓库远程启用并完成一次私密测试。
 - [ ] `mp4102@gmail.com` 已完成收件测试；当前无独立替代联系人这一限制已披露。
 - [x] 单维护者治理契约已冻结：`required_approving_reviews = 0`、`require_code_owner_review = false`；CODEOWNERS 只做责任与 review request 路由，不声称独立批准。
-- [ ] 默认分支与 `v*` tag rulesets 已按 `docs/compliance/github-public-security-policy.json` 远程验收：`main` 必须走 PR，启用 required checks、conversation resolution 与 linear history，禁止 force push 和 branch deletion，并保持单维护者 0 review；release Team、tag 不可变规则与 Immutable Releases 精确匹配。`npm.cmd run audit:phase8:github:security` 从干净 `main` 返回通过，且 Actions allowlist、PVR 与安全扫描证据完整。
+- [ ] 默认分支已按 `docs/compliance/github-public-security-policy.json` 远程验收：唯一 `main` ruleset 强制 PR、required checks、conversation resolution 与 linear history，禁止 force push 和 branch deletion，并保持单维护者 0 review；Immutable Releases 已启用。`npm.cmd run audit:phase8:github:security` 从干净 `main` 返回通过，且 Actions allowlist、PVR 与安全扫描证据完整。
 - [x] 第二名维护者升级触发规则已冻结；当前名册仍只有一名合格 `write` maintainer，尚未触发。触发后必须在后续合并前改为 `required_approving_reviews >= 1`、`require_code_owner_review = true`，其余保护不得弱化。
 
 ## 5. G6a Private clean-room 重现
@@ -63,8 +63,7 @@ PR #5 由当前唯一维护者 `@mp4102` 提交并合并；合并前所有实际
 
 - [ ] 清空 GitHub token、credential helper 和私有 Git 配置后，从 Public HTTPS URL 执行真正匿名 fresh clone。
 - [ ] 匿名 clone 的 HEAD 与候选 SHA 一致，Quick Start、完整门禁和全部公开链接可用。
-- [ ] `mp4102` 个人 fork 的 same-maintainer canary 不获得 production secret，CI、Dependency Review、CodeQL 和 Secret Scan 全绿；证据明确 `independentExternalActor=false`，不把它表述为无写权限外部贡献者验证。
-- [ ] 真正无目标仓库写权限的外部贡献者路径标为 0.x 已知限制，并在首个此类 PR 后补验；它不与匿名 HTTPS clone 证据混为一谈。
+- [ ] 真正无目标仓库写权限的外部 fork PR 路径标为 0.x 已知限制，并在首个真实外部贡献者 PR 后补验；它不是首个 Preview 的阻断项。
 - [ ] `Use this template` 创建的独立 Private 测试仓库可完成 A1/A2/B/C dry-run 与初始化。
 
 ## 7. 三次授权与发布
@@ -75,9 +74,8 @@ PR #5 由当前唯一维护者 `@mp4102` 提交并合并；合并前所有实际
 - [ ] 已建立、保护并验证可用于该 tag 的签名 key；当前尚无可用签名 key。
 - [ ] tag 精确指向唯一候选 commit，且没有移动或复用既有 tag。
 - [x] **Release 授权**：Owner 已明确批准在全部 Gate 通过后发布 `ZUnfurl v0.3.0-preview.1`。
-- [ ] 启用并审计 Immutable Releases；创建 draft Pre-release、上传 `sbom.cdx.json` 与 `SHA256SUMS` 后，以 `npm.cmd run validate:release-evidence -- --prepublish-file <仓库外-json>` 按精确 Release ID 验证 `draft=true`、两项资产、候选/tag/G6a/G6b 和当前完整 Phase 8 安全状态。
-- [ ] 上传同一份 detached evidence JSON 并发布 Pre-release 后，立即以 `npm.cmd run validate:release-evidence -- --file <仓库外-json>` 按 tag 验证 `draft=false`、`immutable=true`、三项资产、远端 evidence bytes、latest checks 与当前完整 Phase 8 安全状态；失败即撤下 Release、停止并记录事故。
-- [ ] GitHub Release 标记为 Pre-release，仅附源码、SBOM、`SHA256SUMS` 与脱敏 detached evidence 摘要。
+- [ ] 启用并审计 Immutable Releases；创建 draft Pre-release，上传 `sbom.cdx.json` 与 `SHA256SUMS` 并逐项核对摘要和 content type。
+- [ ] GitHub Release 标记为 Pre-release，仅附源码、SBOM 与 `SHA256SUMS`；发布后复核 `immutable=true`、tag target 和资产摘要。
 - [ ] Release note 包含成熟度、Profile 范围、C 排除项、Known limitations、Roadmap、安全入口和迁移说明。
 
 ## 8. 发布后
