@@ -106,18 +106,23 @@ function collectMarkdownDestinations(source) {
 }
 
 function stripHtmlTags(value) {
-  let depth = 0;
-  let result = '';
+  const result = [];
+  const pendingTag = [];
+  let insideTag = false;
   for (const character of value) {
-    if (character === '<') {
-      depth += 1;
-    } else if (character === '>' && depth > 0) {
-      depth -= 1;
-    } else if (depth === 0) {
-      result += character;
+    if (!insideTag && character === '<') {
+      insideTag = true;
+      pendingTag.push(character);
+    } else if (insideTag && character === '>') {
+      insideTag = false;
+      pendingTag.length = 0;
+    } else if (insideTag) {
+      pendingTag.push(character);
+    } else {
+      result.push(character);
     }
   }
-  return result;
+  return result.join('') + pendingTag.join('');
 }
 
 function githubSlug(value) {
