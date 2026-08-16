@@ -68,20 +68,20 @@
 
 新增第二名合格 `write` maintainer 后，必须在后续合并前升级为 `required_approving_reviews >= 1` 与 `require_code_owner_review = true`，其余保护保持不变。PR #5 由当前唯一维护者 `@mp4102` 在所有实际执行的自动门禁均为 `SUCCESS` 后合并，合格独立维护者批准为 `0`；Private 计划下 `SKIPPED` 的 CodeQL/Dependency Review 和合并后的 Copilot `COMMENTED` review 均不计作独立批准。
 
-## 首个 Preview 的发布阻断项
+## 首个 Preview 发布状态与保留项
 
 - Phase 1 当前发布树门禁已通过：旧媒体已替换或删除，当前 26 项媒体和 77 个源码引用完成 provenance 登记，9 个中文文件已重写，当前树文本扫描为 0 个未批准命中。原始私有历史的 PII/IP 规则命中 39 项、旧 Actions 日志命中 70 项，均为 `blocked` 私有归档；它们已从远端 `main` 移除。净化历史与实际候选远端的 secret/PII/IP 扫描为 0 finding。
 - Phase 2 能力声明门禁已通过：C 定位、三类 Preview、Production Backup/Disaster Recovery Restore、商品 archive/unarchive 和公开上游工作流已分离。
 - Phase 3 工程门禁已通过：A1/A2/B/C 四份初始化后独立 fixture、Profile/Schema/法律路由隔离、Contact 原子限流、Webhook 短期幂等、显式 Shopify handle、全 workspace typecheck、构建与 Worker dry-run 均通过；临时目录已删除且源工作树状态未被夹具改变。
 - Phase 0 已确认公共 owner、版权署名、许可证和权利链声明；Phase 5 已建立 `LICENSE`、`NOTICE`、商标政策和 fail-closed 许可覆盖门禁。Phase 6 的唯一净化根提交为 `e50b0cec829cee08397bbc87b7ed483e8ee7afda`，根提交中的 303 个文件均完成许可映射；当前候选加入 `.gitattributes`、客户仓库安全设置手册、DCO trusted metadata publisher、Phase 8 公共安全策略与审计器、detached Release evidence 契约，以及逐字节冻结的 Gitleaks 精确误报策略后为 312 个文件，全部纳入许可和公开候选映射。该策略只允许 `generic-api-key` 规则在 Release evidence schema 的固定 `operatorAttestation` 枚举行命中，并同时要求规则、唯一文件路径和整行四个枚举内容精确匹配（仅接受 Gitleaks `line` target 规范化的行首空白）；任何放宽都会由 Phase 6 self-test 阻断，每次真实扫描还会用批准行、错误路径和错误行三组探针验证 Gitleaks `8.30.1` 的实际语义。真实自然人与笔名映射及权利链证据继续保存在私有权属记录中，不进入公共仓库。
-- Phase 4 本地供应链门禁已通过：完整树与 production tree 均为 0 critical、0 high、7 moderate、0 low；1600-component CycloneDX SBOM、依赖许可证政策、固定 SHA Actions 和无生产 secret 的 PR CI 已建立。Phase 5 版本元数据对齐后当前 SBOM SHA-256 为 `6c122c2713fbe378f1a889f8acc89913ae33f7765379b21b823ebcec81d7f738`。最终候选 commit 的托管 CI 与真实远程 `production` Environment/branch policy/arming 仍未验收。
-- Phase 5 本地 Gate 已通过：Apache-2.0、DCO、社区治理、安全与支持政策、README、CHANGELOG、Release 契约和完整 SemVer 已实施；12 个社区文件、3 个 Issue Forms、3 份治理状态披露、29 个治理负例、候选中 66 个 Markdown 文件的 159 个链接和 10 个私有 manifest 已通过专用门禁。安全邮箱实际收件、GitHub Private Vulnerability Reporting、CODEOWNERS 权限和 Community Profile 仍需在公共候选远程验证。
-- 当前 Private Template repository identity 已复用并在单独确认后完成 Organization 创建、仓库转移和改名：远端为 `ZUnfurl/zunfurl`，默认分支 `main`。3 个旧 Actions runs/logs 已删除并验证日志端点不可用，远程 `main` 已通过 lease-protected history replacement 指向单一净化根；GitHub 自动生成的 3 个 Dependabot PR 已关闭。截至 2026-08-16、源候选 `2b7aa20...` 的转移后审计快照为 23 个 Actions runs、4 个 caches、4 个只读 closed-PR head refs、2 个精确 GitHub-managed dynamic workflows 和 1 个空 `copilot` Environment；runs 与 refs 均只使用净化历史，Environment 为 0 secrets、0 variables、0 deployments、0 protection rules 且无 branch policy 的平台空结构。本轮修复 PR/CI 会继续增加净化对象，最终计数只以合并后审计为准；快照中的 4 个及随后产生的全部 caches 仍须在最终 G6a 后删除并复审为 0。通过 sudo-protected GitHub UI 人工复核后，仓库和 Organization 均显示无已安装 GitHub App；Codespaces secrets 页面显示仓库无 secrets。Codespaces REST API 因当前 token scope 返回 `404`，不将该响应误作零 secret 证明。
-- Fresh Windows clone 已发现并修复默认 `core.autocrlf` 导致资产字节哈希漂移的问题；`.gitattributes` 固定 LF checkout，Node 24 CI 增加 Storefront build 前置步骤，并新增 Windows Node 22.12 托管 job。`2b7aa20efdc57564bbc36c720d208b64d1a2f3f5` 的 `main` run `31925593834` 已有 7 个 job 全绿；`53c5f6d1fa650c168d434ec9c668fca1c0704ba9` 的 `main` run `31928082328` 同样 7 个 job 全绿，push Secret Scan run `31928060750` 成功。后者仍早于单维护者治理与客户仓库设置手册的最终提交；新提交必须以自己的精确 SHA 重跑 G6a，不能沿用前序证据。
-- GitHub Free 的 Private 仓库不能完成 CodeQL/Dependency Review 上传、Public ruleset/branch protection 和 PVR 验收；这些控制、单维护者 `main` ruleset 的真实远程配置及真正匿名 clone 必须在 Public 后、任何 tag/Release 前完成。Owner 已采用 Phase 8 Lite：same-maintainer fork canary、专用 release Team/tag-creation ruleset、detached Release evidence、签名 tag 和重复全量 Actions 日志扫描不再是首个 Preview 的阻断项；真正无目标写权限的外部贡献者路径作为 0.x 已知限制，在首个真实外部 PR 后补验。首个 Preview 使用普通 annotated tag，并由 Immutable Releases、SBOM、校验和与 CI 结果提供必要发布保障。tag 与 GitHub Release 已获持续授权，Owner 又以“完成 Phase 8 后暂停”的明确指令批准了 Phase 8 Public 窗口；技术 Gate 仍未全部通过。
-- Phase 8 完成后必须暂停并记录执行证据；Phase 9 的 D+1、D+7 与 D+30 操作不会自动开始，只能由 Owner 另行决定进入时间。
+- Phase 4 供应链门禁与公开安全复核均已通过：发布时 0 critical/high，1600-component CycloneDX SBOM SHA-256 为 `6c122c2713fbe378f1a889f8acc89913ae33f7765379b21b823ebcec81d7f738`；公开后开放 CodeQL/secret finding 和 Dependabot critical/high 均为 0，保留 2 个已记录的非 high/critical 传递依赖告警。
+- Phase 5 社区与发布元数据已上线：GitHub 正确识别 Apache-2.0，PVR 可用，12 个社区文件、3 个实际可访问的 Issue Forms、66 个 Markdown 文件中的 159 个链接和版本门禁通过。Community Profile API 为 87%，唯一缺失项是旧 `issue_template` 字段未计入 Issue Forms，不另行复制 legacy 模板。
+- `ZUnfurl/zunfurl` 现为 Public Template repository，默认分支 `main`。Phase 8 Lite 已配置单一 active `main-protection` ruleset、只读默认 Actions token、SHA pinning、Dependabot、CodeQL、Secret Protection、push protection 与 Immutable Releases；生产部署仍保持未 armed，不属于 source-only Preview 发布动作。
+- 公开后的 3 个 CodeQL high finding 已通过 PR #11 修复。最终 commit `edc1630996aeba8582430e8f781d9e884da7885a` 的托管 CI、Windows、Node 22.12/24、A1/A2/B/C fixtures、DCO、Secret Scan、Dependency Review 和 CodeQL 均通过；合并后的 CodeQL push run `31938878766` 同样成功。
+- 普通 annotated tag `v0.3.0-preview.1` 与 Immutable GitHub Pre-release 均精确指向最终 commit。Release 只附带 `sbom.cdx.json` 和 `SHA256SUMS`，两项远端 digest、size 与 content type 已逐项核对。真正匿名 HTTPS clone 最终 tag 后，`npm ci --ignore-scripts` 与 `test:phase5:metadata` 通过；Template generate 与源码 ZIP 可公开访问。
+- Owner 已于 2026-08-16 明确进入 Phase 9。发布后即时基线通过；D+1、D+7 与 D+30 将分别在 2026-08-17、2026-08-23 与 2026-09-15 按真实状态验收。真正无目标写权限的外部贡献者路径继续作为 0.x 已知限制，在首个真实外部 PR 后补验。
 
-任一阻断项存在时，不允许把仓库切为 Public。
+若发现 secret、权利链问题或 critical/high 回归，立即按 `SECURITY.md` 和 Release Policy 处理；不得把改回 Private 误当作撤回已经公开的副本。
 
 ## 权威文档
 
