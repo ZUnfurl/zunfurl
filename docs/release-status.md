@@ -47,7 +47,7 @@
 | C-02 | Sanity 商品内容、工作台、上线与语言状态 | C | Supported | Sanity 不拥有价格、库存、SKU、订单、支付或履约主数据 |
 | C-03 | Shopify Storefront 商品与媒体只读目录映射 | C | Supported | 不把 Shopify 主数据双向写入 Sanity；live summary 必须显式提供 handle，普通部署不读取示例商品 |
 | C-04 | Product archive/unarchive | C | Supported | 内容生命周期操作，不是备份或灾难恢复 |
-| CI-01 | CI / Pull Request Validation | A1/A2/B/C | Supported | PR 不读取生产 secret；四个 local fixture 覆盖 Profile，外部 Sanity/Shopify 内容构建留给获得授权的集成或生产 Gate；不覆盖提交态内容源，也不部署 Preview URL |
+| CI-01 | CI / Pull Request Validation | A1/A2/B/C | Supported | PR 不读取生产 secret；Linux Node 22.12/24、Windows Node 22.12 与四个 local fixture 覆盖框架/Profile，外部 Sanity/Shopify 内容构建留给获得授权的集成或生产 Gate；不部署 Preview URL |
 | DEPLOY-01 | Profile-aware Cloudflare deployment workflow | A1/A2/B/C | Preview | 仅 `main` 上的手动 `workflow_dispatch` 可进入 `production` Environment；未 arming 时失败。远程 Environment、计划能力和生产证据仍须验收；源码 CI 通过不等于生产部署成功 |
 | WEBHOOK-01 | 结构性事件的 rebuild-request receipt | B/C | Preview | 签名、事件 ID、短期 claim 与 Shopify 结构指纹已验证；`repository_dispatch` 只产生通用收件提示，窗口内最多一次 dispatch attempt，不自动 build/deploy，也不承诺外部 exactly-once |
 | PREVIEW-01 | Authenticated Editorial/Draft Preview | B/C | Roadmap | 当前 Worker 不提供该 handler；`/preview` 和 `/preview/*` 固定返回 `404`，不读取 Sanity draft，也不渲染 HTML |
@@ -64,14 +64,15 @@
 
 ## 首个 Preview 的发布阻断项
 
-- Phase 1 当前发布树门禁已通过：旧媒体已替换或删除，当前 26 项媒体和 77 个源码引用完成 provenance 登记，9 个中文文件已重写，当前树文本扫描为 0 个未批准命中。旧私有历史仍不符合公开条件，不得据此直接转 Public。
+- Phase 1 当前发布树门禁已通过：旧媒体已替换或删除，当前 26 项媒体和 77 个源码引用完成 provenance 登记，9 个中文文件已重写，当前树文本扫描为 0 个未批准命中。原始私有历史仍不符合公开条件，但已从远端 `main` 移除并仅保留在私有离线 bundle。
 - Phase 2 能力声明门禁已通过：C 定位、三类 Preview、Production Backup/Disaster Recovery Restore、商品 archive/unarchive 和公开上游工作流已分离。
 - Phase 3 工程门禁已通过：A1/A2/B/C 四份初始化后独立 fixture、Profile/Schema/法律路由隔离、Contact 原子限流、Webhook 短期幂等、显式 Shopify handle、全 workspace typecheck、构建与 Worker dry-run 均通过；临时目录已删除且源工作树状态未被夹具改变。
-- Phase 0 已确认公共 owner、版权署名、许可证和权利链声明；Phase 5 已建立 `LICENSE`、`NOTICE`、商标政策和 fail-closed 许可覆盖门禁。Phase 6 当前未提交公共候选包含 303 个逐项获批并完成许可映射的文件；真实自然人与笔名映射及权利链证据必须继续保存在私有权属记录中，不进入公共仓库。
+- Phase 0 已确认公共 owner、版权署名、许可证和权利链声明；Phase 5 已建立 `LICENSE`、`NOTICE`、商标政策和 fail-closed 许可覆盖门禁。Phase 6 的唯一净化根提交为 `e50b0cec829cee08397bbc87b7ed483e8ee7afda`，根提交中的 303 个文件均完成许可映射；当前 Phase 7 修复分支新增 `.gitattributes` 后候选为 304 个文件。真实自然人与笔名映射及权利链证据继续保存在私有权属记录中，不进入公共仓库。
 - Phase 4 本地供应链门禁已通过：完整树与 production tree 均为 0 critical、0 high、7 moderate、0 low；1600-component CycloneDX SBOM、依赖许可证政策、固定 SHA Actions 和无生产 secret 的 PR CI 已建立。Phase 5 版本元数据对齐后当前 SBOM SHA-256 为 `6c122c2713fbe378f1a889f8acc89913ae33f7765379b21b823ebcec81d7f738`。最终候选 commit 的托管 CI 与真实远程 `production` Environment/branch policy/arming 仍未验收。
 - Phase 5 本地 Gate 已通过：Apache-2.0、DCO、社区治理、安全与支持政策、README、CHANGELOG、Release 契约和完整 SemVer 已实施；12 个社区文件、3 个 Issue Forms、候选中 65 个 Markdown 文件的 145 个链接和 10 个私有 manifest 已通过专用门禁。安全邮箱实际收件、GitHub Private Vulnerability Reporting、CODEOWNERS 权限和 Community Profile 仍需在公共候选远程验证。
-- 当前 Private Template repository identity 将被复用。原始历史与 3 份旧 Actions 日志已由 Gitleaks `8.30.1`、TruffleHog `3.97.0` 和脱敏 PII/IP 规则覆盖：两类专用 secret scanner 均为 0，但旧历史仍有 39 项、旧日志仍有 70 项规则命中，二者保持 `blocked`。仓库外候选树已完成 manifest 对照、Phase 5 全门禁、A1/A2/B/C fixtures、typecheck、Worker/Wrangler、当前文本和历史摘要验证；授权前快照已证明其 Git 元数据为 unborn、无 ref、无 remote、无 object。现已单独授权在该候选中创建一个 DCO 单一根提交，但只有身份、无父历史、相同 tree、重新扫描和工作树门禁全部通过后才接受；该授权不替代远程历史替换、旧 Actions 清场和匿名 clone 验证。当前 GitHub Free 计划不能在 Private 状态提前验证目标 ruleset/branch protection，PVR 也需在 Public 后启用；若不升级计划，这些控制必须在 Public 切换后、任何 tag/Release 前立即完成。
-- Public、tag 和 GitHub Release 仍需三次独立明确授权。
+- 当前 Private Template repository identity 已复用：3 个旧 Actions runs/logs 已删除并验证日志端点不可用，远程 `main` 已通过 lease-protected history replacement 指向单一净化根；实际 GitHub origin 再扫描为 0 secret/PII/IP finding。GitHub 自动生成的 3 个 Dependabot PR 已关闭，普通 branches/runs/caches 已清理；平台保留的 3 个只读 closed-PR head refs 均直接派生自净化根且无 merge ref。Phase 6 仍待 `ZUnfurl/zunfurl` Organization 身份迁移与 GitHub Apps 人工访问复核。
+- Fresh Windows clone 已发现并修复默认 `core.autocrlf` 导致资产字节哈希漂移的问题；`.gitattributes` 固定 LF checkout，Node 24 CI 增加 Storefront build 前置步骤，并新增 Windows Node 22.12 托管 job。以上修复必须在新的精确候选 SHA 上重新通过 G6a。
+- GitHub Free 的 Private 仓库不能完成 CodeQL/Dependency Review 上传、Public ruleset/branch protection 和 PVR 验收；这些控制及真正匿名 clone 必须在 Public 后、任何 tag/Release 前完成。tag 与 GitHub Release 已获持续授权至 Phase 9；Public 切换仍缺少单独明确授权。
 
 任一阻断项存在时，不允许把仓库切为 Public。
 

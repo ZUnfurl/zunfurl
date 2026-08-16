@@ -25,6 +25,7 @@
 - `frameworkVersion` 和所有私有 workspace 统一为完整 SemVer prerelease `0.3.0-preview.1`。
 - 生产 Deploy 改为仅 `main` 人工触发，并要求远程 `production` Environment 与显式 arming。
 - Sanity/Shopify webhook 只产生去重后的 rebuild-request receipt，不自动 build 或 deploy。
+- Git checkout 统一为 LF，确保 Windows 默认 `core.autocrlf` 不改变受哈希门禁管理的资产和供应链文件。
 
 ### Removed
 
@@ -36,7 +37,7 @@
 - 不包含 Cart、Checkout、支付、订单、税务、配送、履约、实时价格或实时库存。
 - Authenticated Editorial/Draft Preview、生产 Backup 和灾难 Restore 仍是 Roadmap。
 - 只支持最新公开的 `0.x` Preview；社区支持为 best effort，不提供免费 SLA。
-- 正式发布仍需净化 Git 历史、托管 CI、匿名 clone、远程仓库保护和三次独立授权 Gate。
+- 净化根历史已替换 Private 远端；正式发布仍需目标 Organization 迁移、托管 CI、Public 后匿名 clone、远程仓库保护和 Public 独立授权 Gate。tag 与 GitHub Release 已获授权，但只能在全部 Gate 通过后执行。
 
 ### Security
 

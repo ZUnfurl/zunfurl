@@ -1,6 +1,6 @@
 # ZUnfurl 0.x Preview 开源执行计划
 
-> 状态：Phase 6 的本地单一净化根提交已获明确授权；本地提交与复核不授权远程历史替换、仓库迁移或 Public
+> 状态：净化根历史已替换当前 Private 远端；Phase 6 尚待目标 Organization/仓库身份与 GitHub Apps 人工复核
 >
 > 审计基线：2026-08-15
 >
@@ -19,7 +19,7 @@ Phase 0 工作文件：
 
 本文是 `ZUnfurl` 首次开源的执行权威文档。现有内部 `gcss-*` package、profile key 和迁移协议为兼容性暂不机械改名。计划把“快速开源”定义为收窄并准确描述当前能力，而不是降低版权、安全、可复现性或 Profile 正确性门槛。
 
-本计划只授权规划和仓库内准备工作，不自动授权历史重写、远程仓库创建、push、Public 切换、tag、GitHub Release、生产部署或任何 Cloudflare、Sanity、Shopify、DNS 写入。上述操作必须在对应阶段获得单独、明确授权。
+本计划本身不自动授权历史重写、远程仓库创建、push、Public 切换、tag、GitHub Release、生产部署或任何 Cloudflare、Sanity、Shopify、DNS 写入。Owner 已于 2026-08-16 持续授权完成 Phase 9 前所需的 commit、push、PR、tag 与 GitHub Release；该授权不包含 Public 切换、Organization 创建/转移、仓库安全设置或生产平台写入，且不替代任何技术 Gate。
 
 ## 1. 已冻结的发布决策
 
@@ -131,8 +131,9 @@ Phase 0 工作文件：
 | G3 Engineering | 四个初始化后客户 fixture、构建和 Worker dry-run 全绿 | 命令、环境、commit SHA、结果摘要 | 不创建候选远程 |
 | G4 Security | 原始及净化历史扫描通过；critical/high 为 0；Actions 固定 SHA | secret scan、`npm audit`、SBOM、workflow 检查 | 不公开 |
 | G5 Community | License、Security、Support、Contributing、Governance 和模板可用 | Community Profile、链接检查、联系人验证 | 不创建 tag |
-| G6 Release Candidate | 全新匿名 clone 可复现；声明与实现一致 | Windows/Linux CI、tree manifest、校验和 | 保持候选仓库 Private |
-| G7 Public Release | 用户分别授权 Public、tag、Release | 授权记录、仓库设置快照、Release 检查表 | 不执行远程发布 |
+| G6a Private Release Candidate | 经授权的全新隔离 checkout 在无生产 secret 环境可复现；声明与实现一致 | Windows/Linux CI、tree manifest、校验和 | 保持候选仓库 Private |
+| G6b Public Anonymous Reproduction | Public 后、tag 前的真正匿名 clone 与外部 PR 可复现 | 匿名 HTTPS clone、Quick Start、Public 安全检查 | 停止 tag/Release |
+| G7 Public Release | Public 已单独授权，tag/Release 已获持续授权，且发布时仍满足全部 Gate | 授权记录、仓库设置快照、Release 检查表 | 不执行或停止远程发布 |
 
 ## 5. 分阶段执行计划
 
@@ -597,7 +598,7 @@ npm.cmd run test:fixtures
 
 本地通过条件：完整树和 production tree 的 critical/high 均为 0；SBOM 可重现；所有依赖许可证已处置；所有 Action 引用为批准的 SHA；PR 不读取生产 secret；生产 Deploy 只能从 `main` 手动进入显式 arming 的 `production` Environment。
 
-最终 G4/G6 仍要求：净化后的唯一候选 commit 在托管 CI 中全绿，并对真实远程仓库的 Environment、deployment branch policy、arming 设置以及 GitHub 计划支持的审批能力留存证据。本地静态检查不能替代这项远程验收。
+最终 G4/G6a 仍要求：净化后的唯一候选 commit 在托管 CI 中全绿，并对真实远程仓库的 Environment、deployment branch policy、arming 设置以及 GitHub 计划支持的审批能力留存证据。本地静态检查不能替代这项远程验收。
 
 停止条件：仍有 critical/high；需要不受控 `--force`；fork PR 可接触生产 secret；Deploy 可绕过 `main`、人工触发或 arming 边界；文档把未配置的远程审批写成现有能力；Roadmap workflow 仍会误导或可误触发。
 
@@ -741,20 +742,22 @@ G1 至 G5 全部通过。所有远程写入仍需用户明确授权。
 7. 保存私有映射：原 HEAD、原历史 bundle hash、候选 commit、tree manifest、扫描器版本和结果。
 8. 只有取得独立 commit 授权后，才使用批准的组织或 noreply 身份创建单一根提交。当前拟定的根提交身份为 `Noodle Freeman` 加 GitHub ID-based noreply 邮箱，并使用 DCO `Signed-off-by`；把该身份写入计划不构成 commit 授权，授权时仍须连同精确作者、邮箱和提交消息一并确认。
 
-当前进度：原全部 refs 的私有离线 bundle 已生成并通过完整性验证；候选树工具以 Phase 1 inventory、逐项后续批准和许可覆盖生成精确 manifest，并在仓库外物化。根提交授权前的候选只包含 303 个获批文件，7 个时点审计或内部日志文件被显式排除；其独立 Git 元数据已验证为 unborn、无 ref、无 remote、无 object。候选已完成 Phase 5 全门禁、当前文本扫描和原历史摘要验证；本地单一根提交现已取得独立授权，提交后仍须按本节重新验证唯一无父历史与相同 tree。
+执行结果：原全部 refs 的私有离线 bundle 已生成并通过完整性验证；唯一净化根提交为 `e50b0cec829cee08397bbc87b7ed483e8ee7afda`，无父提交，Author/Committer 与 DCO 均为批准的 `Noodle Freeman` GitHub noreply 身份。根提交的 303 个 blob 与冻结 manifest 逐字节一致，Gitleaks `8.30.1`、TruffleHog `3.97.0` 和脱敏 PII/IP 规则对本地根历史与实际 GitHub origin 均为 0 finding。
 
 不得把含旧历史的当前仓库直接设置为 Public。净化根提交替换远程前，当前仓库必须保持 Private；旧提交不得重新合并进候选历史。
 
 #### OSS-0603：在当前 Private 仓库容器中替换为净化历史
 
-需要用户明确授权后才执行：
+执行状态：
 
-- 删除并核验旧 Actions runs、logs、artifacts、caches 和已退役 workflow 记录；
-- 复核 branches、tags、PR refs、Release、Issues、Discussions、wiki、Pages、deployments、environments、hooks、secrets、variables、deploy keys、Apps、LFS、packages 和 forks；
-- 以单一净化根提交完全替换远程 `main`，并删除任何非批准 ref；
-- 保持 `isTemplate=true`，配置当前 Private 计划实际支持的 CI、安全功能和仓库元数据；对不可用的 ruleset、branch protection 或 PVR 保存明确证据，不得以目标配置代替实测；
-- 创建 `ZUnfurl` Organization 后，将当前仓库转移并改名为 `ZUnfurl/zunfurl`，随后重新执行仓库侧审计；
-- 不配置任何客户或生产 secret。
+- [x] 删除并核验 3 个旧 Actions runs/logs；旧日志端点均返回 `404`，旧 artifacts/caches 为 0。
+- [x] 以 `--force-with-lease` 将远程 `main` 替换为单一净化根历史；实际 origin 已重新扫描为 0 secret/PII/IP finding。
+- [x] 复核 branches、tags、Release、Issues、Discussions、wiki、Pages、deployments、environments、hooks、secrets、variables、deploy keys、LFS、packages 和 forks；未发现旧对象残留。
+- [x] GitHub 自动生成的 3 个 Dependabot 大版本 PR 已关闭，普通 head branches、runs 与 caches 已删除；GitHub 保留的 3 个只读 `refs/pull/*/head` 均直接派生自净化根、无 merge ref，并纳入可达历史审计。
+- [x] 保持 `isTemplate=true`；Private/Free 下不可用的 ruleset、branch protection、CodeQL 上传和 PVR 已作为平台限制记录，不伪装成已启用。
+- [ ] 创建 `ZUnfurl` Organization，将仓库转移并改名为 `ZUnfurl/zunfurl`，随后重新审计。
+- [ ] 通过 sudo-protected GitHub UI 人工复核已安装 GitHub Apps 对该仓库的访问范围。
+- [x] 未配置任何客户或生产 secret。
 
 上述每一项都是远程写入或破坏性历史操作，不因进入 Phase 6 自动获批。若 Organization 创建、仓库转移或目标 slug 发生冲突，立即停止；不得临场新建第二个公共候选仓库或移动 remote。
 
@@ -764,7 +767,7 @@ G1 至 G5 全部通过。所有远程写入仍需用户明确授权。
 
 停止条件：任何客户素材、个人邮箱、secret 或内部文档进入候选；tree 差异无法解释；候选仓库被提前切为 Public。
 
-本地执行结果：OSS-0601 已完成；OSS-0602 的候选物化、精确 manifest、许可覆盖、Phase 5 全门禁、A1/A2/B/C fixtures、typecheck、Worker/Wrangler 验证和候选 tree 对照均已通过，验证用临时目录已清理，并已取得本地单一根提交授权。根提交只有在身份、DCO、无父历史、相同 tree、重新扫描和工作树门禁全部通过后才算完成。OSS-0603 尚未执行，因此即使本地根提交通过，Phase 6 Gate 仍保持 `blocked-by-remote-state`，不得表述为整个阶段通过。
+执行结果：OSS-0601、OSS-0602 和 OSS-0603 的历史替换/旧对象清场部分已通过；唯一保留的 Actions run 是同一净化根 SHA 的手动 Secret Scan success。GitHub 不允许删除 closed PR 的只读 hidden refs，因此 Gate 以“无开放 PR、无普通 PR branch、无 merge ref、保留 head ref 全部同一净化根”为准。Phase 6 当前为 `blocked-by-target-identity-and-app-review`，尚未通过 Organization 转移与 GitHub Apps 人工复核。
 
 ## Phase 7：全新环境发布候选验证
 
@@ -776,9 +779,9 @@ G1 至 G5 全部通过。所有远程写入仍需用户明确授权。
 
 ### 任务
 
-#### OSS-0701：匿名依赖验证
+#### OSS-0701：Private clean-room 依赖验证
 
-从一个没有原私有仓库访问权、没有生产 secret、没有全局内部包的环境 clone 候选仓库。
+从全新隔离环境经最小临时仓库读取权限 checkout 候选仓库；环境不得含生产 secret、私有 registry、全局内部包或本地路径依赖。Private checkout 使用的临时 `GITHUB_TOKEN` 只证明仓库读取，不得称为匿名或完全无凭据。
 
 至少验证：
 
@@ -836,7 +839,7 @@ git fsck --full --strict
 
 ### Phase 7 Gate
 
-通过条件：精确候选 commit 在无私有权限的全新 clone 可复现；Windows/Linux required checks 全绿；工作树干净；证据摘要无 secret。
+通过条件（G6a）：精确候选 commit 在经授权的全新隔离 checkout 可复现；Windows/Linux required checks 全绿；工作树干净；证据摘要无 secret。真正无仓库权限的匿名 clone 属于 Public 后、tag 前的 G6b，不得在 Private 状态伪造完成。
 
 停止条件：候选提交没有自己的 CI；任何步骤依赖生产 secret；安装或构建依赖本机缓存；声明与实现不一致。
 
@@ -844,7 +847,7 @@ git fsck --full --strict
 
 ### 依赖
 
-G0 至 G6 全部通过；获得 Public、tag、Release 三项独立授权。
+G0 至 G6a 全部通过；Public 获得独立授权。tag 与 GitHub Release 已获得持续授权，但仍只能在 G6b 和全部远程安全 Gate 通过后执行。
 
 ### 任务
 
@@ -888,7 +891,7 @@ Template 创建的客户仓库不会自动继承上游全部安全设置。计�
 3. 经单独授权，将净化候选仓库切为 Public。
 4. 立即启用并验证 Public 状态下的 ruleset/branch protection、Private Vulnerability Reporting、Dependabot/CodeQL/secret scanning，以及计划支持的其他安全控制。
 5. 复核 Public、Template、默认分支、LICENSE、Community Profile、Security 和规则状态；任何关键控制不可用时停止 tag/Release，并记录仓库已经发生过公开暴露，不得把恢复 Private 表述为从未公开。
-6. 从外部 fork/PR 场景运行一次不含 secret 的 CI。
+6. 清空本地 GitHub 凭据后通过公开 HTTPS URL 执行真正匿名 fresh clone，验证精确 SHA、Quick Start 和完整门禁；随后从外部 fork/PR 场景运行一次不含 production secret 的 CI。该步骤构成 G6b。
 7. 经单独授权，创建并 push 签名 annotated tag `v0.3.0-preview.1`。
 8. 经单独授权，创建 GitHub Pre-release。
 9. 附加 SBOM、SHA-256 和脱敏验证摘要，不附带 `node_modules` 或未经审核的二进制。
@@ -939,7 +942,7 @@ Template 创建的客户仓库不会自动继承上游全部安全设置。计�
 - Actions 未固定 SHA、fork PR 可接触 secret，或生产 Deploy 可绕过审批。
 - 缺少 `LICENSE`、`SECURITY.md` 或可工作的私密漏洞报告入口。
 - 全新匿名 clone 无法复现。
-- Public、tag、Release 未分别获得授权。
+- Public 未获得独立授权，或 tag/Release 的既有授权被撤回。
 
 ### 6.2 P1：可进入公开 Backlog，但必须有负责人和目标版本
 
@@ -981,7 +984,7 @@ Template 创建的客户仓库不会自动继承上游全部安全设置。计�
 - 首个公共版本确定为 `v0.3.0-preview.1`。
 - 根 `package.json.version`、`gcss.project.json.frameworkVersion`、workspace 版本、CHANGELOG、tag 和 Release title 按批准的同一政策更新。
 - 所有 package 继续 `private: true`。
-- Release tag 必须指向已经通过 G6 的唯一 commit，并使用签名 annotated tag。
+- Release tag 必须指向已经通过 G6a 与 G6b 的唯一 commit，并使用签名 annotated tag。
 - 已发布 tag 不移动、不重用。
 - Preview 阶段只支持最新发布版本，是否回补安全修复由 `SECURITY.md` 明确。
 
@@ -1052,7 +1055,7 @@ Template 创建的客户仓库不会自动继承上游全部安全设置。计�
 - [ ] 匿名全新 clone 可执行 Quick Start 和完整门禁。
 - [ ] 发布证据摘要包含精确 commit、校验和、环境和已知限制。
 - [ ] 当前仓库在历史替换和全部远程 Gate 通过前保持 Private；旧提交、Actions 日志和仓库侧残留未进入公开状态。
-- [ ] Public、tag、GitHub Release 已分别获得明确授权。
+- [ ] Public 已获得独立明确授权；tag 与 GitHub Release 的持续授权仍有效。
 
 ## 12. 官方参考
 

@@ -12,6 +12,7 @@
     "docs/project-startup-and-handoff.md"
   ],
   "approvedAdditionPaths": [
+    ".gitattributes",
     ".github/CODEOWNERS",
     ".github/ISSUE_TEMPLATE/bug.yml",
     ".github/ISSUE_TEMPLATE/config.yml",

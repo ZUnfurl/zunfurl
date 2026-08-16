@@ -6,7 +6,7 @@
 >
 > 分发类型：source-only GitHub Pre-release；不发布 npm package、构建产物、容器或第三方二进制。
 
-本清单是发布操作门禁，不是当前完成证明。只有证据存在时才可勾选；Public、tag 和 GitHub Release 必须分别获得明确授权。
+本清单是发布操作门禁，不是当前完成证明。只有证据存在时才可勾选。Owner 已授权完成 Phase 9 前所需的 tag 与 GitHub Release；Public 切换仍须单独明确授权，已有授权也不替代技术 Gate。
 
 ## 1. 候选冻结
 
@@ -41,24 +41,31 @@
 - [ ] `mp4102@gmail.com` 已完成收件测试；当前无独立替代联系人这一限制已披露。
 - [ ] 默认分支 ruleset、required checks、CODEOWNERS review 和禁止 force-push 已在远程验收。
 
-## 5. 匿名重现
+## 5. G6a Private clean-room 重现
 
-- [ ] 从净化后的公共候选执行匿名 fresh clone；无私有 remote、submodule、LFS 或隐藏依赖。
+- [ ] 从 Private 候选执行经授权的全新隔离 checkout；只允许临时仓库读取凭据，不含 production secret、私有 registry、submodule、LFS 或隐藏依赖。
 - [ ] Windows/Node 22.12、Linux/Node 22.12 与 Linux/Node 24 托管 CI 全绿。
-- [ ] `Use this template` 创建的独立 Private 测试仓库可完成 A1/A2/B/C dry-run 与初始化。
-- [ ] README 所有本地链接、命令、截图和安全入口均从匿名视角可用。
+- [ ] A1/A2/B/C fixture、Storefront/Studio build 与 Worker dry-run 在精确候选 SHA 上通过。
+- [ ] `.gitattributes` 保证默认 Windows Git checkout 不改变受哈希门禁管理的文本字节。
 
-## 6. 三次授权与发布
+## 6. G6b Public 后、tag 前匿名重现
+
+- [ ] 清空 GitHub token、credential helper 和私有 Git 配置后，从 Public HTTPS URL 执行真正匿名 fresh clone。
+- [ ] 匿名 clone 的 HEAD 与候选 SHA 一致，Quick Start、完整门禁和全部公开链接可用。
+- [ ] 外部 fork PR 不获得 production secret，CI、Dependency Review、CodeQL 和 Secret Scan 全绿。
+- [ ] `Use this template` 创建的独立 Private 测试仓库可完成 A1/A2/B/C dry-run 与初始化。
+
+## 7. 三次授权与发布
 
 - [ ] **Public 授权**：Owner 明确批准将净化后的目标仓库设为 Public。
 - [ ] Template repository 标记、描述、topics 与默认分支设置已复核。
-- [ ] **Tag 授权**：Owner 明确批准创建签名 annotated tag `v0.3.0-preview.1`。
+- [x] **Tag 授权**：Owner 已明确批准在全部 Gate 通过后创建签名 annotated tag `v0.3.0-preview.1`。
 - [ ] tag 精确指向唯一候选 commit，且没有移动或复用既有 tag。
-- [ ] **Release 授权**：Owner 明确批准发布 `ZUnfurl v0.3.0-preview.1`。
+- [x] **Release 授权**：Owner 已明确批准在全部 Gate 通过后发布 `ZUnfurl v0.3.0-preview.1`。
 - [ ] GitHub Release 标记为 Pre-release，仅附源码、SBOM 与脱敏证据摘要。
 - [ ] Release note 包含成熟度、Profile 范围、C 排除项、Known limitations、Roadmap、安全入口和迁移说明。
 
-## 7. 发布后
+## 8. 发布后
 
 - [ ] D+1：验证 License、Template 按钮、PVR、匿名 Quick Start 和下载源码。
 - [ ] D+7：从 Template 创建独立 Private 仓库，复核四 Profile 与 fork PR 边界。

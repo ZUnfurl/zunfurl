@@ -88,8 +88,9 @@
 3. Engineering Gate：A1/A2/B/C 初始化后 fixture、构建和 Worker dry-run 全绿。
 4. Security Gate：原始及公共历史扫描完成，npm critical/high 为 0，Actions 固定 SHA。
 5. Community Gate：Security、Support、Contributing、Governance 和 Issue/PR 入口可用。
-6. Reproducibility Gate：匿名全新 clone 在受支持 Node 环境可 `npm ci` 并通过 required checks。
-7. Authorization Gate：Public、tag、GitHub Release 分别获得明确授权。
+6. Private Reproducibility Gate：经授权的全新隔离 checkout 在无 production secret 的受支持 Node 环境可 `npm ci` 并通过 required checks。
+7. Public Anonymous Gate：Public 后、tag 前的真正匿名 clone、Quick Start 和外部 fork PR 可复现。
+8. Authorization Gate：Public、tag、GitHub Release 分别获得明确授权；已有授权不替代前述 Gate。
 
 详细停止条件见[开源执行计划](open-source-preview-release-plan.md)。
 

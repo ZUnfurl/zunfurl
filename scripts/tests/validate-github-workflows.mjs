@@ -254,6 +254,8 @@ const dependencyReviewWorkflow = workflows.get('dependency-review.yml');
 const codeqlWorkflow = workflows.get('codeql.yml');
 const secretScanWorkflow = workflows.get('secret-scan.yml');
 
+assert(codeqlWorkflow.includes('actions: read'), 'codeql.yml must allow private-repository workflow metadata reads.');
+
 assert(previewWorkflow.includes('pull_request:'), 'preview.yml must validate pull requests.');
 assert(previewWorkflow.includes('export-project-env.mjs'), 'preview.yml must export gcss.project.json.');
 assert(previewWorkflow.includes('npm run framework:audit'), 'preview.yml must validate framework boundaries.');
@@ -280,6 +282,7 @@ assert(
 assert(previewWorkflow.includes('node-version: "22.12.0"'), 'preview.yml must use Node 22.12 as the primary gate.');
 assert(previewWorkflow.includes('node-version: "24.x"'), 'preview.yml must include a Node 24 compatibility gate.');
 assert(previewWorkflow.includes('node-24-compatibility:'), 'preview.yml must keep Node 24 in an independent job.');
+assert(previewWorkflow.includes('windows-node-22:'), 'preview.yml must keep Windows Node 22.12 in an independent job.');
 assert(previewWorkflow.includes('fixtures:'), 'preview.yml must keep fixture validation in an independent job.');
 for (const variant of ['A1', 'A2', 'B', 'C']) {
   assert(new RegExp(`^          - ${variant}$`, 'm').test(previewWorkflow), `preview.yml fixture matrix must include ${variant}.`);
@@ -307,6 +310,36 @@ assert(
   previewWorkflow.includes('gcss-worker run deploy -- --dry-run'),
   'preview.yml must validate the Worker package without deploying it.',
 );
+const previewJobBlocks = new Map(
+  getJobBlocks('preview.yml', previewWorkflow).map(({ block, name }) => [name, block]),
+);
+const node24Block = previewJobBlocks.get('node-24-compatibility');
+assert(node24Block, 'preview.yml must define the Node 24 compatibility job.');
+assert(
+  node24Block.indexOf('run: npm run build') >= 0 &&
+    node24Block.indexOf('run: npm run build') <
+      node24Block.indexOf('run: npm --workspace gcss-worker run deploy -- --dry-run'),
+  'preview.yml Node 24 job must build the storefront before Wrangler dry-run.',
+);
+const windowsBlock = previewJobBlocks.get('windows-node-22');
+assert(windowsBlock, 'preview.yml must define the Windows Node 22.12 job.');
+for (const requiredFragment of [
+  'runs-on: windows-latest',
+  'node-version: "22.12.0"',
+  'run: npm.cmd ci',
+  'run: npm.cmd run test:phase6',
+  'run: npm.cmd run framework:audit',
+  'run: npm.cmd run typecheck',
+  'run: npm.cmd run build',
+  'run: npm.cmd run studio:build',
+  'run: npm.cmd --workspace gcss-worker run deploy -- --dry-run',
+  'run: git diff --check',
+]) {
+  assert(
+    windowsBlock.includes(requiredFragment),
+    `preview.yml Windows job must retain ${requiredFragment}.`,
+  );
+}
 
 assert(deployWorkflow.includes('workflow_dispatch:'), 'deploy.yml must keep an explicit manual trigger.');
 assert(

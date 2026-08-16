@@ -147,7 +147,7 @@ function localWorkflowPaths() {
     .sort();
 }
 
-function countRemoteRefs(repository) {
+function listRemoteRefs(repository) {
   const result = command('git', [
     'ls-remote',
     '--refs',
@@ -156,17 +156,59 @@ function countRemoteRefs(repository) {
   if (!result.ok) {
     throw new Error('git ls-remote failed for the audited repository.');
   }
-  const refs = result.stdout
-    ? result.stdout.split(/\r?\n/).map((line) => line.split(/\s+/)[1]).filter(Boolean)
+  return result.stdout
+    ? result.stdout.split(/\r?\n/).map((line) => {
+      const [sha, ref] = line.split(/\s+/);
+      return { sha, ref };
+    }).filter((entry) => entry.sha && entry.ref)
     : [];
-  const count = (prefix) => refs.filter((entry) => entry.startsWith(prefix)).length;
+}
+
+function summarizeRemoteRefs(refs) {
+  const count = (prefix) => refs.filter((entry) => entry.ref.startsWith(prefix)).length;
   return {
     total: refs.length,
     branches: count('refs/heads/'),
     tags: count('refs/tags/'),
     pullRequests: count('refs/pull/'),
-    other: refs.filter((entry) => !/^refs\/(?:heads|tags|pull)\//.test(entry)).length,
+    pullRequestHeads: refs.filter((entry) => /^refs\/pull\/\d+\/head$/.test(entry.ref)).length,
+    pullRequestMerges: refs.filter((entry) => /^refs\/pull\/\d+\/merge$/.test(entry.ref)).length,
+    other: refs.filter((entry) => !/^refs\/(?:heads|tags|pull)\//.test(entry.ref)).length,
   };
+}
+
+function inspectCommitGraph(repository, startShas) {
+  const pending = [...new Set(startShas.filter(Boolean))];
+  const visited = new Set();
+  const roots = new Set();
+  let unresolved = 0;
+
+  while (pending.length > 0) {
+    if (visited.size > 10000) {
+      throw new Error('Remote commit graph exceeds the Phase 6 audit safety limit.');
+    }
+    const sha = pending.pop();
+    if (visited.has(sha)) continue;
+    visited.add(sha);
+    const result = command('gh', [
+      'api',
+      `repos/${repository}/git/commits/${sha}`,
+      '--jq',
+      '{sha: .sha, parents: [.parents[].sha]}',
+    ]);
+    if (!result.ok) {
+      unresolved += 1;
+      continue;
+    }
+    const commit = JSON.parse(result.stdout);
+    if (commit.parents.length === 0) {
+      roots.add(commit.sha);
+      continue;
+    }
+    pending.push(...commit.parents);
+  }
+
+  return { commitCount: visited.size, roots, unresolved };
 }
 
 function countReachableLfsPointers(repository) {
@@ -267,13 +309,14 @@ export function auditPhase6Repository({
     `repos/${repository}/branches?per_page=100`,
     '{count: length, protected: ([.[] | select(.protected == true)] | length)}',
   );
-  const actionsRuns = ghJson(
+  const actionsRunData = ghJson(
     `repos/${repository}/actions/runs?per_page=100`,
-    '{total: .total_count, completed: ([.workflow_runs[] | select(.status == "completed")] | length), success: ([.workflow_runs[] | select(.conclusion == "success")] | length), failure: ([.workflow_runs[] | select(.conclusion == "failure")] | length), approved_head: ([.workflow_runs[] | select(.head_sha == $head)] | length), ids: [.workflow_runs[].id]}'
-      .replace('$head', JSON.stringify(graph.head_oid)),
+    '{total: .total_count, completed: ([.workflow_runs[] | select(.status == "completed")] | length), success: ([.workflow_runs[] | select(.conclusion == "success")] | length), failure: ([.workflow_runs[] | select(.conclusion == "failure")] | length), entries: [.workflow_runs[] | {id: .id, head_sha: .head_sha}]}',
   );
-  const logArchives = countAvailableLogArchives(repository, actionsRuns.ids);
-  delete actionsRuns.ids;
+  const logArchives = countAvailableLogArchives(
+    repository,
+    actionsRunData.entries.map((entry) => entry.id),
+  );
 
   const remoteWorkflows = ghJson(
     `repos/${repository}/actions/workflows?per_page=100`,
@@ -281,15 +324,26 @@ export function auditPhase6Repository({
   );
   const approvedWorkflowPaths = localWorkflowPaths();
   const approvedWorkflowSet = new Set(approvedWorkflowPaths);
-  const remoteWorkflowSet = new Set(remoteWorkflows.entries.map((entry) => entry.path));
+  const committedWorkflowEntries = ghJson(
+    `repos/${repository}/contents/.github/workflows?ref=${encodeURIComponent(repo.default_branch)}`,
+    '[.[] | {path: .path, type: .type}]',
+    'default-branch workflow contents query',
+  );
+  const committedWorkflowPaths = committedWorkflowEntries
+    .filter((entry) => entry.type === 'file' && /\.ya?ml$/i.test(entry.path))
+    .map((entry) => entry.path)
+    .sort();
+  const committedWorkflowSet = new Set(committedWorkflowPaths);
   const workflows = {
-    remoteTotal: remoteWorkflows.total,
-    remoteActive: remoteWorkflows.entries.filter((entry) => entry.state === 'active').length,
-    remoteInactive: remoteWorkflows.entries.filter((entry) => entry.state !== 'active').length,
+    runtimeTotal: remoteWorkflows.total,
+    runtimeActive: remoteWorkflows.entries.filter((entry) => entry.state === 'active').length,
+    runtimeInactive: remoteWorkflows.entries.filter((entry) => entry.state !== 'active').length,
+    runtimeUnapproved: remoteWorkflows.entries.filter((entry) => !approvedWorkflowSet.has(entry.path)).length,
+    committedRemoteTotal: committedWorkflowPaths.length,
     approvedLocalTotal: approvedWorkflowPaths.length,
-    matchingRemote: remoteWorkflows.entries.filter((entry) => approvedWorkflowSet.has(entry.path)).length,
-    unapprovedRemote: remoteWorkflows.entries.filter((entry) => !approvedWorkflowSet.has(entry.path)).length,
-    missingRemote: approvedWorkflowPaths.filter((entry) => !remoteWorkflowSet.has(entry)).length,
+    matchingCommitted: committedWorkflowPaths.filter((entry) => approvedWorkflowSet.has(entry)).length,
+    unapprovedCommitted: committedWorkflowPaths.filter((entry) => !approvedWorkflowSet.has(entry)).length,
+    missingCommitted: approvedWorkflowPaths.filter((entry) => !committedWorkflowSet.has(entry)).length,
   };
   const actionsPermissions = ghJson(
     `repos/${repository}/actions/permissions`,
@@ -331,11 +385,56 @@ export function auditPhase6Repository({
   const targetAccount = ghStatus(`users/${targetOwner}`, '{exists: true, type: .type}');
   const targetRepository = ghStatus(`repos/${targetOwner}/${targetName}`, '{exists: true}');
 
+  const advertisedRefs = listRemoteRefs(repository);
+  const remoteRefSummary = summarizeRemoteRefs(advertisedRefs);
+  const pullRequestRecords = ghJson(
+    `repos/${repository}/pulls?state=all&per_page=100`,
+    '[.[] | {number: .number, state: .state, head_sha: .head.sha}]',
+    'pull request history query',
+  );
+  const pullRequestByNumber = new Map(
+    pullRequestRecords.map((entry) => [String(entry.number), entry]),
+  );
+  const retainedPullRefs = advertisedRefs
+    .map((entry) => {
+      const match = entry.ref.match(/^refs\/pull\/(\d+)\/(head|merge)$/);
+      return match ? { ...entry, number: match[1], kind: match[2] } : null;
+    })
+    .filter(Boolean);
+  const retainedPullHeadRecords = retainedPullRefs
+    .filter((entry) => entry.kind === 'head')
+    .map((entry) => ({ ref: entry, pull: pullRequestByNumber.get(entry.number) }));
+  const defaultHistory = inspectCommitGraph(repository, [graph.head_oid]);
+  const retainedPullHistory = inspectCommitGraph(
+    repository,
+    retainedPullHeadRecords.map((entry) => entry.ref.sha),
+  );
+  const actionHistory = inspectCommitGraph(
+    repository,
+    actionsRunData.entries.map((entry) => entry.head_sha),
+  );
+  const defaultRoot = defaultHistory.roots.size === 1
+    ? [...defaultHistory.roots][0]
+    : null;
+  const graphUsesOnlyDefaultRoot = (history) =>
+    history.unresolved === 0 && history.roots.size <= 1 &&
+    (history.roots.size === 0 || history.roots.has(defaultRoot));
+  const actionsRuns = {
+    total: actionsRunData.total,
+    completed: actionsRunData.completed,
+    success: actionsRunData.success,
+    failure: actionsRunData.failure,
+    sanitizedHistory: graphUsesOnlyDefaultRoot(actionHistory)
+      ? actionsRunData.total
+      : 0,
+  };
+
   const counts = {
-    remoteRefs: countRemoteRefs(repository),
+    remoteRefs: remoteRefSummary,
     branches,
     tags: ghJson(`repos/${repository}/tags?per_page=100`, 'length'),
-    pullRequests: ghJson(`repos/${repository}/pulls?state=all&per_page=100`, 'length'),
+    pullRequests: pullRequestRecords.length,
+    openPullRequests: pullRequestRecords.filter((entry) => entry.state === 'open').length,
     issues: ghJson(
       `repos/${repository}/issues?state=all&per_page=100`,
       '[.[] | select(.pull_request == null)] | length',
@@ -361,16 +460,28 @@ export function auditPhase6Repository({
   const cleanupBlockers = [];
   if (!repo.private) cleanupBlockers.push('REPOSITORY_NOT_PRIVATE');
   if (!repo.is_template) cleanupBlockers.push('TEMPLATE_MODE_DISABLED');
-  if (graph.commits !== 1) cleanupBlockers.push('MULTI_COMMIT_OLD_HISTORY');
+  if (defaultHistory.unresolved !== 0 || defaultHistory.roots.size !== 1) {
+    cleanupBlockers.push('DEFAULT_BRANCH_ROOT_HISTORY_UNVERIFIED');
+  }
   if (counts.remoteRefs.branches !== 1 || counts.remoteRefs.tags !== 0 ||
-      counts.remoteRefs.pullRequests !== 0 || counts.remoteRefs.other !== 0) {
+      counts.remoteRefs.other !== 0) {
     cleanupBlockers.push('UNAPPROVED_REMOTE_REFS');
   }
-  if (actionsRuns.total !== actionsRuns.approved_head || graph.commits !== 1) {
+  const retainedPullRefsAreApproved =
+    counts.openPullRequests === 0 &&
+    counts.remoteRefs.pullRequestMerges === 0 &&
+    retainedPullHeadRecords.length === counts.remoteRefs.pullRequestHeads &&
+    retainedPullHeadRecords.every(({ ref, pull }) =>
+      pull?.state === 'closed' && pull.head_sha === ref.sha) &&
+    graphUsesOnlyDefaultRoot(retainedPullHistory);
+  if (!retainedPullRefsAreApproved) {
+    cleanupBlockers.push('UNAPPROVED_PULL_REQUEST_REFS');
+  }
+  if (actionsRuns.total !== actionsRuns.sanitizedHistory) {
     cleanupBlockers.push('PRE_CANDIDATE_ACTIONS_RUNS_OR_LOGS');
   }
-  if (workflows.unapprovedRemote !== 0 || workflows.missingRemote !== 0 ||
-      workflows.remoteInactive !== 0) {
+  if (workflows.unapprovedCommitted !== 0 || workflows.missingCommitted !== 0 ||
+      workflows.runtimeUnapproved !== 0 || workflows.runtimeInactive !== 0) {
     cleanupBlockers.push('REMOTE_WORKFLOW_PATH_SET_MISMATCH');
   }
   for (const [nameKey, value] of Object.entries({
@@ -449,6 +560,13 @@ export function auditPhase6Repository({
     integrations: {
       githubAppRepositoryAccess: 'manual-review-required-sudo-protected',
       reachableLfs: lfs,
+    },
+    history: {
+      defaultBranchCommitCount: defaultHistory.commitCount,
+      defaultBranchRootCount: defaultHistory.roots.size,
+      retainedPullRefCommitCount: retainedPullHistory.commitCount,
+      retainedPullRefsUseDefaultRoot: graphUsesOnlyDefaultRoot(retainedPullHistory),
+      actionsUseDefaultRoot: graphUsesOnlyDefaultRoot(actionHistory),
     },
     target: {
       nameWithOwner: target,

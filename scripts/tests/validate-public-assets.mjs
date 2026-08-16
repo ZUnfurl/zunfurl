@@ -423,6 +423,14 @@ export async function validatePublicAssets({ root = process.cwd() } = {}) {
   const resolvedRoot = path.resolve(root);
   const errors = [];
   const warnings = [];
+  try {
+    const attributes = await readFile(path.join(resolvedRoot, '.gitattributes'), 'utf8');
+    if (!/^\* text=auto eol=lf\s*$/m.test(attributes)) {
+      errors.push('.gitattributes must force deterministic LF checkout for hash-governed text assets.');
+    }
+  } catch (error) {
+    errors.push(`Cannot read .gitattributes: ${error.message}`);
+  }
   const manifest = await readManifest(resolvedRoot, errors);
 
   if (!manifest || !isPlainObject(manifest)) {
