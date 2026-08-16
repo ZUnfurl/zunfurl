@@ -2,10 +2,11 @@
  * 校验 Phase 4 的依赖树完整性与两项临时安全覆盖。
  *
  * 部分 npm 11 构建会在从传递依赖进入的 exact override 上继续用上游旧 exact
- * spec 报告 `invalid`，而 Node 22.12 随附的 npm 在 Linux 上可能返回 clean tree。
- * 两种输出都必须先通过 parent 声明、lock 与实际解析版本的精确验证；若存在
- * problems，只接受两条已审核 invalid 与算法证明的平台可选 orphan。其他
- * missing / extraneous / invalid 始终 fail closed。
+ * spec 报告 `invalid`，而 Node 22.12 随附的 npm 在 Linux 上可能用退出码 0
+ * 返回结构化 problems。退出码不代替问题清单审核：两种输出都必须先通过
+ * parent 声明、lock 与实际解析版本的精确验证；若存在 problems，只接受两条
+ * 已审核 invalid 与算法证明的平台可选 orphan。其他 missing / extraneous /
+ * invalid 始终 fail closed。
  */
 
 import { spawnSync } from 'node:child_process';
@@ -284,9 +285,6 @@ try {
 const problems = Array.isArray(dependencyTree.problems) ? dependencyTree.problems : [];
 if (![0, 1].includes(npmList.status)) {
   fail(`npm ls 返回意外退出码 ${npmList.status}`);
-}
-if (npmList.status === 0 && problems.length !== 0) {
-  fail(`npm ls 退出码为 0 但仍报告 ${problems.length} 个 problem`);
 }
 if (npmList.status === 1 && problems.length === 0) {
   fail('npm ls 退出码为 1 但没有提供可审核 problem');
