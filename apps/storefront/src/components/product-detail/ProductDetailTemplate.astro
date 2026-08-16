@@ -1,0 +1,73 @@
+---
+import SiteDocument from "../../layouts/SiteDocument.astro";
+import SiteFrame from "../shared/SiteFrame.astro";
+import ProductDetailHero from "./ProductDetailHero.astro";
+import ProductStorySections from "./ProductStorySections.astro";
+import type { ProductContent, ProductStoryContent } from "gcss-blocks";
+import type { ActiveLocale } from "../../i18n/config";
+
+interface AlternateLink {
+  locale: string;
+  href: string;
+}
+
+interface NavItem {
+  label: string;
+  href: string;
+}
+
+interface Dictionary {
+  htmlLang: string;
+  ui: {
+    skipToContent: string;
+    themeLight: string;
+    themeDark: string;
+  };
+  footer: {
+    copyright: string;
+  };
+}
+
+interface Props {
+  locale: ActiveLocale;
+  dictionary: Dictionary;
+  alternates: AlternateLink[];
+  navItems: NavItem[];
+  product: ProductContent;
+  story: ProductStoryContent;
+}
+
+const { locale, dictionary, alternates, navItems, product, story } =
+  Astro.props as Props;
+---
+
+<SiteDocument
+  lang={dictionary.htmlLang}
+  title={product.seo.title}
+  description={product.seo.description}
+  pathname={`/${locale}/products/${product.slug}/`}
+  alternates={alternates}
+  skipLabel={dictionary.ui.skipToContent}
+  footer={{
+    locale,
+    navItems,
+    copyright: dictionary.footer.copyright,
+  }}
+>
+  <SiteFrame
+    locale={locale}
+    navItems={navItems}
+    lightLabel={dictionary.ui.themeLight}
+    darkLabel={dictionary.ui.themeDark}
+    currentPath={`/${locale}/products/`}
+    headerVariant="overlay"
+    overlayTone="theme"
+  >
+    <ProductDetailHero story={story} product={product} />
+    {
+      story.storyPages && story.storyPages.length > 0 ? (
+        <ProductStorySections story={story} product={product} />
+      ) : null
+    }
+  </SiteFrame>
+</SiteDocument>

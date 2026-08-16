@@ -1,0 +1,226 @@
+---
+import SiteFooter from "../components/shell/SiteFooter.astro";
+import "../styles/design-system.css";
+import { brandName, siteUrl } from "gcss-config";
+import { defaultLocale, type SupportedLocale } from "../i18n/config";
+
+interface AlternateLink {
+  locale: string;
+  href: string;
+}
+
+interface FooterLink {
+  label: string;
+  href: string;
+}
+
+interface FooterData {
+  locale: SupportedLocale;
+  navItems: FooterLink[];
+  copyright: string;
+}
+
+interface Props {
+  lang: string;
+  title: string;
+  description: string;
+  pathname?: string;
+  alternates?: AlternateLink[];
+  skipLabel?: string;
+  footer?: FooterData;
+  noIndex?: boolean;
+}
+
+const {
+  lang,
+  title,
+  description,
+  pathname = "/",
+  alternates = [],
+  skipLabel = "Skip to content",
+  footer,
+  noIndex = false,
+} = Astro.props;
+const canonicalUrl = new URL(
+  pathname,
+  Astro.site ?? siteUrl,
+).toString();
+const ogLocale = lang === "fr" ? "fr_FR" : lang === "zh-CN" ? "zh_CN" : "en_US";
+const defaultAlternate = alternates.find(
+  (alternate) => alternate.locale === defaultLocale,
+);
+const alternateLinks = [
+  ...alternates,
+  ...(defaultAlternate
+    ? [{ locale: "x-default", href: defaultAlternate.href }]
+    : []),
+];
+---
+
+<!doctype html>
+<html lang={lang} data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <meta
+      name="robots"
+      content={noIndex ? "noindex, nofollow" : "index, follow"}
+    />
+    <meta name="color-scheme" content="light dark" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={brandName} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:locale" content={ogLocale} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalUrl} />
+    {
+      alternateLinks.map((alternate) => (
+        <link
+          rel="alternate"
+          hreflang={alternate.locale}
+          href={new URL(
+            alternate.href,
+            Astro.site ?? siteUrl,
+          ).toString()}
+        />
+      ))
+    }
+    <title>{title}</title>
+    <script is:inline>
+      const savedTheme = localStorage.getItem("gcss-theme");
+      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+        .matches
+        ? "dark"
+        : "light";
+      document.documentElement.dataset.theme = savedTheme || systemTheme;
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#page-content">{skipLabel}</a>
+    <slot />
+    {footer ? <SiteFooter {...footer} /> : null}
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --color-bg: #efeeee;
+    --color-bg-soft: #f6f2ef;
+    --color-surface: rgba(255, 255, 255, 0.64);
+    --color-surface-strong: rgba(255, 255, 255, 0.84);
+    --color-text: #181717;
+    --color-text-muted: #67554d;
+    --color-border: rgba(103, 85, 77, 0.22);
+    --color-accent: #a6836e;
+    --color-accent-strong: #cda992;
+    --color-hero-overlay: linear-gradient(
+      180deg,
+      rgba(239, 238, 238, 0.24) 0%,
+      rgba(24, 23, 23, 0.08) 45%,
+      rgba(24, 23, 23, 0.2) 100%
+    );
+    --shadow-luxury: 0 24px 80px rgba(24, 23, 23, 0.12);
+    --max-width: 1240px;
+    --font-display: "Cormorant Garamond", "Times New Roman", serif;
+    --font-body: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  }
+
+  html[data-theme="dark"] {
+    --color-bg: #0c0d0d;
+    --color-bg-soft: #181717;
+    --color-surface: rgba(24, 23, 23, 0.7);
+    --color-surface-strong: rgba(35, 32, 31, 0.92);
+    --color-text: #efeeee;
+    --color-text-muted: #cfc8c4;
+    --color-border: rgba(239, 238, 238, 0.12);
+    --color-accent: #cda992;
+    --color-accent-strong: #efeeee;
+    --color-hero-overlay: linear-gradient(
+      180deg,
+      rgba(12, 13, 13, 0.12) 0%,
+      rgba(12, 13, 13, 0.5) 54%,
+      rgba(12, 13, 13, 0.86) 100%
+    );
+    --shadow-luxury: 0 32px 120px rgba(0, 0, 0, 0.4);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background: var(--color-bg);
+  }
+
+  body {
+    margin: 0;
+    min-width: 320px;
+    background:
+      radial-gradient(
+        circle at top,
+        rgba(205, 169, 146, 0.18),
+        transparent 34%
+      ),
+      linear-gradient(180deg, var(--color-bg) 0%, var(--color-bg-soft) 100%);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    transition:
+      background-color 240ms ease,
+      color 240ms ease;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+
+  .skip-link {
+    position: absolute;
+    left: 1rem;
+    top: -3rem;
+    z-index: 1000;
+    padding: 0.75rem 1rem;
+    border-radius: 999px;
+    background: var(--color-text);
+    color: var(--color-bg);
+    text-decoration: none;
+  }
+
+  .skip-link:focus {
+    top: 1rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+</style>

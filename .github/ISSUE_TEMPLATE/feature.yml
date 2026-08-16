@@ -1,0 +1,115 @@
+{
+  "name": "功能建议",
+  "description": "提出符合静态优先和 Profile 合约的新能力。",
+  "title": "[Feature] ",
+  "labels": ["enhancement", "triage"],
+  "body": [
+    {
+      "type": "markdown",
+      "attributes": {
+        "value": "0.x Preview 可以发生 breaking change，但建议必须区分已交付、Preview、Roadmap 和 Not provided。客户需求请抽象为中性场景，不要提交客户身份、数据、secret 或品牌素材。"
+      }
+    },
+    {
+      "type": "checkboxes",
+      "id": "preflight",
+      "attributes": {
+        "label": "提交前确认",
+        "options": [
+          {
+            "label": "我已搜索现有 Issue 和 Roadmap，没有找到等价建议。",
+            "required": true
+          },
+          {
+            "label": "我已移除客户数据、secret、真实生产标识和无权公开的素材。",
+            "required": true
+          },
+          {
+            "label": "我理解建议被记录不代表进入 Roadmap、获得 SLA 或承诺发布时间。",
+            "required": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "input",
+      "id": "framework_version",
+      "attributes": {
+        "label": "基于的 Framework version / commit",
+        "placeholder": "0.3.0-preview.1 或完整 commit SHA"
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "checkboxes",
+      "id": "profiles",
+      "attributes": {
+        "label": "Profile 影响",
+        "description": "选择所有可能受影响项，并在下文解释启用与裁剪行为。",
+        "options": [
+          {
+            "label": "A1 — static-brand / contactForm=false"
+          },
+          {
+            "label": "A2 — static-brand / contactForm=true"
+          },
+          {
+            "label": "B — cms-brand"
+          },
+          {
+            "label": "C — retail catalog/content foundation"
+          },
+          {
+            "label": "Framework-wide"
+          }
+        ]
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "problem",
+      "attributes": {
+        "label": "要解决的问题",
+        "description": "描述用户目标、当前限制和为什么现有能力不足，不要只描述预选方案。"
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "proposal",
+      "attributes": {
+        "label": "建议方案",
+        "description": "说明静态优先、动态边界、数据所有权、禁用模块裁剪和失败语义。"
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "compatibility",
+      "attributes": {
+        "label": "兼容、迁移与测试",
+        "description": "说明是否 breaking、Schema/迁移影响、A1/A2/B/C fixtures 及验证建议。"
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "alternatives",
+      "attributes": {
+        "label": "考虑过的替代方案",
+        "description": "说明更小的实现、文档方案或保持现状是否可行。"
+      },
+      "validations": {
+        "required": false
+      }
+    }
+  ]
+}

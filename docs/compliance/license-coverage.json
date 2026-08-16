@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "copyrightNotice": "Copyright 2026 Noodle Freeman",
+  "firstPartyLicense": "Apache-2.0",
+  "firstPartyRoots": [
+    ".agents",
+    ".github",
+    "apps",
+    "docs",
+    "packages",
+    "scripts"
+  ],
+  "firstPartyExactFiles": [
+    ".github/CODEOWNERS",
+    ".env.example",
+    ".gitignore",
+    ".node-version",
+    "AGENTS.md",
+    "CHANGELOG.md",
+    "CODE_OF_CONDUCT.md",
+    "CONTRIBUTING.md",
+    "GOVERNANCE.md",
+    "MAINTAINERS.md",
+    "NOTICE",
+    "README.md",
+    "SECURITY.md",
+    "SUPPORT.md",
+    "THIRD_PARTY_NOTICES.md",
+    "TRADEMARKS.md",
+    "gcss.project.json",
+    "gcss.project.schema.json",
+    "package.json"
+  ],
+  "firstPartyExtensions": [
+    ".astro",
+    ".css",
+    ".d.ts",
+    ".example",
+    ".html",
+    ".js",
+    ".json",
+    ".jsonc",
+    ".md",
+    ".mjs",
+    ".toml",
+    ".ts",
+    ".tsx",
+    ".txt",
+    ".yaml",
+    ".yml"
+  ],
+  "manifestGovernedMedia": {
+    "root": "apps/storefront/public",
+    "manifest": "docs/compliance/ASSET_LICENSES.yml",
+    "allowedLicenses": [
+      "CC0-1.0"
+    ],
+    "extensions": [
+      ".avif",
+      ".eot",
+      ".gif",
+      ".ico",
+      ".jpeg",
+      ".jpg",
+      ".m4v",
+      ".mov",
+      ".mp3",
+      ".mp4",
+      ".ogg",
+      ".otf",
+      ".pdf",
+      ".png",
+      ".svg",
+      ".ttf",
+      ".wav",
+      ".webm",
+      ".webp",
+      ".woff",
+      ".woff2"
+    ]
+  },
+  "exactExceptions": [
+    {
+      "path": "LICENSE",
+      "classification": "canonical-license-text",
+      "license": "Apache-2.0",
+      "evidence": "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    },
+    {
+      "path": "sbom.cdx.json",
+      "classification": "generated-third-party-metadata",
+      "license": "VARIOUS",
+      "evidence": "THIRD_PARTY_NOTICES.md"
+    },
+    {
+      "path": "package-lock.json",
+      "classification": "generated-third-party-metadata",
+      "license": "VARIOUS",
+      "evidence": "THIRD_PARTY_NOTICES.md"
+    }
+  ],
+  "forbiddenPathSegments": [
+    "node_modules",
+    "third_party",
+    "third-party",
+    "vendor"
+  ]
+}

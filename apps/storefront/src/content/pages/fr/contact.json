@@ -1,0 +1,124 @@
+{
+  "locale": "fr",
+  "kind": "contact",
+  "title": "Contacter Example Brand",
+  "seo": {
+    "title": "Contacter Example Brand",
+    "description": "Contactez Example Brand pour des demandes de projet, contenu, partenariat ou support."
+  },
+  "pageHero": {
+    "eyebrow": "Contact",
+    "title": "Envoyer une demande claire.",
+    "body": "Utilisez cette page pour orienter les demandes de projet, contenu, partenariat ou support vers la bonne equipe.",
+    "slides": [
+      {
+        "src": "/brand-assets/hero/contact/Hero-Contact-01.webp",
+        "alt": "Example Brand contact hero image 1.",
+        "eyebrow": "Demande",
+        "caption": "Envoyez une demande concise via le formulaire."
+      },
+      {
+        "src": "/brand-assets/hero/contact/Hero-Contact-02.webp",
+        "alt": "Example Brand contact hero image 2.",
+        "eyebrow": "Orientation",
+        "caption": "Gardez la demande claire pour faciliter la reponse."
+      }
+    ]
+  },
+  "contactSection": {
+    "enabled": true,
+    "eyebrow": "Formulaire",
+    "title": "Soumettre une demande precise.",
+    "body": "Partagez uniquement les informations necessaires pour comprendre et orienter votre demande.",
+    "businessDirections": [
+      {
+        "title": "Projets",
+        "body": "Nouveaux briefs, questions de p?rim?tre et planification."
+      },
+      {
+        "title": "Operations contenu",
+        "body": "Mises a jour de pages, CMS et maintenance editoriale."
+      },
+      {
+        "title": "Partenariats",
+        "body": "Collaboration, media, canal et demandes commerciales."
+      }
+    ],
+    "responseTime": "Afin d offrir une meilleure experience de service, nous affinons notre processus de contact et de support. Les reponses, qualifications et suivis peuvent prendre plus de temps pendant cette transition.",
+    "fieldCopy": {
+      "nameLabel": "Nom",
+      "namePlaceholder": "Votre nom",
+      "emailLabel": "Email",
+      "emailPlaceholder": "vous@example.com",
+      "topicLabel": "Type de demande",
+      "orderNumberLabel": "Reference",
+      "orderNumberPlaceholder": "Facultatif",
+      "messageLabel": "Message",
+      "messagePlaceholder": "Indiquez le contexte, l objectif et le calendrier utile.",
+      "messageLimitLabel": "Maximum 2000 caracteres"
+    },
+    "legalNotice": {
+      "title": "Avant d envoyer",
+      "body": "En envoyant ce formulaire, vous confirmez que les informations peuvent etre utilisees pour examiner, classer et traiter votre demande. N incluez pas de mots de passe, donnees de paiement, codes de verification, documents complets ou informations sensibles sans rapport.",
+      "links": [
+        {
+          "label": "Politique de confidentialite",
+          "href": "/fr/privacy-policy/"
+        },
+        {
+          "label": "Conditions d utilisation",
+          "href": "/fr/terms-of-use/"
+        },
+        {
+          "label": "Livraison et retours",
+          "href": "/fr/shipping-returns-policy/"
+        },
+        {
+          "label": "Contact et service client",
+          "href": "/fr/customer-service-contact/"
+        }
+      ],
+      "acceptance": "En selectionnant Envoyer, vous confirmez avoir lu les notices applicables."
+    },
+    "topics": [
+      {
+        "label": "Projet",
+        "value": "project"
+      },
+      {
+        "label": "Mise a jour contenu",
+        "value": "content"
+      },
+      {
+        "label": "Partenariat",
+        "value": "partnership"
+      },
+      {
+        "label": "Support",
+        "value": "support"
+      }
+    ],
+    "submitLabel": "Envoyer",
+    "successTitle": "Message recu.",
+    "successBody": "Merci. Nous examinerons votre demande par email.",
+    "errorTitle": "Le message n a pas pu etre envoye.",
+    "errorBody": "Veuillez reessayer plus tard.",
+    "disabledTitle": "Formulaire indisponible",
+    "disabledBody": "Le formulaire est temporairement indisponible. Veuillez reessayer plus tard."
+  },
+  "showContentBlocks": false,
+  "blocks": [
+    {
+      "id": "contact-boundary",
+      "eyebrow": "Scope",
+      "title": "Un relais email leger.",
+      "body": "Cette page contact est concue pour des demandes professionnelles peu frequentes. Elle ne cree pas de base support personnalisee.",
+      "items": [
+        "Aucun corps de message n est stocke dans Sanity, Shopify, le coordinateur, KV, D1 ou R2",
+        "Turnstile et les limites de debit protegent la boite de reception",
+        "La page publique utilise uniquement le formulaire"
+      ],
+      "variant": "standard"
+    }
+  ]
+}

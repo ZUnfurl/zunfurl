@@ -1,0 +1,264 @@
+---
+import type { AboutSignatureContent } from "gcss-blocks";
+import { resolveContentImage } from "../../lib/images/imageSources";
+
+interface Props {
+  content: AboutSignatureContent;
+}
+
+const { content } = Astro.props as Props;
+---
+
+<section class="about-signature" aria-labelledby="about-signature-title">
+  <div class="container about-signature__layout">
+    <div class="about-signature__intro" data-reveal="up">
+      <p class="eyebrow">{content.eyebrow}</p>
+      <h2 id="about-signature-title" class="section-title about-signature__title">
+        {content.title}
+      </h2>
+      <p class="body-copy about-signature__body">{content.body}</p>
+    </div>
+
+    <div class="about-signature__panels">
+      {
+        content.panels.map((panel, index) => {
+          const image = resolveContentImage(panel, {
+            altFallback: panel.title,
+            localKeys: ["imagePath"],
+          });
+
+          return (
+            <article
+              id={panel.id}
+              class:list={[
+                "about-signature__panel",
+                `about-signature__panel--image-${panel.imagePosition}`,
+              ]}
+              data-reveal="up"
+            >
+              <figure class="about-signature__media">
+                <img
+                  class="about-signature__image"
+                  src={image.src}
+                  alt={image.alt}
+                  loading={index === 0 ? "eager" : "lazy"}
+                  decoding="async"
+                />
+              </figure>
+
+              <div class="about-signature__copy">
+                <div class="about-signature__meta">
+                  <p class="eyebrow about-signature__panel-eyebrow">
+                    {panel.eyebrow}
+                  </p>
+                  <span class="about-signature__counter">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                </div>
+                <h3>{panel.title}</h3>
+                <p>{panel.body}</p>
+                {
+                  panel.cta ? (
+                    <a class="about-signature__link" href={panel.cta.href}>
+                      {panel.cta.label}
+                    </a>
+                  ) : null
+                }
+              </div>
+            </article>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .about-signature {
+    padding-block: clamp(4.5rem, 8vw, 7.5rem);
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-bg-soft) 72%, transparent) 0%,
+        var(--color-bg) 100%
+      );
+  }
+
+  .about-signature__layout {
+    display: grid;
+    gap: clamp(2.75rem, 6vw, 5rem);
+  }
+
+  .about-signature__intro {
+    display: grid;
+    gap: 0.85rem;
+    max-width: min(56rem, 100%);
+  }
+
+  .about-signature__title {
+    max-width: 18ch;
+  }
+
+  .about-signature__body {
+    max-width: 62ch;
+  }
+
+  .about-signature__panels {
+    display: grid;
+    gap: clamp(2rem, 5vw, 4.5rem);
+  }
+
+  .about-signature__panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(18rem, 0.95fr);
+    gap: clamp(1.5rem, 4vw, 4rem);
+    align-items: center;
+    min-height: clamp(28rem, 44vw, 40rem);
+    padding-block: clamp(1rem, 2vw, 2rem);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .about-signature__panel:last-child {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .about-signature__panel--image-right .about-signature__media {
+    order: 2;
+  }
+
+  .about-signature__panel--image-right .about-signature__copy {
+    order: 1;
+  }
+
+  .about-signature__media {
+    position: relative;
+    min-height: clamp(24rem, 42vw, 38rem);
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--color-border) 82%, transparent);
+    background: color-mix(in srgb, var(--color-surface) 70%, transparent);
+  }
+
+  .about-signature__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.9) contrast(1.02);
+    transform: scale(1.01);
+  }
+
+  .about-signature__copy {
+    display: grid;
+    align-content: center;
+    gap: 1rem;
+    max-width: min(36rem, 100%);
+  }
+
+  .about-signature__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .about-signature__panel-eyebrow {
+    margin: 0;
+  }
+
+  .about-signature__counter {
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    color: var(--color-text-muted);
+  }
+
+  .about-signature__copy h3 {
+    max-width: 12ch;
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 4.2vw, 4.2rem);
+    font-weight: 500;
+    line-height: 0.96;
+  }
+
+  .about-signature__copy p {
+    max-width: 46ch;
+    margin: 0;
+    color: var(--color-text-muted);
+    line-height: 1.76;
+  }
+
+  .about-signature__link {
+    width: fit-content;
+    margin-top: 0.15rem;
+    color: var(--color-text);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .about-signature__link::after {
+    display: block;
+    width: 100%;
+    height: 1px;
+    margin-top: 0.35rem;
+    background: var(--color-accent);
+    content: "";
+    transform-origin: left;
+    transition: transform 180ms ease;
+  }
+
+  .about-signature__link:hover::after,
+  .about-signature__link:focus-visible::after {
+    transform: scaleX(0.72);
+  }
+
+  @media (max-width: 980px) {
+    .about-signature__panel {
+      grid-template-columns: 1fr;
+      min-height: 0;
+    }
+
+    .about-signature__panel--image-right .about-signature__media,
+    .about-signature__panel--image-right .about-signature__copy {
+      order: initial;
+    }
+
+    .about-signature__media {
+      min-height: clamp(20rem, 60vw, 32rem);
+    }
+
+    .about-signature__copy h3 {
+      max-width: 14ch;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .about-signature {
+      padding-block: 3.5rem;
+    }
+
+    .about-signature__layout {
+      gap: 2.25rem;
+    }
+
+    .about-signature__panels {
+      gap: 2rem;
+    }
+
+    .about-signature__panel {
+      gap: 1.3rem;
+      padding-block: 1.25rem;
+    }
+
+    .about-signature__media {
+      min-height: 18rem;
+    }
+
+    .about-signature__copy h3 {
+      font-size: clamp(2rem, 10vw, 3rem);
+    }
+  }
+</style>

@@ -1,0 +1,50 @@
+---
+import SiteHeader from "../shell/SiteHeader.astro";
+import type { ActiveLocale } from "../../i18n/config";
+
+interface NavItem {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  locale: ActiveLocale;
+  navItems: NavItem[];
+  lightLabel: string;
+  darkLabel: string;
+  currentPath: string;
+  headerVariant?: "default" | "overlay";
+  overlayTone?: "hero" | "theme";
+}
+
+const {
+  locale,
+  navItems,
+  lightLabel,
+  darkLabel,
+  currentPath,
+  headerVariant,
+  overlayTone,
+} = Astro.props as Props;
+---
+
+<div class="page-shell">
+  <SiteHeader
+    locale={locale}
+    navItems={navItems}
+    lightLabel={lightLabel}
+    darkLabel={darkLabel}
+    currentPath={currentPath}
+    variant={headerVariant}
+    overlayTone={overlayTone}
+  />
+  <main id="page-content">
+    <slot />
+  </main>
+</div>
+
+<style>
+  .page-shell {
+    min-height: 100vh;
+  }
+</style>

@@ -1,0 +1,158 @@
+---
+interface Props {
+  lightLabel: string;
+  darkLabel: string;
+}
+
+const { lightLabel, darkLabel } = Astro.props;
+---
+
+<button class="theme-toggle" type="button" aria-live="polite" data-theme-toggle>
+  <span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true">
+    <svg viewBox="0 0 24 24" role="presentation" focusable="false">
+      <circle
+        cx="12"
+        cy="12"
+        r="4.5"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"></circle>
+      <path
+        d="M12 2.5v2.2M12 19.3v2.2M21.5 12h-2.2M4.7 12H2.5M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6M18.7 18.7l-1.6-1.6M6.9 6.9 5.3 5.3"
+        fill="none"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-width="1.8"></path>
+    </svg>
+  </span>
+  <span class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true">
+    <svg viewBox="0 0 24 24" role="presentation" focusable="false">
+      <path
+        d="M15.8 3.2a8.8 8.8 0 1 0 5 15.5 9.5 9.5 0 0 1-8.3-15.5 8.6 8.6 0 0 0 3.3 0Z"
+        fill="none"
+        stroke="currentColor"
+        stroke-linejoin="round"
+        stroke-width="1.8"></path>
+    </svg>
+  </span>
+</button>
+
+<script is:inline>
+  const root = document.documentElement;
+  const button = document.querySelector("[data-theme-toggle]");
+  const storageKey = "gcss-theme";
+
+  function getSystemTheme() {
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+  }
+
+  function applyTheme(theme) {
+    root.dataset.theme = theme;
+    button?.setAttribute(
+      "aria-label",
+      theme === "dark" ? "Switch to light theme" : "Switch to dark theme",
+    );
+  }
+
+  function getPreferredTheme() {
+    return (
+      localStorage.getItem(storageKey) || root.dataset.theme || getSystemTheme()
+    );
+  }
+
+  applyTheme(getPreferredTheme());
+
+  button?.addEventListener("click", () => {
+    const nextTheme = root.dataset.theme === "dark" ? "light" : "dark";
+    localStorage.setItem(storageKey, nextTheme);
+    applyTheme(nextTheme);
+  });
+
+  window
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addEventListener("change", (event) => {
+      if (!localStorage.getItem(storageKey)) {
+        applyTheme(event.matches ? "dark" : "light");
+      }
+    });
+</script>
+
+<style>
+  .theme-toggle {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.75rem;
+    width: 2.75rem;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    background: color-mix(in srgb, var(--color-surface) 76%, transparent);
+    color: var(--color-text);
+    cursor: pointer;
+    transition:
+      transform 180ms ease,
+      border-color 180ms ease,
+      background-color 180ms ease,
+      color 180ms ease;
+  }
+
+  .theme-toggle:hover,
+  .theme-toggle:focus-visible {
+    transform: translateY(-1px);
+    border-color: var(--color-accent);
+    background: var(--color-surface-strong);
+  }
+
+  .theme-toggle__icon {
+    position: absolute;
+    display: inline-grid;
+    place-items: center;
+    width: 1.15rem;
+    height: 1.15rem;
+    transition:
+      opacity 180ms ease,
+      transform 180ms ease,
+      color 180ms ease;
+  }
+
+  .theme-toggle__icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  html[data-theme="light"] .theme-toggle__icon--sun,
+  html[data-theme="dark"] .theme-toggle__icon--moon {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+
+  html[data-theme="light"] .theme-toggle__icon--moon,
+  html[data-theme="dark"] .theme-toggle__icon--sun {
+    opacity: 0;
+    transform: scale(0.7) rotate(-18deg);
+  }
+
+  html[data-theme="light"] .theme-toggle {
+    color: #8a694f;
+  }
+
+  html[data-theme="dark"] .theme-toggle {
+    color: #f1ddd0;
+  }
+
+  @media (max-width: 720px) {
+    .theme-toggle {
+      height: 2.2rem;
+      width: 2.2rem;
+    }
+
+    .theme-toggle__icon {
+      width: 1rem;
+      height: 1rem;
+    }
+  }
+</style>

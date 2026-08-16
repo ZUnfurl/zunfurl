@@ -1,0 +1,71 @@
+{
+  "locale": "en",
+  "kind": "products",
+  "title": "Example Brand Products",
+  "seo": {
+    "title": "Products | Example Brand",
+    "description": "A neutral demo of the C Retail Catalog & Content Foundation with product CMS and read-only Shopify catalog mapping."
+  },
+  "pageHero": {
+    "eyebrow": "C catalog demo",
+    "title": "A product catalog with an editorial content layer.",
+    "body": "This page demonstrates the C catalog-content foundation. B profile projects do not generate or link this route by default.",
+    "slides": [
+      {
+        "src": "/brand-assets/hero/products/Hero-Products-01.webp",
+        "alt": "Example Brand products hero image 1.",
+        "eyebrow": "Catalog frame",
+        "caption": "A reusable hero for C profile product collections."
+      },
+      {
+        "src": "/brand-assets/hero/products/Hero-Products-02.webp",
+        "alt": "Example Brand products hero image 2.",
+        "eyebrow": "Product logic",
+        "caption": "A place for launch context, collection notes, and merchandising cues."
+      },
+      {
+        "src": "/brand-assets/hero/products/Hero-Products-03.webp",
+        "alt": "Example Brand products hero image 3.",
+        "eyebrow": "Future range",
+        "caption": "A scalable section for future product lines."
+      }
+    ]
+  },
+  "productSpotlight": {
+    "eyebrow": "Product source",
+    "title": "Cards come from the product workbench.",
+    "body": "Product cards combine Shopify-sourced media with Sanity-owned editorial copy when the retail machine profile is active.",
+    "ariaLabel": "Products spotlight navigation",
+    "previousLabel": "Previous product",
+    "nextLabel": "Next product",
+    "openProductLabel": "View product"
+  },
+  "blocks": [
+    {
+      "id": "catalog-boundary",
+      "eyebrow": "Boundary",
+      "title": "Shopify supplies read-only catalog facts.",
+      "body": "This foundation maps product identity and media; it does not include cart, checkout, payment, orders, tax, shipping, fulfillment, real-time price, or real-time inventory.",
+      "items": [
+        "Sanity owns editorial copy",
+        "Shopify supplies read-only catalog facts",
+        "Cloudflare handles edge delivery"
+      ],
+      "variant": "standard"
+    },
+    {
+      "id": "launch-flow",
+      "eyebrow": "Launch flow",
+      "title": "Publish catalog content through the workbench.",
+      "body": "Use Shopify for the source catalog record, then use Sanity to create language pages, stories, and SEO.",
+      "variant": "accent"
+    },
+    {
+      "id": "scale",
+      "eyebrow": "Scale",
+      "title": "The catalog can grow without reshaping pages.",
+      "body": "The same product card and detail templates support additional products when the C profile is enabled.",
+      "variant": "standard"
+    }
+  ]
+}

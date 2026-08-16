@@ -1,0 +1,182 @@
+---
+import type { ProductContent } from "gcss-blocks";
+
+interface Props {
+  locale: string;
+  product: ProductContent;
+  fallbackLinkLabel: string;
+}
+
+const { locale, product, fallbackLinkLabel } = Astro.props;
+
+const href = product.roadmapHref ?? `/${locale}/products/${product.slug}/`;
+const linkLabel = product.roadmapLinkLabel ?? fallbackLinkLabel;
+const description = product.tagline;
+---
+
+<article class="product-card">
+  <a
+    class="product-card__media-link"
+    href={href}
+    draggable="false"
+    aria-label={`${linkLabel} ${product.name}`}
+  >
+    <figure class="product-card__figure">
+      <img
+        class="product-card__image"
+        src={product.primaryImage}
+        alt={product.name}
+        loading="lazy"
+      />
+    </figure>
+  </a>
+
+  <div class="product-card__body">
+    <h3 class="product-card__title">{product.name}</h3>
+    <p class="product-card__description">{description}</p>
+    <a class="product-card__link" href={href}>{linkLabel}</a>
+  </div>
+</article>
+
+<style>
+  .product-card {
+    display: grid;
+    grid-template-rows: auto auto;
+    align-self: start;
+    padding: 0 0 clamp(1rem, 2vw, 1.35rem);
+    overflow: hidden;
+    border: 1px solid rgba(24, 23, 23, 0.08);
+    background:
+      radial-gradient(
+        circle at 50% 18%,
+        var(--spotlight-panel-glow, rgba(255, 255, 255, 0.68)),
+        transparent 30%
+      ),
+      linear-gradient(
+        180deg,
+        var(--spotlight-panel-bg-start, rgba(255, 248, 243, 0.96)) 0%,
+        var(--spotlight-panel-bg-end, rgba(241, 232, 223, 0.96)) 100%
+      );
+    box-shadow: 0 14px 32px rgba(23, 20, 18, 0.08);
+  }
+
+  .product-card__media-link {
+    display: grid;
+    aspect-ratio: 6 / 8;
+    min-height: 0;
+    overflow: hidden;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .product-card__figure {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    margin: 0;
+    overflow: hidden;
+    background:
+      radial-gradient(
+        circle at 50% 28%,
+        var(--spotlight-panel-glow, rgba(255, 255, 255, 0.68)),
+        transparent 46%
+      ),
+      var(
+        --spotlight-figure-bg,
+        linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.58) 0%,
+          rgba(247, 238, 230, 0.82) 100%
+        )
+      );
+  }
+
+  .product-card__image {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 52%;
+    pointer-events: none;
+    user-select: none;
+    filter: var(
+      --spotlight-image-shadow,
+      drop-shadow(0 22px 44px rgba(23, 20, 18, 0.16))
+    );
+  }
+
+  .product-card__body {
+    display: grid;
+    justify-items: center;
+    align-content: start;
+    gap: 0.68rem;
+    padding: clamp(1rem, 1.8vw, 1.25rem) clamp(1rem, 2vw, 1.35rem) 0;
+    text-align: center;
+  }
+
+  .product-card__title {
+    margin: 0;
+    color: var(--spotlight-text-strong, #181717);
+    font-family: var(--font-display);
+    font-size: clamp(1.65rem, 3vw, 2.3rem);
+    line-height: 0.96;
+    letter-spacing: 0;
+  }
+
+  .product-card__description {
+    max-width: 30ch;
+    margin: 0;
+    color: var(--spotlight-text-soft, rgba(24, 23, 23, 0.64));
+    font-size: clamp(0.82rem, 1vw, 0.94rem);
+    line-height: 1.68;
+    text-wrap: pretty;
+  }
+
+  .product-card__link {
+    margin-top: 0.2rem;
+    color: var(--spotlight-link, #181717);
+    font-size: 0.68rem;
+    line-height: 1;
+    letter-spacing: 0.16em;
+    text-decoration: underline;
+    text-transform: uppercase;
+    text-underline-offset: 0.28em;
+    transition: color 180ms ease;
+  }
+
+  .product-card__link:hover {
+    color: var(--spotlight-link-hover, rgba(24, 23, 23, 0.7));
+  }
+
+  html[data-theme="dark"] .product-card {
+    border-color: rgba(239, 238, 238, 0.08);
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.24);
+  }
+
+  @media (max-width: 720px) {
+    .product-card {
+      padding-bottom: 1.2rem;
+    }
+
+    .product-card__media-link {
+      aspect-ratio: 1 / 0.82;
+    }
+
+    .product-card__body {
+      padding: 0.95rem 1rem 0;
+    }
+
+    .product-card__title {
+      font-size: clamp(1.5rem, 7vw, 2rem);
+    }
+
+    .product-card__description {
+      max-width: 28ch;
+    }
+  }
+</style>

@@ -1,0 +1,261 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:gcss-v3-site-framework:schema:project:v1",
+  "title": "GCSS v3 project contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "frameworkVersion",
+    "templateMode",
+    "identity",
+    "delivery",
+    "features",
+    "deployment"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": 1 },
+    "frameworkVersion": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-((?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(?:\\.(?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*))?(?:\\+([0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*))?$"
+    },
+    "templateMode": { "type": "boolean" },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["projectName", "brandName", "domain"],
+      "properties": {
+        "projectName": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "brandName": {
+          "type": "string",
+          "minLength": 2,
+          "pattern": "^\\S(?:.*\\S)?$"
+        },
+        "domain": {
+          "type": "string",
+          "pattern": "^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+$"
+        }
+      }
+    },
+    "delivery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile", "contentSource", "defaultLocale", "locales"],
+      "properties": {
+        "profile": { "enum": ["static-brand", "cms-brand", "retail"] },
+        "contentSource": { "enum": ["local", "sanity"] },
+        "defaultLocale": { "enum": ["en", "fr", "zh-cn"] },
+        "locales": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["en", "fr", "zh-cn"] }
+        }
+      }
+    },
+    "features": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contactForm", "legalPages"],
+      "properties": {
+        "contactForm": { "type": "boolean" },
+        "legalPages": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "privacy-policy",
+              "terms-of-use",
+              "shipping-returns-policy",
+              "customer-service-contact"
+            ]
+          }
+        }
+      }
+    },
+    "deployment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["workerName", "studioHost", "githubRepository"],
+      "properties": {
+        "workerName": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "studioHost": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "githubRepository": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "type": "object",
+        "properties": {
+          "delivery": {
+            "type": "object",
+            "properties": { "profile": { "const": "static-brand" } },
+            "required": ["profile"]
+          }
+        },
+        "required": ["delivery"]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "delivery": {
+            "type": "object",
+            "properties": { "contentSource": { "const": "local" } }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": {
+          "features": {
+            "type": "object",
+            "properties": {
+              "contactForm": { "const": true }
+            },
+            "required": ["contactForm"]
+          }
+        },
+        "required": ["features"]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "features": {
+            "type": "object",
+            "properties": {
+              "legalPages": {
+                "type": "array",
+                "contains": { "const": "privacy-policy" }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": {
+          "features": {
+            "type": "object",
+            "properties": {
+              "legalPages": {
+                "type": "array",
+                "contains": { "const": "shipping-returns-policy" }
+              }
+            },
+            "required": ["legalPages"]
+          }
+        },
+        "required": ["features"]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "delivery": {
+            "type": "object",
+            "properties": { "profile": { "const": "retail" } }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": {
+          "delivery": {
+            "type": "object",
+            "properties": { "defaultLocale": { "const": "en" } },
+            "required": ["defaultLocale"]
+          }
+        },
+        "required": ["delivery"]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "delivery": {
+            "type": "object",
+            "properties": {
+              "locales": {
+                "type": "array",
+                "contains": { "const": "en" }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": {
+          "delivery": {
+            "type": "object",
+            "properties": { "defaultLocale": { "const": "fr" } },
+            "required": ["defaultLocale"]
+          }
+        },
+        "required": ["delivery"]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "delivery": {
+            "type": "object",
+            "properties": {
+              "locales": {
+                "type": "array",
+                "contains": { "const": "fr" }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": {
+          "delivery": {
+            "type": "object",
+            "properties": { "defaultLocale": { "const": "zh-cn" } },
+            "required": ["defaultLocale"]
+          }
+        },
+        "required": ["delivery"]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "delivery": {
+            "type": "object",
+            "properties": {
+              "locales": {
+                "type": "array",
+                "contains": { "const": "zh-cn" }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+---
+import { defaultLocale } from "../i18n/config";
+import { brandName } from "gcss-config";
+
+const target = `/${defaultLocale}/`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="canonical" href={target} />
+    <title>{`Redirecting to ${brandName}`}</title>
+  </head>
+  <body>
+    <p><a href={target}>{`Continue to ${brandName}`}</a></p>
+    <script is:inline>
+      const target =
+        document.querySelector('link[rel="canonical"]')?.getAttribute("href") ??
+        "/en/";
+      window.location.replace(target);
+    </script>
+  </body>
+</html>

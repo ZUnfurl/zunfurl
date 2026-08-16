@@ -1,0 +1,35 @@
+{
+  "$schema": "./gcss.project.schema.json",
+  "schemaVersion": 1,
+  "frameworkVersion": "0.3.0-preview.1",
+  "templateMode": false,
+  "identity": {
+    "projectName": "northstar-retail-catalog",
+    "brandName": "Northstar Catalog",
+    "domain": "catalog.northstar.test"
+  },
+  "delivery": {
+    "profile": "retail",
+    "contentSource": "local",
+    "defaultLocale": "en",
+    "locales": [
+      "en",
+      "fr",
+      "zh-cn"
+    ]
+  },
+  "features": {
+    "contactForm": true,
+    "legalPages": [
+      "privacy-policy",
+      "terms-of-use",
+      "customer-service-contact",
+      "shipping-returns-policy"
+    ]
+  },
+  "deployment": {
+    "workerName": "northstar-retail-catalog",
+    "studioHost": "northstar-retail-catalog-studio",
+    "githubRepository": "ZUnfurl/northstar-retail-catalog"
+  }
+}

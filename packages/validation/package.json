@@ -1,0 +1,16 @@
+{
+  "name": "gcss-validation",
+  "type": "module",
+  "version": "0.3.0-preview.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.mjs"
+    }
+  },
+  "dependencies": {
+    "zod": "^4.4.3"
+  }
+}

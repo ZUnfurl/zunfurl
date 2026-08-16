@@ -1,0 +1,95 @@
+{
+  "name": "文档问题",
+  "description": "报告错误、失效链接、术语冲突或缺少的操作说明。",
+  "title": "[Docs] ",
+  "labels": ["documentation", "triage"],
+  "body": [
+    {
+      "type": "markdown",
+      "attributes": {
+        "value": "请只提交可公开信息。客户手册片段、截图和配置必须先脱敏，并确认素材有公开再分发权。"
+      }
+    },
+    {
+      "type": "checkboxes",
+      "id": "preflight",
+      "attributes": {
+        "label": "提交前确认",
+        "options": [
+          {
+            "label": "我已搜索现有 Issue，并确认当前默认分支仍存在此问题。",
+            "required": true
+          },
+          {
+            "label": "我没有提交客户数据、secret、真实生产标识或无权公开的素材。",
+            "required": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "input",
+      "id": "framework_version",
+      "attributes": {
+        "label": "Framework version / commit",
+        "placeholder": "0.3.0-preview.1 或完整 commit SHA"
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "dropdown",
+      "id": "area",
+      "attributes": {
+        "label": "文档区域",
+        "options": [
+          "README / Quickstart",
+          "A1/A2 static-brand",
+          "B cms-brand",
+          "C retail catalog/content foundation",
+          "Skill / 初始化流程",
+          "部署 / 客户交付",
+          "安全 / 许可 / 治理",
+          "Release / Roadmap"
+        ]
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "input",
+      "id": "location",
+      "attributes": {
+        "label": "位置",
+        "description": "给出仓库相对路径、标题或公开 URL。"
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "problem",
+      "attributes": {
+        "label": "问题与影响",
+        "description": "说明当前文本为何错误、矛盾、不可执行或可能误导。"
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "proposed_change",
+      "attributes": {
+        "label": "建议修改",
+        "description": "给出建议表达，并说明 A1/A2/B/C、Preview/Roadmap 或兼容性影响。"
+      },
+      "validations": {
+        "required": true
+      }
+    }
+  ]
+}

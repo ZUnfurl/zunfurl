@@ -1,0 +1,124 @@
+{
+  "locale": "zh-cn",
+  "kind": "contact",
+  "title": "联系 Example Brand",
+  "seo": {
+    "title": "联系 Example Brand",
+    "description": "就项目、内容、合作或支持事项联系 Example Brand。"
+  },
+  "pageHero": {
+    "eyebrow": "联系",
+    "title": "发送一项清晰的请求。",
+    "body": "通过本页将项目、内容、合作或支持请求转交给合适的团队。",
+    "slides": [
+      {
+        "src": "/brand-assets/hero/contact/Hero-Contact-01.webp",
+        "alt": "Example Brand 联系页面首屏示例图片一。",
+        "eyebrow": "咨询",
+        "caption": "通过联系表单发送简明的请求。"
+      },
+      {
+        "src": "/brand-assets/hero/contact/Hero-Contact-02.webp",
+        "alt": "Example Brand 联系页面首屏示例图片二。",
+        "eyebrow": "分流",
+        "caption": "说明请求重点，方便合适的团队回复。"
+      }
+    ]
+  },
+  "contactSection": {
+    "enabled": true,
+    "eyebrow": "联系表单",
+    "title": "一次提交一项明确请求。",
+    "body": "只提供理解和分流请求所必需的信息。",
+    "businessDirections": [
+      {
+        "title": "项目咨询",
+        "body": "新网站需求、范围问题和交付规划。"
+      },
+      {
+        "title": "内容运营",
+        "body": "页面更新、CMS 问题和编辑维护。"
+      },
+      {
+        "title": "合作事项",
+        "body": "协作、媒体、渠道和其他业务请求。"
+      }
+    ],
+    "responseTime": "为改善服务体验，我们正在完善联系和客户支持流程。在此期间，回复、需求确认和后续跟进可能比平时需要更长时间。",
+    "fieldCopy": {
+      "nameLabel": "姓名",
+      "namePlaceholder": "你的姓名",
+      "emailLabel": "电子邮箱",
+      "emailPlaceholder": "you@example.com",
+      "topicLabel": "咨询类型",
+      "orderNumberLabel": "参考信息",
+      "orderNumberPlaceholder": "选填",
+      "messageLabel": "消息内容",
+      "messagePlaceholder": "请说明背景、目标和相关时间安排。",
+      "messageLimitLabel": "最多 2000 个字符"
+    },
+    "legalNotice": {
+      "title": "发送前请确认",
+      "body": "提交本表单即表示你确认所提供的信息可用于审核、分类和回复请求。请勿提交密码、支付凭据、验证码、完整身份证件、医疗记录或与请求无关的敏感信息。",
+      "links": [
+        {
+          "label": "隐私政策",
+          "href": "/zh-cn/privacy-policy/"
+        },
+        {
+          "label": "使用条款",
+          "href": "/zh-cn/terms-of-use/"
+        },
+        {
+          "label": "配送与退货政策",
+          "href": "/zh-cn/shipping-returns-policy/"
+        },
+        {
+          "label": "联系与客户服务",
+          "href": "/zh-cn/customer-service-contact/"
+        }
+      ],
+      "acceptance": "选择“发送请求”即表示你已阅读并接受以上适用说明。"
+    },
+    "topics": [
+      {
+        "label": "项目咨询",
+        "value": "project"
+      },
+      {
+        "label": "内容更新",
+        "value": "content"
+      },
+      {
+        "label": "合作事项",
+        "value": "partnership"
+      },
+      {
+        "label": "支持请求",
+        "value": "support"
+      }
+    ],
+    "submitLabel": "发送请求",
+    "successTitle": "消息已收到。",
+    "successBody": "谢谢，我们将通过电子邮件审核并回复你的请求。",
+    "errorTitle": "消息未能发送。",
+    "errorBody": "请稍后重试。",
+    "disabledTitle": "在线表单暂不可用",
+    "disabledBody": "表单暂时不可用，请稍后重试。"
+  },
+  "showContentBlocks": false,
+  "blocks": [
+    {
+      "id": "contact-boundary",
+      "eyebrow": "范围",
+      "title": "轻量的电子邮件转交流程。",
+      "body": "此联系页面用于低频业务咨询，不创建自定义支持数据库或客户账户。",
+      "items": [
+        "消息正文不会存入 Sanity、Shopify、协调对象、KV、D1 或 R2",
+        "Turnstile 和速率限制用于保护收件邮箱",
+        "公开页面仅使用表单，不暴露直接 mailto 链接"
+      ],
+      "variant": "standard"
+    }
+  ]
+}

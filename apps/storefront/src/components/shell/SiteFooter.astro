@@ -1,0 +1,239 @@
+---
+import { getDictionary, type SupportedLocale } from "../../i18n/config";
+import { brandName } from "gcss-config";
+
+interface FooterLink {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  locale: SupportedLocale;
+  navItems: FooterLink[];
+  copyright: string;
+}
+
+const { locale, navItems, copyright } = Astro.props;
+const dictionary = getDictionary(locale);
+---
+
+<footer class="site-footer" aria-label={dictionary.site.footerLabel}>
+  <div class="container">
+    <div class="site-footer__inner">
+      <a
+        class="site-footer__logo-link"
+        href={`/${locale}/`}
+        aria-label={dictionary.site.homeLinkLabel}
+      >
+        <span class="site-footer__logo">{brandName}</span>
+      </a>
+
+      <p class="site-footer__eyebrow">{dictionary.site.brandEyebrow}</p>
+
+      <nav
+        class="site-footer__nav"
+        aria-label={dictionary.site.footerNavigationLabel}
+      >
+        {navItems.map((item) => <a href={item.href}>{item.label}</a>)}
+      </nav>
+
+      <p class="site-footer__copyright">{copyright}</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    padding: clamp(4rem, 8vw, 5.5rem) 0 2.4rem;
+  }
+
+  .site-footer::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(
+        circle at 50% 0%,
+        rgba(205, 169, 146, 0.16),
+        transparent 38%
+      ),
+      linear-gradient(
+        180deg,
+        transparent 0%,
+        color-mix(in srgb, var(--color-bg-soft) 84%, transparent) 100%
+      );
+    pointer-events: none;
+  }
+
+  .site-footer__inner {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 1rem;
+    padding-top: 1.8rem;
+    text-align: center;
+  }
+
+  .site-footer__inner::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: min(100%, 32rem);
+    height: 1px;
+    transform: translateX(-50%);
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--color-border) 16%,
+      var(--color-accent) 50%,
+      var(--color-border) 84%,
+      transparent 100%
+    );
+  }
+
+  .site-footer__logo-link {
+    --site-footer-logo-color: var(--color-text);
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: min(18rem, 72vw);
+    min-height: 3.6rem;
+    text-decoration: none;
+    filter: drop-shadow(0 10px 28px rgba(18, 12, 11, 0.16));
+    transition:
+      transform 180ms ease,
+      opacity 180ms ease;
+  }
+
+  .site-footer__logo-link:hover,
+  .site-footer__logo-link:focus-visible {
+    transform: translateY(-2px);
+    opacity: 0.92;
+  }
+
+  .site-footer__logo {
+    color: var(--site-footer-logo-color);
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 7vw, 4.4rem);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+
+  .site-footer__eyebrow {
+    margin: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .site-footer__nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.8rem 1.4rem;
+  }
+
+  .site-footer__nav a {
+    position: relative;
+    padding-bottom: 0.18rem;
+    text-decoration: none;
+    font-size: 0.74rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    transition: color 180ms ease;
+  }
+
+  .site-footer__nav a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--color-accent);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 180ms ease;
+  }
+
+  .site-footer__nav a:hover,
+  .site-footer__nav a:focus-visible {
+    color: var(--color-text);
+  }
+
+  .site-footer__nav a:hover::after,
+  .site-footer__nav a:focus-visible::after {
+    transform: scaleX(1);
+  }
+
+  .site-footer__copyright {
+    margin: 0;
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(
+      in srgb,
+      var(--color-text-muted) 84%,
+      var(--color-text) 16%
+    );
+  }
+
+  html[data-theme="dark"] .site-footer::before {
+    background:
+      radial-gradient(
+        circle at 50% 0%,
+        rgba(205, 169, 146, 0.14),
+        transparent 34%
+      ),
+      linear-gradient(
+        180deg,
+        transparent 0%,
+        color-mix(in srgb, rgb(8, 8, 8) 72%, transparent) 100%
+      );
+  }
+
+  html[data-theme="dark"] .site-footer__logo-link {
+    --site-footer-logo-color: #f3efec;
+    filter: drop-shadow(0 12px 30px rgba(0, 0, 0, 0.34));
+  }
+
+  @media (max-width: 720px) {
+    .site-footer {
+      padding: 3.6rem 0 2rem;
+    }
+
+    .site-footer__inner {
+      gap: 0.85rem;
+      padding-top: 1.35rem;
+    }
+
+    .site-footer__logo-link {
+      width: min(14rem, 64vw);
+    }
+
+    .site-footer__eyebrow {
+      font-size: 0.66rem;
+      letter-spacing: 0.22em;
+    }
+
+    .site-footer__nav {
+      gap: 0.7rem 1rem;
+    }
+
+    .site-footer__nav a {
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+    }
+
+    .site-footer__copyright {
+      font-size: 0.74rem;
+      letter-spacing: 0.06em;
+    }
+  }
+</style>

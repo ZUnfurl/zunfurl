@@ -1,0 +1,4 @@
+interface:
+  display_name: "GCSS v3 Site Framework"
+  short_description: "Initialize and audit A1/A2/B/C sites"
+  default_prompt: "Use $gcss-v3-site-framework to inspect this repository, select the correct delivery profile, and prepare a reviewed initialization plan before writing changes."

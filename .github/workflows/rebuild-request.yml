@@ -1,0 +1,23 @@
+name: Rebuild Request Notice
+
+on:
+  repository_dispatch:
+    types:
+      - sanity_publish
+      - shopify_product_structure
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  acknowledge:
+    name: Rebuild request received / manual Deploy required
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: State the manual deployment boundary
+        run: echo "Rebuild request received. A maintainer must run the manual Deploy workflow."

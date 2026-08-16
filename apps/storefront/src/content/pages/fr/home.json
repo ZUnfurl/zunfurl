@@ -1,0 +1,73 @@
+{
+  "locale": "fr",
+  "kind": "home",
+  "title": "Accueil Example Brand",
+  "seo": {
+    "title": "Example Brand | Modele de site de marque modulaire",
+    "description": "Un site demo neutre ZUnfurl montrant des modules Astro, Sanity, Cloudflare et Shopify optionnel."
+  },
+  "hero": {
+    "eyebrow": "Demo ZUnfurl",
+    "titleLines": [
+      "Un site de marque modulaire,",
+      "pret pour votre projet."
+    ],
+    "intro": "Example Brand est un placeholder neutre pour presenter le framework. Remplacez les textes, images, mentions legales et integrations pour chaque client.",
+    "primaryCta": {
+      "label": "Explorer le framework",
+      "href": "/fr/about/"
+    },
+    "secondaryCta": {
+      "label": "Nous contacter",
+      "href": "/fr/contact/"
+    },
+    "motionLabel": "Animation hero",
+    "videoSrc": "/brand-assets/video/homevideo.mp4",
+    "videoPoster": "/brand-assets/brand/Brand-01.webp",
+    "motionQuote": "Le hero prend en charge video, image fallback et livraison statique.",
+    "captionEyebrow": "Couche template",
+    "captionTitle": "Contenu reutilisable, profils stricts."
+  },
+  "brandFramework": {
+    "eyebrow": "Couches du framework",
+    "ariaLabel": "Couches du framework Example Brand",
+    "ctaLabel": "Voir les details",
+    "slides": [
+      {
+        "image": "/brand-assets/brand/Brand-01.webp",
+        "title": "Storefront statique d abord",
+        "description": "Astro garde les pages rapides, cacheables et simples a deployer sur Cloudflare."
+      },
+      {
+        "image": "/brand-assets/brand/Brand-02.webp",
+        "title": "CMS clair pour editeurs",
+        "description": "Sanity gere les modules de page lorsque le profil inclut un CMS de contenu."
+      },
+      {
+        "image": "/brand-assets/brand/Brand-03.webp",
+        "title": "Catalogue en lecture seule",
+        "description": "Le profil C peut mapper l'identité et les médias Shopify dans un catalogue statique, sans checkout ni gestion des commandes."
+      }
+    ]
+  },
+  "homeProductSpotlight": {
+    "eyebrow": "Module catalogue",
+    "title": "Mise en avant produit optionnelle.",
+    "body": "Cette zone apparait seulement lorsque le profil machine retail et le CMS de contenu produit sont actifs.",
+    "ariaLabel": "Navigation produits",
+    "previousLabel": "Produit precedent",
+    "nextLabel": "Produit suivant",
+    "openProductLabel": "Voir le produit"
+  },
+  "contactMaskSection": {
+    "eyebrow": "Contact",
+    "title": "Ouvrir une conversation cadre.",
+    "body": "Le module de formulaire leger traite les demandes sans stocker les messages dans une base personnalisee.",
+    "image": "/brand-assets/hero/contact/Hero-Contact-01.webp",
+    "imageAlt": "Visuel contact Example Brand",
+    "cta": {
+      "label": "Ouvrir la page contact",
+      "href": "/fr/contact/"
+    }
+  }
+}

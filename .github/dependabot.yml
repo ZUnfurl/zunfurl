@@ -1,0 +1,33 @@
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    target-branch: main
+    schedule:
+      interval: weekly
+      day: monday
+      time: "04:20"
+      timezone: Asia/Singapore
+    open-pull-requests-limit: 5
+    versioning-strategy: increase-if-necessary
+    groups:
+      npm-patch-and-minor:
+        update-types:
+          - patch
+          - minor
+
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: main
+    schedule:
+      interval: weekly
+      day: monday
+      time: "04:40"
+      timezone: Asia/Singapore
+    open-pull-requests-limit: 5
+    groups:
+      actions-patch-and-minor:
+        update-types:
+          - patch
+          - minor

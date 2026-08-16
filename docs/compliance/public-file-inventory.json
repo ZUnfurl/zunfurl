@@ -1,0 +1,3485 @@
+{
+  "schemaVersion": 1,
+  "inventoryDate": "2026-08-15",
+  "sourceCommit": "b0e5a0986e1b2f6e4a4ed52085208515dc741516",
+  "scope": {
+    "source": "git ls-tree -r -l <sourceCommit>",
+    "overlay": "tracked modifications and non-ignored untracked files",
+    "selfEvidencePaths": [
+      "docs/compliance/public-file-inventory.json",
+      "docs/compliance/public-file-inventory.md"
+    ],
+    "note": "自引用清单不递归登记；冻结候选 commit 后必须重新生成最终 tree manifest。"
+  },
+  "reasonCodes": {
+    "ASSET_REPLACEMENT_REQUIRED": "来源提交中的媒体或品牌视觉权利证据不足，必须用已登记素材替换。",
+    "COMMERCIAL_SALES_COLLATERAL": "面向客户的销售说辞包含超出首个 Preview 的能力表达，不进入公共候选。",
+    "CURRENT_PUBLIC_SOURCE": "当前实现或公共说明属于候选范围，可保留并继续接受后续 Gate。",
+    "GENERATED_LOCKFILE": "可重现安装所需的生成锁文件；保留并由依赖 Gate 验证。",
+    "INTERNAL_COMMERCIAL_PLAN": "内部商业分层和产品化计划不属于开源使用者文档。",
+    "INTERNAL_IMPLEMENTATION_AUDIT": "实现过程审计已经漂移，不能作为公开权威。",
+    "INTERNAL_MIGRATION_CHRONOLOGY": "内部页面演进和迁移时间线不属于公开契约。",
+    "INTERNAL_MIGRATION_PLAN": "内部迁移计划已由 Skill 的稳定图片政策取代。",
+    "INTERNAL_PROJECT_LOG": "私有工程日志含仓库状态、阶段证据或内部判断，从公共候选排除。",
+    "OLD_ARCHITECTURE_WITH_PRIVATE_METRICS": "旧架构文档包含来源站点指标和已不支持的交易、Preview、Backup/Restore 表述。",
+    "PUBLIC_ARCHITECTURE_REWRITE": "保留主题，但必须改写为 ZUnfurl 公开架构和当前能力矩阵。",
+    "PUBLIC_CONTACT_DESIGN_REWRITE": "Contact 设计保留技术价值，但需删除时效价格、内部状态和未验证表述。",
+    "PUBLIC_REPOSITORY_WORKFLOW_REWRITE": "原文假定私有框架模板，公开仓库发布前必须改写启动口径。",
+    "RETAIL_CATALOG_TERMINOLOGY_REWRITE": "C 必须改称 Retail Catalog & Content Foundation，并删除框架提供购买流程的暗示。",
+    "REWRITTEN_CANDIDATE_PENDING_GATE": "工作树中已提供候选替换，仍需对应编码、文本或资产 Gate 验证。",
+    "SOURCE_LEGAL_REWRITE_REQUIRED": "来源提交中的中文法律示例损坏，必须以中性 UTF-8 示例重写。",
+    "SOURCE_FILE_REMOVED_FROM_CANDIDATE": "工作树已移除来源文件；公共候选不得继续携带该 blob。",
+    "SOURCE_TEXT_REWRITE_REQUIRED": "来源提交中的中文示例损坏，必须以中性 UTF-8 示例重写。",
+    "WORKTREE_COMPLIANCE_EVIDENCE": "本地一次性扫描证据，不进入最终公共源码树。"
+  },
+  "sourceDecisionSummary": {
+    "exclude": 8,
+    "include": 185,
+    "rewrite": 44
+  },
+  "worktreeDecisionSummary": {
+    "exclude": 16,
+    "include": 152,
+    "rewrite": 6
+  },
+  "sourceFiles": [
+    {
+      "blobSha": "e876518e6520c5fcf903633bd58a4e9cc8beee77",
+      "path": ".agents/skills/gcss-v3-site-framework/SKILL.md",
+      "sizeBytes": 5811,
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "20bef8c51636ed4af2bd4782377f84d8e29da1e6",
+      "path": ".agents/skills/gcss-v3-site-framework/agents/openai.yaml",
+      "sizeBytes": 292,
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "9b6b8a97faa0e1e3f450d9fc5c4065a6fac24e07",
+      "path": ".agents/skills/gcss-v3-site-framework/references/acceptance.md",
+      "sizeBytes": 1944,
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "a567ed4f2857919d7bc547141d6b49f208b32729",
+      "path": ".agents/skills/gcss-v3-site-framework/references/compatibility.md",
+      "sizeBytes": 711,
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "01e11ade6d0197145d05a055afaa7fd61cf64ad6",
+      "path": ".agents/skills/gcss-v3-site-framework/references/contact-form.md",
+      "sizeBytes": 1058,
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "d3a86cb2df9654d0decc5fae45b479e2ed1bb0c2",
+      "path": ".agents/skills/gcss-v3-site-framework/references/content-model.md",
+      "sizeBytes": 1772,
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "504d4c3f6be7a20fed1f1c9c9726f229d5b026e3",
+      "path": ".agents/skills/gcss-v3-site-framework/references/customer-docs.md",
+      "sizeBytes": 1411,
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "a5d1a53399d7be23cd56886de24795f7b98da9e3",
+      "path": ".agents/skills/gcss-v3-site-framework/references/deployment.md",
+      "sizeBytes": 1923,
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "21372ca005aee8d447554368a3beb9556686b759",
+      "path": ".agents/skills/gcss-v3-site-framework/references/image-policy.md",
+      "sizeBytes": 929,
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "784a6a0ccb68c18967fd035aaa02b025ec895501",
+      "path": ".agents/skills/gcss-v3-site-framework/references/new-project-cms-brand.md",
+      "sizeBytes": 2644,
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "7222ec8c15e4858607b5b13183b6ddef81d522a7",
+      "path": ".agents/skills/gcss-v3-site-framework/references/new-project-retail.md",
+      "sizeBytes": 2713,
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "d7d4207588569fc98de8668dfc567468ff08c352",
+      "path": ".agents/skills/gcss-v3-site-framework/references/new-project-static-brand.md",
+      "sizeBytes": 2669,
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "bafde66ae1fd617ed5b5226715e3c4b4c7a85ddb",
+      "path": ".agents/skills/gcss-v3-site-framework/references/new-project-workflow.md",
+      "sizeBytes": 2965,
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "c6924a506226f240fd9416f33fbf716d0c238d1a",
+      "path": ".agents/skills/gcss-v3-site-framework/references/platform-ownership-and-handoff.md",
+      "sizeBytes": 4346,
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "c093816bdc375abafd54e109551865a6f0a0fd32",
+      "path": ".agents/skills/gcss-v3-site-framework/references/profile-migrations.md",
+      "sizeBytes": 1274,
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "f78c75c542132f82c5df776da72eb4c1c6b06817",
+      "path": ".agents/skills/gcss-v3-site-framework/references/profiles.md",
+      "sizeBytes": 2109,
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "285a703d9552819e94fdbb71862d0749decab402",
+      "path": ".agents/skills/gcss-v3-site-framework/references/retail-operations.md",
+      "sizeBytes": 1218,
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "9bc7520febce778dd4454bd92718e496db91f6f4",
+      "path": ".agents/skills/gcss-v3-site-framework/references/service-and-secret-matrix.md",
+      "sizeBytes": 1651,
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "d0f214b0d3e6a743946d0edb5ac7086d989667cc",
+      "path": ".agents/skills/gcss-v3-site-framework/references/validation.md",
+      "sizeBytes": 1382,
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "eb3f786b4db75b8159cd89907b54ced7792df129",
+      "path": ".env.example",
+      "sizeBytes": 1006,
+      "category": "configuration",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "184f438a75163e8896acaa4a6347b42be0f1f141",
+      "path": ".github/workflows/backup.yml",
+      "sizeBytes": 1386,
+      "category": "workflow",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "47f25006f2bacad3206cedae324dacfe7e3fa7d0",
+      "path": ".github/workflows/deploy.yml",
+      "sizeBytes": 5054,
+      "category": "workflow",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "dac9dc9668b0ba5cae4f5f3fd62a61a9aa17a87a",
+      "path": ".github/workflows/preview.yml",
+      "sizeBytes": 1934,
+      "category": "workflow",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "5c7b7b9c3e66e28e77a12424494123ea566e0d40",
+      "path": ".github/workflows/restore-test.yml",
+      "sizeBytes": 1273,
+      "category": "workflow",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "7ca05c2e96a5ad8eca24a54a3aa5c6806b9a5555",
+      "path": ".gitignore",
+      "sizeBytes": 541,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "af1c89e344fad1fe526bb387ade9e22ee05082a1",
+      "path": "AGENTS.md",
+      "sizeBytes": 4922,
+      "category": "repository-doc",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "8d79234f62e57e13c1cdba22a69d7f424533c776",
+      "path": "README.md",
+      "sizeBytes": 8510,
+      "category": "repository-doc",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "27130b5e337e23e1612b50bac75addb5218e4979",
+      "path": "apps/storefront/astro.config.mjs",
+      "sizeBytes": 178,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "572959003685552cfe97989ee4659b49a63ad9db",
+      "path": "apps/storefront/package.json",
+      "sizeBytes": 714,
+      "category": "configuration",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "6f87fc229c7facdced0affad12bfbed7e0733c3c",
+      "path": "apps/storefront/public/brand-assets/brand/Brand-01.webp",
+      "sizeBytes": 50048,
+      "category": "image",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "1e498722a3f4b0903907f2c50d50480a4384cb88",
+      "path": "apps/storefront/public/brand-assets/brand/Brand-02.webp",
+      "sizeBytes": 194602,
+      "category": "image",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "c40dde71e687aadd4c2da61b11bc78c4417a8136",
+      "path": "apps/storefront/public/brand-assets/brand/Brand-03.webp",
+      "sizeBytes": 99196,
+      "category": "image",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "17f3e6a3dff6292fd0640b77e8fad654903d74f2",
+      "path": "apps/storefront/public/brand-assets/hero/about/Hero-About-01.webp",
+      "sizeBytes": 93858,
+      "category": "image",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "42cf93fd26d73a5ce44b0ac636dd6c34a469b572",
+      "path": "apps/storefront/public/brand-assets/hero/about/Hero-About-02.webp",
+      "sizeBytes": 55012,
+      "category": "image",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "c40dde71e687aadd4c2da61b11bc78c4417a8136",
+      "path": "apps/storefront/public/brand-assets/hero/about/Hero-About-03.webp",
+      "sizeBytes": 99196,
+      "category": "image",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "6f87fc229c7facdced0affad12bfbed7e0733c3c",
+      "path": "apps/storefront/public/brand-assets/hero/contact/Hero-Contact-01.webp",
+      "sizeBytes": 50048,
+      "category": "image",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "1e498722a3f4b0903907f2c50d50480a4384cb88",
+      "path": "apps/storefront/public/brand-assets/hero/contact/Hero-Contact-02.webp",
+      "sizeBytes": 194602,
+      "category": "image",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "5dc1f0b90ff9ee45413788c5bdea443101fb8217",
+      "path": "apps/storefront/public/brand-assets/hero/products/Hero-Products-01.webp",
+      "sizeBytes": 122472,
+      "category": "image",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "5e8d3763097d05cb2ee1215f4d6348d358db2d71",
+      "path": "apps/storefront/public/brand-assets/hero/products/Hero-Products-02.webp",
+      "sizeBytes": 201800,
+      "category": "image",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "339c44709650f4c248b17308ec8ac3de2556f5b2",
+      "path": "apps/storefront/public/brand-assets/hero/products/Hero-Products-03.webp",
+      "sizeBytes": 79268,
+      "category": "image",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "b677dea42cd1d4c819881b74c759fe7939169ea6",
+      "path": "apps/storefront/public/brand-assets/logo/logo_01.svg",
+      "sizeBytes": 10109,
+      "category": "logo",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "b1f1308c29115baff7ced1d09e1a8fb2efb59274",
+      "path": "apps/storefront/public/brand-assets/logo/logo_icon_01.svg",
+      "sizeBytes": 2486,
+      "category": "logo",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "dfc8d6f08da6a3c51b4de8831cc46884fb9b663c",
+      "path": "apps/storefront/public/brand-assets/logo/logo_word_01.svg",
+      "sizeBytes": 7435,
+      "category": "logo",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "77cd53b4af4bdd85bef45c9686be770da406c0e8",
+      "path": "apps/storefront/public/brand-assets/masks/cut-01-mask.svg",
+      "sizeBytes": 4590,
+      "category": "image",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "4e68e94a770b20c5329aa4c6371eab56f3d6de89",
+      "path": "apps/storefront/public/brand-assets/products/example-product/example-product-sku-01.webp",
+      "sizeBytes": 32212,
+      "category": "image",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "3e87860d4ea95e14ac0706a0f293ee3036aaadf4",
+      "path": "apps/storefront/public/brand-assets/products/example-product/example-product-sku-02.webp",
+      "sizeBytes": 47610,
+      "category": "image",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "1ba09b0fc2cac7185b7698b1ab586b7097d15311",
+      "path": "apps/storefront/public/brand-assets/products/example-product/example-product-sku-03.webp",
+      "sizeBytes": 40648,
+      "category": "image",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "8d36754dc4e8670ec6c609775dca0a664881d744",
+      "path": "apps/storefront/public/brand-assets/products/example-product/example-product-sku-04.webp",
+      "sizeBytes": 67052,
+      "category": "image",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "78f0ba67a8b17553f89ba47b8cb2fb4b4aed206e",
+      "path": "apps/storefront/public/brand-assets/products/example-product/example-product-sku-main.webp",
+      "sizeBytes": 25624,
+      "category": "image",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "e3d5d86801db8391d0c7363fe135b4ca10f4d440",
+      "path": "apps/storefront/public/brand-assets/products/example-product/transparency/example-product-powder-01.webp",
+      "sizeBytes": 101648,
+      "category": "image",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "ef6487f3d19d8e7afeb3f887d39ec2b7cf0940c6",
+      "path": "apps/storefront/public/brand-assets/products/example-product/transparency/example-product-powder-02.webp",
+      "sizeBytes": 109424,
+      "category": "image",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "98aa0b5b9b11394f7e034a7c2927576079a7d8ca",
+      "path": "apps/storefront/public/brand-assets/products/example-product/transparency/example-product-powder-03.webp",
+      "sizeBytes": 94774,
+      "category": "image",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "74ec58a7c0723eb410dbf4c6317be0a7b50b8825",
+      "path": "apps/storefront/public/brand-assets/products/example-product/transparency/example-product-powder-04.webp",
+      "sizeBytes": 157214,
+      "category": "image",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "53a8760affef6e88c876cc99eace7caf1fc70f0f",
+      "path": "apps/storefront/public/brand-assets/products/example-product/transparency/example-product-powder-05.webp",
+      "sizeBytes": 62920,
+      "category": "image",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "6d13c9a3b52472ecec44dd32b51401e4bcdc22bb",
+      "path": "apps/storefront/public/brand-assets/products/example-product/transparency/example-product-powder-06.webp",
+      "sizeBytes": 107366,
+      "category": "image",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "0fbc21180332c8a962c72cb95d548ecb237ac6e2",
+      "path": "apps/storefront/public/brand-assets/video/homevideo.mp4",
+      "sizeBytes": 2352509,
+      "category": "video",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "97a604541398c58c750ea450ff5eaadd2204c8f2",
+      "path": "apps/storefront/public/favicon.ico",
+      "sizeBytes": 4854,
+      "category": "favicon",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "85d7ace4b67015396b1e0b9e0c9724626d911474",
+      "path": "apps/storefront/public/favicon.svg",
+      "sizeBytes": 2700,
+      "category": "favicon",
+      "decision": "rewrite",
+      "reasonCode": "ASSET_REPLACEMENT_REQUIRED"
+    },
+    {
+      "blobSha": "54a57c2441a504296cfbf26925ac172a2cf6538e",
+      "path": "apps/storefront/public/robots.txt",
+      "sizeBytes": 65,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "a1daa6ba639f4f92b48944b3a67d45b5ee1a64e5",
+      "path": "apps/storefront/scripts/optimize-brand-assets.mjs",
+      "sizeBytes": 4849,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "f9b44a970beab21ae2e9ddd9aa3d1177246156d8",
+      "path": "apps/storefront/scripts/optimize-brand-video.mjs",
+      "sizeBytes": 3087,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "4e4edead7a46b9a06b8788dcaa67dd246bd7e5b8",
+      "path": "apps/storefront/src/components/brand/AboutSignatureSection.astro",
+      "sizeBytes": 6233,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "c30e4977ac4d13b2fd616256c5fd584b137017e1",
+      "path": "apps/storefront/src/components/brand/BrandContentBlocks.astro",
+      "sizeBytes": 2827,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "d6c48d26b1c86832b72c3d9946f2610d4ba76956",
+      "path": "apps/storefront/src/components/brand/BrandPageHero.astro",
+      "sizeBytes": 20636,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "65fee9ad2aa0e0679cf2452cd26d98fb5dd5bb2d",
+      "path": "apps/storefront/src/components/brand/BrandPageTemplate.astro",
+      "sizeBytes": 3032,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "ad4e702b832f2776d4c741986032ccb6ddd1ea87",
+      "path": "apps/storefront/src/components/brand/ContactSection.astro",
+      "sizeBytes": 19302,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "32e79914b8f0c32cb79b77d87ba95a27f110273f",
+      "path": "apps/storefront/src/components/home/BrandFrameworkSection.astro",
+      "sizeBytes": 11224,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "44a45bf5b18f323311d0e6a3e216affe7e8d3eea",
+      "path": "apps/storefront/src/components/home/HomeContactCtaSection.astro",
+      "sizeBytes": 9158,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "f175cbfb50ecf1b076546ad157ae0803a1a94e67",
+      "path": "apps/storefront/src/components/home/HomeHero.astro",
+      "sizeBytes": 16235,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "4e023a95b515409c5536cbf0a80f49a0c8054f27",
+      "path": "apps/storefront/src/components/home/HomePageTemplate.astro",
+      "sizeBytes": 5746,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "4bc9bbec80479d76bd1eb419da47250365a295d6",
+      "path": "apps/storefront/src/components/legal/LegalPageTemplate.astro",
+      "sizeBytes": 3984,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "1f22c9ae38c15a7cb17d8a43c00a3ab7c4d67935",
+      "path": "apps/storefront/src/components/product-detail/ProductDetailHero.astro",
+      "sizeBytes": 13738,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "58d49e00666f53ed2b1faf6b3cb45b5a975e2600",
+      "path": "apps/storefront/src/components/product-detail/ProductDetailTemplate.astro",
+      "sizeBytes": 1735,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "b14c31bc38b9c9734c701773ec802da27d690dae",
+      "path": "apps/storefront/src/components/product-detail/ProductStorySections.astro",
+      "sizeBytes": 8056,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "1e57655b8b68a20a33109332192ad93c2e282180",
+      "path": "apps/storefront/src/components/product/ProductCard.astro",
+      "sizeBytes": 4236,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "4fadfcacdd5f83d1a9ecaee97342e8904ad540c2",
+      "path": "apps/storefront/src/components/product/ProductSpotlightSection.astro",
+      "sizeBytes": 16707,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "6b627b1b49a47e4ca9029949b7ac6f87f8a55e16",
+      "path": "apps/storefront/src/components/shared/SiteFrame.astro",
+      "sizeBytes": 860,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "3196150591ba4f3c69c2c1057ce0f42fd55d1a10",
+      "path": "apps/storefront/src/components/shell/LocaleSwitcher.astro",
+      "sizeBytes": 2204,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "cbeb38a0ab9fc0609a5a1c9fdbd14dc36810a69f",
+      "path": "apps/storefront/src/components/shell/SiteFooter.astro",
+      "sizeBytes": 5204,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "f2dcd8db11dde810e6f584f194c87c2602e7e605",
+      "path": "apps/storefront/src/components/shell/SiteHeader.astro",
+      "sizeBytes": 17920,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "9242a4a419819fc612f869d7b87139e0046e43b8",
+      "path": "apps/storefront/src/components/shell/ThemeToggle.astro",
+      "sizeBytes": 3929,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "d477970e063b27d3018f172aa15bc5b64f97b06b",
+      "path": "apps/storefront/src/content.config.ts",
+      "sizeBytes": 6815,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "49d89d61539f24363a66d18199870229ec6f6773",
+      "path": "apps/storefront/src/content/pages/en/about.json",
+      "sizeBytes": 3798,
+      "category": "example-content",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "96421cd2198fedae773fd73ad95d33f1cfedba93",
+      "path": "apps/storefront/src/content/pages/en/contact.json",
+      "sizeBytes": 4417,
+      "category": "example-content",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "60520b2ec9d914ffe81db6f45d0780c77cdb4d00",
+      "path": "apps/storefront/src/content/pages/en/home.json",
+      "sizeBytes": 2725,
+      "category": "example-content",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "5ce668973e3ebafb1347bac4ab21c12dc274db06",
+      "path": "apps/storefront/src/content/pages/en/products.json",
+      "sizeBytes": 2634,
+      "category": "example-content",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "f4eda3b341f6de4df221ee170a73a62d3b214984",
+      "path": "apps/storefront/src/content/pages/fr/about.json",
+      "sizeBytes": 3769,
+      "category": "example-content",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "bfa1ca32e879980db4207a9a6d4547185870d8f2",
+      "path": "apps/storefront/src/content/pages/fr/contact.json",
+      "sizeBytes": 4505,
+      "category": "example-content",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "7060668fab7cc69b3851d9675c1380fecac6175a",
+      "path": "apps/storefront/src/content/pages/fr/home.json",
+      "sizeBytes": 2739,
+      "category": "example-content",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "40577923997d3dce6d855069b18a73712bc5916b",
+      "path": "apps/storefront/src/content/pages/fr/products.json",
+      "sizeBytes": 2589,
+      "category": "example-content",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "df0fd87114168667d70d4350e5a365621fef593f",
+      "path": "apps/storefront/src/content/pages/zh-cn/about.json",
+      "sizeBytes": 3412,
+      "category": "example-content",
+      "decision": "rewrite",
+      "reasonCode": "SOURCE_TEXT_REWRITE_REQUIRED"
+    },
+    {
+      "blobSha": "65d7a88756e171ad99dbd6f0a6f222e2001b8716",
+      "path": "apps/storefront/src/content/pages/zh-cn/contact.json",
+      "sizeBytes": 3037,
+      "category": "example-content",
+      "decision": "rewrite",
+      "reasonCode": "SOURCE_TEXT_REWRITE_REQUIRED"
+    },
+    {
+      "blobSha": "82c6fff156b5d63b62407e2f72de0b65f3c89e0f",
+      "path": "apps/storefront/src/content/pages/zh-cn/home.json",
+      "sizeBytes": 1987,
+      "category": "example-content",
+      "decision": "rewrite",
+      "reasonCode": "SOURCE_TEXT_REWRITE_REQUIRED"
+    },
+    {
+      "blobSha": "8cf1aa68a0491a45f890a2f6cb513dc86eb28fdd",
+      "path": "apps/storefront/src/content/pages/zh-cn/products.json",
+      "sizeBytes": 2285,
+      "category": "example-content",
+      "decision": "rewrite",
+      "reasonCode": "SOURCE_TEXT_REWRITE_REQUIRED"
+    },
+    {
+      "blobSha": "41eed1e922ac1d915bd97ffc2178e9c0a46f2bdb",
+      "path": "apps/storefront/src/content/product-locale-pages/en/example-product.json",
+      "sizeBytes": 2943,
+      "category": "example-content",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "125a7ad0034bdd37fc67c4ff92ad6e10dc28baa4",
+      "path": "apps/storefront/src/content/product-locale-pages/fr/example-product.json",
+      "sizeBytes": 2939,
+      "category": "example-content",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "8a9daab40c392fc7fdc9c8ec315c5a28bbbc6f69",
+      "path": "apps/storefront/src/content/product-locale-pages/zh-cn/example-product.json",
+      "sizeBytes": 2910,
+      "category": "example-content",
+      "decision": "rewrite",
+      "reasonCode": "SOURCE_TEXT_REWRITE_REQUIRED"
+    },
+    {
+      "blobSha": "7c3002752df971c458df7e7400cb6ae38166c86b",
+      "path": "apps/storefront/src/content/product-pages/example-product.json",
+      "sizeBytes": 355,
+      "category": "example-content",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "fa263840d1cd1a2a2124622974b823fc5f87b58b",
+      "path": "apps/storefront/src/i18n/config.ts",
+      "sizeBytes": 1884,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "7ae61522dcbb60a0542ff6e5a09a8fe0085734ca",
+      "path": "apps/storefront/src/i18n/locales/en.ts",
+      "sizeBytes": 1713,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "2a2e6c91910505569a94247bdb72e25bf6e3829e",
+      "path": "apps/storefront/src/i18n/locales/fr.ts",
+      "sizeBytes": 1757,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "ca1d38189b370a6a60ab8fc0130c07f7ba7af2d3",
+      "path": "apps/storefront/src/i18n/locales/zhCn.ts",
+      "sizeBytes": 1678,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "a317176e6487d1b8e17ee9dad43395462fce8ddb",
+      "path": "apps/storefront/src/layouts/SiteDocument.astro",
+      "sizeBytes": 5623,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "b92ab448a117384ca6812245b5a997a857980321",
+      "path": "apps/storefront/src/lib/content/commerceMedia.ts",
+      "sizeBytes": 4125,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "9681aec9c70165bcf2ec2af2187160f6fffbb3f5",
+      "path": "apps/storefront/src/lib/content/contentSource.ts",
+      "sizeBytes": 11369,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "771c62769ebeae80e41005120e490addfdbe0ef0",
+      "path": "apps/storefront/src/lib/gesture/createHorizontalGesture.ts",
+      "sizeBytes": 8193,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "cba4eb571eff23b30f4bc3119b9a7d64240591e3",
+      "path": "apps/storefront/src/lib/gesture/gesturePresets.ts",
+      "sizeBytes": 1641,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "a8638ea4bcf7ae82342481a14e27a8bc53403a7a",
+      "path": "apps/storefront/src/lib/gesture/types.ts",
+      "sizeBytes": 2183,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "4199a7b1bc8ce681eedd9713bcd6b67fe741f029",
+      "path": "apps/storefront/src/lib/images/imageSources.ts",
+      "sizeBytes": 1687,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "c8e9e74c7dcf5e889aafb2ed4b7c875c153dd937",
+      "path": "apps/storefront/src/lib/legal/legalContent.ts",
+      "sizeBytes": 8215,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "6f1db560776db395c8fcd1983eb49adecfeae39d",
+      "path": "apps/storefront/src/lib/site/profile.ts",
+      "sizeBytes": 2012,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "709feb4a651671cdef98968c0cac632e4451196f",
+      "path": "apps/storefront/src/pages/[locale]/[slug].astro",
+      "sizeBytes": 3610,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "8ef9e0671c7c0aeae96ccd758a62e16ee39e2635",
+      "path": "apps/storefront/src/pages/[locale]/index.astro",
+      "sizeBytes": 1488,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "86340b3bd5ba38e77341785360c8c4df291325a6",
+      "path": "apps/storefront/src/pages/[locale]/products/[productSlug].astro",
+      "sizeBytes": 1448,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "d0087c86e8b798ce837f8c4236c5b54a3a014ae5",
+      "path": "apps/storefront/src/pages/index.astro",
+      "sizeBytes": 710,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "088c0290f00ae1e6a90a129110d7f5db83b34f06",
+      "path": "apps/storefront/src/pages/sitemap.xml.ts",
+      "sizeBytes": 1252,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "bc4af9d6f1c62b2aac3c718abfb226f2bbe6412d",
+      "path": "apps/storefront/src/styles/design-system.css",
+      "sizeBytes": 3251,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "e239968798ef61967b369b5c0f453bae725b3651",
+      "path": "apps/storefront/tsconfig.json",
+      "sizeBytes": 138,
+      "category": "configuration",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "4a52890b7f5c70b084aa413f4a6b56dd0125c04d",
+      "path": "apps/studio/package.json",
+      "sizeBytes": 635,
+      "category": "configuration",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "d2f9bef25660b6eb413cbc2b2cea7db12c35c0ee",
+      "path": "apps/studio/sanity.cli.ts",
+      "sizeBytes": 426,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "2078759297808b3328b4e9c1fe44d8903189964e",
+      "path": "apps/studio/sanity.config.ts",
+      "sizeBytes": 1787,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "5b8aadc19b5d40af6347e15d49aac7bec0fbedd0",
+      "path": "apps/studio/src/pageOperations/PageOperationsTool.tsx",
+      "sizeBytes": 24633,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "6844a7a75d35d8955cbdb352ae58ec15dd27b9e4",
+      "path": "apps/studio/src/productLaunch/ProductLaunchWizard.tsx",
+      "sizeBytes": 21396,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "9705450e39d31b99b37ef530230befa4696bd272",
+      "path": "apps/studio/src/productLaunch/logic.ts",
+      "sizeBytes": 12367,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "44bd1ab14bfcd40b982f93bd973a228fcfdd6344",
+      "path": "apps/studio/src/productLaunch/shopify.ts",
+      "sizeBytes": 5134,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "ca934b2290dc098b8bc69bc6a14bb12fcc364136",
+      "path": "apps/studio/src/productOperations/ProductOperationsTool.tsx",
+      "sizeBytes": 39810,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "56c20fa655e0dd497d5040ba3fb4d3e64c79461f",
+      "path": "apps/studio/src/structure.ts",
+      "sizeBytes": 5555,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "e3443b8040079c196258bcb707f548005798c05a",
+      "path": "apps/studio/src/studioProfile.ts",
+      "sizeBytes": 1305,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "6b280fef84b4fa8c188db6adfc31a462416a9a86",
+      "path": "apps/studio/tsconfig.json",
+      "sizeBytes": 319,
+      "category": "configuration",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "d15dcd984d349cface7116503d03bbf7da476302",
+      "path": "apps/worker/index.mjs",
+      "sizeBytes": 27675,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "511fe946c862342426221816789c7b2f7ac400b3",
+      "path": "apps/worker/package.json",
+      "sizeBytes": 296,
+      "category": "configuration",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "006e9344969c48c09e40be051ee05b1fb3eea476",
+      "path": "apps/worker/wrangler.toml",
+      "sizeBytes": 844,
+      "category": "configuration",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "694cac8f50d3db4fc60f8e78bc04025cd54c39d3",
+      "path": "docs/astro-sanity-shopify-cloudflare-retail-framework-v2.1.md",
+      "sizeBytes": 12305,
+      "category": "architecture-doc",
+      "decision": "exclude",
+      "reasonCode": "OLD_ARCHITECTURE_WITH_PRIVATE_METRICS"
+    },
+    {
+      "blobSha": "3608d012ade05f9b85c179d9cf6f2e066eeee6e2",
+      "path": "docs/client-v3-architecture-advantages.md",
+      "sizeBytes": 6753,
+      "category": "commercial-delivery-doc",
+      "decision": "exclude",
+      "reasonCode": "COMMERCIAL_SALES_COLLATERAL"
+    },
+    {
+      "blobSha": "f0848d7c716101ca999217071cb3bf19474568e6",
+      "path": "docs/contact-lightweight-form-design.md",
+      "sizeBytes": 20235,
+      "category": "architecture-doc",
+      "decision": "rewrite",
+      "reasonCode": "PUBLIC_CONTACT_DESIGN_REWRITE"
+    },
+    {
+      "blobSha": "5fbf02355526926775b377822d1d52abed86f9d3",
+      "path": "docs/customer-operations-cms-brand.md",
+      "sizeBytes": 3253,
+      "category": "commercial-delivery-doc",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "fb27d1e41bd79591e76a626aae3e70b0ccf42735",
+      "path": "docs/customer-operations-retail.md",
+      "sizeBytes": 4550,
+      "category": "commercial-delivery-doc",
+      "decision": "rewrite",
+      "reasonCode": "RETAIL_CATALOG_TERMINOLOGY_REWRITE"
+    },
+    {
+      "blobSha": "6af1288e5deefb4940ec756134a9b93aea2118e6",
+      "path": "docs/customer-operations-static-brand.md",
+      "sizeBytes": 2482,
+      "category": "commercial-delivery-doc",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "f8cd7ac14aa82b29dc81a4b1b4037bddd3d94b1e",
+      "path": "docs/customer-operations.md",
+      "sizeBytes": 2058,
+      "category": "commercial-delivery-doc",
+      "decision": "rewrite",
+      "reasonCode": "RETAIL_CATALOG_TERMINOLOGY_REWRITE"
+    },
+    {
+      "blobSha": "4164113941ac0c7e2a3c4f3ef2360f53b8239582",
+      "path": "docs/customer-page-operations.md",
+      "sizeBytes": 6942,
+      "category": "commercial-delivery-doc",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "200807f3d85b0f0793b5d8ac3fdfe6d36ee08201",
+      "path": "docs/customer-product-operations.md",
+      "sizeBytes": 7696,
+      "category": "commercial-delivery-doc",
+      "decision": "rewrite",
+      "reasonCode": "RETAIL_CATALOG_TERMINOLOGY_REWRITE"
+    },
+    {
+      "blobSha": "74d441a2818bb82c9bebbb4094a486925e2f1b46",
+      "path": "docs/framework-module-audit.md",
+      "sizeBytes": 12338,
+      "category": "architecture-doc",
+      "decision": "exclude",
+      "reasonCode": "INTERNAL_IMPLEMENTATION_AUDIT"
+    },
+    {
+      "blobSha": "97b2f3b8f14ff7fc65872dd2869b09b937941af9",
+      "path": "docs/framework-productization-plan.md",
+      "sizeBytes": 14356,
+      "category": "architecture-doc",
+      "decision": "exclude",
+      "reasonCode": "INTERNAL_COMMERCIAL_PLAN"
+    },
+    {
+      "blobSha": "d8da21c8a00cec2717882eac3d343458e20dd868",
+      "path": "docs/gcss-v3-site-framework-template-plan.md",
+      "sizeBytes": 5431,
+      "category": "architecture-doc",
+      "decision": "rewrite",
+      "reasonCode": "PUBLIC_ARCHITECTURE_REWRITE"
+    },
+    {
+      "blobSha": "648b32f954a50575a74b7e0ced1d6762a7a71401",
+      "path": "docs/legal/en/customer-service-contact.md",
+      "sizeBytes": 632,
+      "category": "legal-template",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "eea2157445836be7c363db647233b5b0ad429689",
+      "path": "docs/legal/en/privacy-policy.md",
+      "sizeBytes": 618,
+      "category": "legal-template",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "5f1f475cd97869d1b1d47c19c5a7a9ecfce1c8d0",
+      "path": "docs/legal/en/shipping-returns-policy.md",
+      "sizeBytes": 636,
+      "category": "legal-template",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "04ae2175d66518263e1425042e26bda1bdd8226b",
+      "path": "docs/legal/en/terms-of-use.md",
+      "sizeBytes": 616,
+      "category": "legal-template",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "60161dc902d3fefa2117e4ccb63dc997dd810886",
+      "path": "docs/legal/fr/customer-service-contact.md",
+      "sizeBytes": 499,
+      "category": "legal-template",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "d92ecb5bada522aaefa0b6e577e8c51b708dea85",
+      "path": "docs/legal/fr/privacy-policy.md",
+      "sizeBytes": 502,
+      "category": "legal-template",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "5381dfe31805141fa728bc947a8b0cdcdf9b1af9",
+      "path": "docs/legal/fr/shipping-returns-policy.md",
+      "sizeBytes": 506,
+      "category": "legal-template",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "a378a3fa5253c3a4093330dab48761f12f440881",
+      "path": "docs/legal/fr/terms-of-use.md",
+      "sizeBytes": 498,
+      "category": "legal-template",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "5cd5bfacbec106c514881e6b3b1f6abb276b0228",
+      "path": "docs/legal/zh/customer-service-contact.md",
+      "sizeBytes": 378,
+      "category": "legal-template",
+      "decision": "rewrite",
+      "reasonCode": "SOURCE_LEGAL_REWRITE_REQUIRED"
+    },
+    {
+      "blobSha": "aae6124c02e3ca47c4492cbef090c1bf72d720c7",
+      "path": "docs/legal/zh/privacy-policy.md",
+      "sizeBytes": 373,
+      "category": "legal-template",
+      "decision": "rewrite",
+      "reasonCode": "SOURCE_LEGAL_REWRITE_REQUIRED"
+    },
+    {
+      "blobSha": "5cd5bfacbec106c514881e6b3b1f6abb276b0228",
+      "path": "docs/legal/zh/shipping-returns-policy.md",
+      "sizeBytes": 378,
+      "category": "legal-template",
+      "decision": "rewrite",
+      "reasonCode": "SOURCE_LEGAL_REWRITE_REQUIRED"
+    },
+    {
+      "blobSha": "aae6124c02e3ca47c4492cbef090c1bf72d720c7",
+      "path": "docs/legal/zh/terms-of-use.md",
+      "sizeBytes": 373,
+      "category": "legal-template",
+      "decision": "rewrite",
+      "reasonCode": "SOURCE_LEGAL_REWRITE_REQUIRED"
+    },
+    {
+      "blobSha": "ca1ec6229adeeb7ef2c5d1eb30324181b60733c3",
+      "path": "docs/project-log/daily/2026-07-07.md",
+      "sizeBytes": 4144,
+      "category": "internal-log",
+      "decision": "exclude",
+      "reasonCode": "INTERNAL_PROJECT_LOG"
+    },
+    {
+      "blobSha": "56191e3fc3967deb4331387528a1c7996d3d9cf7",
+      "path": "docs/project-log/daily/2026-07-10.md",
+      "sizeBytes": 7962,
+      "category": "internal-log",
+      "decision": "exclude",
+      "reasonCode": "INTERNAL_PROJECT_LOG"
+    },
+    {
+      "blobSha": "2bdae9bfea541d1a65b149af541497bae19f7966",
+      "path": "docs/project-startup-and-handoff.md",
+      "sizeBytes": 6599,
+      "category": "commercial-delivery-doc",
+      "decision": "rewrite",
+      "reasonCode": "PUBLIC_REPOSITORY_WORKFLOW_REWRITE"
+    },
+    {
+      "blobSha": "1d8b3b5570ec31d9fff99cb2d8f875cb674c1dd5",
+      "path": "docs/site-image-source-migration-plan.md",
+      "sizeBytes": 11046,
+      "category": "architecture-doc",
+      "decision": "exclude",
+      "reasonCode": "INTERNAL_MIGRATION_PLAN"
+    },
+    {
+      "blobSha": "1a85e1cefafbfe774fb7930a88b1bee8d2115c1c",
+      "path": "docs/storefront-page-layering.md",
+      "sizeBytes": 18226,
+      "category": "architecture-doc",
+      "decision": "exclude",
+      "reasonCode": "INTERNAL_MIGRATION_CHRONOLOGY"
+    },
+    {
+      "blobSha": "edf93d8668d6e6f57605dfe87c67258dc4b471d1",
+      "path": "docs/template-placeholder-audit.md",
+      "sizeBytes": 3488,
+      "category": "architecture-doc",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "da764c59e79cbb74860181431a1e09057956b47d",
+      "path": "gcss.project.json",
+      "sizeBytes": 687,
+      "category": "configuration",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "216b4420b1e103fea841ce7a5284b8d210d5df2b",
+      "path": "gcss.project.schema.json",
+      "sizeBytes": 2519,
+      "category": "configuration",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "bc773d310adbbbdfe667d2a023bb46b903ec93d9",
+      "path": "package-lock.json",
+      "sizeBytes": 738931,
+      "category": "generated",
+      "decision": "include",
+      "reasonCode": "GENERATED_LOCKFILE"
+    },
+    {
+      "blobSha": "353cbddc0199715182b50883832633fd0f182d6e",
+      "path": "package.json",
+      "sizeBytes": 8343,
+      "category": "configuration",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "ef53fdf632310ca5c36254cd2691e31f7fcdc2be",
+      "path": "packages/blocks/package.json",
+      "sizeBytes": 196,
+      "category": "configuration",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "8095f444b1b14f1ea95b944b3b2ec9863acc6ff4",
+      "path": "packages/blocks/src/index.d.ts",
+      "sizeBytes": 6109,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "5e1b2c8eef7874f8b07cbfdbf16ffa3b59da1af0",
+      "path": "packages/blocks/src/index.mjs",
+      "sizeBytes": 427,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "dd75c480b054b6dcf16daa944fee33331800dfe7",
+      "path": "packages/commerce/package.json",
+      "sizeBytes": 198,
+      "category": "configuration",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "91586e4a7ecc372aca07e2ec3614e6e260965bd5",
+      "path": "packages/commerce/src/index.d.ts",
+      "sizeBytes": 2292,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "c8920200f989e7284fdc1921b3552dbdc738dd84",
+      "path": "packages/commerce/src/index.mjs",
+      "sizeBytes": 3808,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "66e9211f79c8955c8cf548d80c10beedad7bc22b",
+      "path": "packages/config/package.json",
+      "sizeBytes": 196,
+      "category": "configuration",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "1d8ed881812adeaf6ecdd2829aa86d3ac4ba2ae7",
+      "path": "packages/config/src/index.d.ts",
+      "sizeBytes": 2694,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "2db29725b2373d291a2c10faa7600ce07af98758",
+      "path": "packages/config/src/index.mjs",
+      "sizeBytes": 6227,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "73fb2f1ee2bc549b5732766f04d3be30f2d87a12",
+      "path": "packages/sanity-queries/package.json",
+      "sizeBytes": 261,
+      "category": "configuration",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "25a5d12dbcbf9cd78ee2f88f56bb78a06e21cf21",
+      "path": "packages/sanity-queries/src/index.d.ts",
+      "sizeBytes": 1591,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "a6c48829cc60ed18bf05a136a84f6e74be89d418",
+      "path": "packages/sanity-queries/src/index.mjs",
+      "sizeBytes": 7725,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "6bd5fc11670b940e582772ec07eb6f97ad72d4d3",
+      "path": "packages/schemas/package.json",
+      "sizeBytes": 306,
+      "category": "configuration",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "d89a66a5da7ffc524a88e1595af33dbf9452f34f",
+      "path": "packages/schemas/src/index.d.ts",
+      "sizeBytes": 349,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "b0570d403fa78b4b909e598d331c7e6e52158f62",
+      "path": "packages/schemas/src/index.mjs",
+      "sizeBytes": 58968,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "083d7032e134c8f0acd32d4a30ec1dad7d98b09d",
+      "path": "packages/validation/package.json",
+      "sizeBytes": 245,
+      "category": "configuration",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "d0f1851b41a0fdd3410e128e2de0ecf08b350842",
+      "path": "packages/validation/src/index.d.ts",
+      "sizeBytes": 1439,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "ea8307b426f2853717e70fed0d42c8326aaabb35",
+      "path": "packages/validation/src/index.mjs",
+      "sizeBytes": 9154,
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "80f2fceb52835b0736cfc5f0d4d16a4ed0024bb4",
+      "path": "scripts/backup-sanity/plan.mjs",
+      "sizeBytes": 3791,
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "b74c759bdeb48795015bf59f36a823c82d32c2b6",
+      "path": "scripts/backup-shopify/plan.mjs",
+      "sizeBytes": 6532,
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "b477ec19759b95e7830de53148175320bf07f01d",
+      "path": "scripts/migrations/cleanup-legacy-content-fields.mjs",
+      "sizeBytes": 9339,
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "64216c379446a8e580c5f3940bcef6df4f7afc82",
+      "path": "scripts/migrations/cleanup-product-detail-hero-fields.mjs",
+      "sizeBytes": 5612,
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "fe9522c2b901a14e502d4611a1ff0897d5b6ef2e",
+      "path": "scripts/migrations/cleanup-product-page-locales.mjs",
+      "sizeBytes": 4873,
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "74de33ce6d76347278b40f982eb6be7e154a1935",
+      "path": "scripts/migrations/consolidate-page-content-model.mjs",
+      "sizeBytes": 10192,
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "d67dd860ae13151ce42dd5b5e46b55a362bc29cb",
+      "path": "scripts/migrations/local-content-to-sanity.mjs",
+      "sizeBytes": 8020,
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "bcb38d186b045f66a2798f9ca5a901490851f35a",
+      "path": "scripts/migrations/set-image-source-defaults.mjs",
+      "sizeBytes": 9388,
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "18bdfdba8895dc7eaf63ed1139c372308c856d6f",
+      "path": "scripts/migrations/split-home-product-spotlight.mjs",
+      "sizeBytes": 4930,
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "7dcce95fc88dd86d649e43b2e8555e894b2f15ad",
+      "path": "scripts/migrations/write-home-hero-caption.mjs",
+      "sizeBytes": 6521,
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "4e893ab357a2db3cdf7b4ace87f6a581bf263cf4",
+      "path": "scripts/migrations/write-product-pages-to-sanity.mjs",
+      "sizeBytes": 4085,
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "fc9d79c240b2bd4a082f09801b8978e7ba0f0193",
+      "path": "scripts/products/copy-product-content.mjs",
+      "sizeBytes": 10935,
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "f6db8dad704309e368b87437ae13f04ac1bd45e0",
+      "path": "scripts/products/create-product-draft.mjs",
+      "sizeBytes": 12691,
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "a2ce3dbf08413750f721b213d3858a7ff9684284",
+      "path": "scripts/products/set-product-launch-status.mjs",
+      "sizeBytes": 7939,
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "0eb817780ab216bf6e95a3812475b4ef22f0b426",
+      "path": "scripts/restore-check/plan.mjs",
+      "sizeBytes": 3420,
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "28beb8efacef94a46239e489924aa8f374a17734",
+      "path": "scripts/shopify/preview-product-entry-summary.mjs",
+      "sizeBytes": 7692,
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "a0cda3ec7a7e4e92f2893e43cd28b7e2c6d610ef",
+      "path": "scripts/shopify/product-entry-summary.mjs",
+      "sizeBytes": 2326,
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "cfd17f17c6c270efa46710fd6deb7d7e115c5ed9",
+      "path": "scripts/storefront/run-with-env.mjs",
+      "sizeBytes": 2042,
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "af1077be2590510a4c3f8705d48a611211022f75",
+      "path": "scripts/studio/run-with-env.mjs",
+      "sizeBytes": 2488,
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "7e704a778bd38474c3abdfcff7fec35499aa9f43",
+      "path": "scripts/template/export-project-env.mjs",
+      "sizeBytes": 2441,
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "c927cdc96f0f2430fd90493d52bc7aa98f48c88b",
+      "path": "scripts/template/init-new-project.mjs",
+      "sizeBytes": 4461,
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "a01ec46962553971bb6f00756d6c586c1f242811",
+      "path": "scripts/template/plan-new-project.mjs",
+      "sizeBytes": 6501,
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "c030d941d0ea2bc109237d1d6a634721bd1e47c3",
+      "path": "scripts/template/project-config.mjs",
+      "sizeBytes": 7015,
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "76f814e1adec5601db845b8f6bfd51ee7dd0ab1a",
+      "path": "scripts/template/project-renderers.mjs",
+      "sizeBytes": 5270,
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "d85b6982e7e927ea7fbbcbb78933aa12c304fd88",
+      "path": "scripts/template/validate-project-readiness.mjs",
+      "sizeBytes": 6958,
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "4e6aaf6034abc387ba4a74e66376cd40a8ba212f",
+      "path": "scripts/template/validate-template-placeholders.mjs",
+      "sizeBytes": 4346,
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "431d289bbab0397d69aa6959372577bbe6b06c2a",
+      "path": "scripts/tests/validate-backup-restore-dry-run.mjs",
+      "sizeBytes": 4852,
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "1180979dff2be36362f9e09d4bad3b452635a9d1",
+      "path": "scripts/tests/validate-commerce-contract.mjs",
+      "sizeBytes": 2651,
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "832b29135aac0581075cbf257a62a7bc7ed23cee",
+      "path": "scripts/tests/validate-customer-operations-guides.mjs",
+      "sizeBytes": 3594,
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "c35d04e0f49873a9b607206e398456fb7af7ab77",
+      "path": "scripts/tests/validate-framework-skill.mjs",
+      "sizeBytes": 4882,
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "10952b9f1406b52923799e14381fc06b56b76e5e",
+      "path": "scripts/tests/validate-github-workflows.mjs",
+      "sizeBytes": 6329,
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "d603a311d01e69c25ff6235520c8b4bfdd39c637",
+      "path": "scripts/tests/validate-page-editor-module-guides.mjs",
+      "sizeBytes": 17379,
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "f459812815bd74a86fa9be162f6925fbf535613f",
+      "path": "scripts/tests/validate-page-workbench.mjs",
+      "sizeBytes": 2952,
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "55c3372206a0d78c5a865763dad727bb72d56118",
+      "path": "scripts/tests/validate-product-draft.mjs",
+      "sizeBytes": 5764,
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "81d1bfcd158d8e0ff1dfe7128ca566e6033aaae5",
+      "path": "scripts/tests/validate-product-launch-gate.mjs",
+      "sizeBytes": 9121,
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "0c9a0713030a276ad542abcdba6afdced403a5a4",
+      "path": "scripts/tests/validate-product-locale-page-editor-structure.mjs",
+      "sizeBytes": 9066,
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "b7452ab2769b5b7855138de567d15a6179b3539e",
+      "path": "scripts/tests/validate-product-spotlight-card.mjs",
+      "sizeBytes": 2769,
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "3fc11d231caaa101d487190de29e43ef7b629810",
+      "path": "scripts/tests/validate-product-workbench.mjs",
+      "sizeBytes": 4977,
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "c7cf3858bd92b1c1d98f70ec35536a966430323d",
+      "path": "scripts/tests/validate-profile-build-matrix.mjs",
+      "sizeBytes": 1622,
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "b833d498c80c47916e499dab42bccbb3c86f1dac",
+      "path": "scripts/tests/validate-project-config.mjs",
+      "sizeBytes": 3447,
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "56f90fd4cb4806d5fceee41cd79993be9a4d68e4",
+      "path": "scripts/tests/validate-project-initializer.mjs",
+      "sizeBytes": 3787,
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "f862ea5cffdea6cfb8f529a292e2ce505097e9ea",
+      "path": "scripts/tests/validate-sanity-image-cdn-pilot.mjs",
+      "sizeBytes": 2524,
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "9c7efee9a7e1a5ee233b25e5f36e92f4427f2fee",
+      "path": "scripts/tests/validate-sanity-migration-dry-run.mjs",
+      "sizeBytes": 5748,
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "4a4424f7b9caf15ad7d2d452b7a735fdb126b668",
+      "path": "scripts/tests/validate-shopify-product-entry-summary.mjs",
+      "sizeBytes": 4896,
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "80c8e2b80312b63284081f3b441deb72f9d1f0dc",
+      "path": "scripts/tests/validate-site-image-source-boundaries.mjs",
+      "sizeBytes": 4859,
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "bc5294056e99b2a8d3090fef76eeedfedd64be4e",
+      "path": "scripts/tests/validate-site-profiles.mjs",
+      "sizeBytes": 8143,
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "ac9fe0d0f0c878e928387df5fd6210f0b508ce3d",
+      "path": "scripts/tests/validate-storefront-headless-structure.mjs",
+      "sizeBytes": 12330,
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "9aa3606933ea88d5ce633b814c63df7b198cfdf4",
+      "path": "scripts/tests/validate-storefront-profile-routing.mjs",
+      "sizeBytes": 4315,
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "8cbb701725e1695bb94a077a09ca2a87bd4e7139",
+      "path": "scripts/tests/validate-studio-product-launch-env.mjs",
+      "sizeBytes": 3287,
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "cf91f9d560f1d6dbaba062aec2f0026a5ffb6657",
+      "path": "scripts/tests/validate-studio-profile-tools.mjs",
+      "sizeBytes": 4506,
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "dd79a7d32e43953431607104b3a7348aa86dae8a",
+      "path": "scripts/tests/validate-studio-schema-profile.mjs",
+      "sizeBytes": 2396,
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "1313a1d36252d23e3352ee3660c1c763072e0182",
+      "path": "scripts/tests/validate-template-tools.mjs",
+      "sizeBytes": 4116,
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "blobSha": "8127fc1232260b08dff9354871c6a9a2ab9a8e1f",
+      "path": "scripts/tests/validate-worker-routes.mjs",
+      "sizeBytes": 20900,
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    }
+  ],
+  "worktreeOverlay": [
+    {
+      "path": ".agents/skills/gcss-v3-site-framework/SKILL.md",
+      "status": "modified",
+      "sizeBytes": 6822,
+      "sha256": "aa3ca65b9f4764ae057e92045244c6e0295974c378ce3e2873570e71a36f3523",
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": ".agents/skills/gcss-v3-site-framework/references/acceptance.md",
+      "status": "modified",
+      "sizeBytes": 2075,
+      "sha256": "048db59faad9d9185acb5d29d18d939c1fd3dd2d6cc3e9e52fd5ccbe4bd682fc",
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": ".agents/skills/gcss-v3-site-framework/references/contact-form.md",
+      "status": "modified",
+      "sizeBytes": 1348,
+      "sha256": "71c6cdc41de37771e7e442b1373b3abd95854ff9391079e833d3738b51a87887",
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": ".agents/skills/gcss-v3-site-framework/references/content-model.md",
+      "status": "modified",
+      "sizeBytes": 2397,
+      "sha256": "4f1514c434331445fa44c894c12ac0d5913aafc55060434976e979566b635594",
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": ".agents/skills/gcss-v3-site-framework/references/customer-docs.md",
+      "status": "modified",
+      "sizeBytes": 1941,
+      "sha256": "beac6b99fb73cb1048d02495eb3cfba8edcb7de8aa4e589cbc2837887b706273",
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": ".agents/skills/gcss-v3-site-framework/references/deployment.md",
+      "status": "modified",
+      "sizeBytes": 3304,
+      "sha256": "77fd91c5caa80fe5da71d31239e0fd9db959af73acf768275fb15589cfcd22e6",
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": ".agents/skills/gcss-v3-site-framework/references/new-project-cms-brand.md",
+      "status": "modified",
+      "sizeBytes": 3021,
+      "sha256": "0e6dd72db833c46722732abee84c4940177be6044e12f7b68be0e18797446dcc",
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": ".agents/skills/gcss-v3-site-framework/references/new-project-retail.md",
+      "status": "modified",
+      "sizeBytes": 3412,
+      "sha256": "65072f20fe713dd865431fb93774470eca451ae7cb7a24575ea76522228c4af9",
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": ".agents/skills/gcss-v3-site-framework/references/new-project-static-brand.md",
+      "status": "modified",
+      "sizeBytes": 2994,
+      "sha256": "168db60edfa5f293e224c1c350646064c967436336a68e467f56833b44af6d9e",
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": ".agents/skills/gcss-v3-site-framework/references/new-project-workflow.md",
+      "status": "modified",
+      "sizeBytes": 3170,
+      "sha256": "bb9186749b33944ac78fda79497823d68b65a1d4911de53d45493b7323457a2b",
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": ".agents/skills/gcss-v3-site-framework/references/platform-ownership-and-handoff.md",
+      "status": "modified",
+      "sizeBytes": 4858,
+      "sha256": "3c58a7cc2def89b984249bef7493f74e059feab9fd0c51ffe11f8ae6e5cf8c33",
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": ".agents/skills/gcss-v3-site-framework/references/profile-migrations.md",
+      "status": "modified",
+      "sizeBytes": 1709,
+      "sha256": "e90f20eef4244092f97d3d7cb166e949fe127a2ce94d7c705a5fc56f8570cdc6",
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": ".agents/skills/gcss-v3-site-framework/references/profiles.md",
+      "status": "modified",
+      "sizeBytes": 3642,
+      "sha256": "b255c401c9eaf0840d80334c5e5637ac0f89c88620b77d2262aa6cf66b560dc0",
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": ".agents/skills/gcss-v3-site-framework/references/retail-operations.md",
+      "status": "modified",
+      "sizeBytes": 2258,
+      "sha256": "7260be8ad417698eb4910cd92b3a32d630cbc83ac39d3e6e6524867562ad8684",
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": ".agents/skills/gcss-v3-site-framework/references/service-and-secret-matrix.md",
+      "status": "modified",
+      "sizeBytes": 1757,
+      "sha256": "34ae9dc05b2da3ba3c858fd13520065d0987d00bc25d4a68d7f0e48071b99e9c",
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": ".agents/skills/gcss-v3-site-framework/references/validation.md",
+      "status": "modified",
+      "sizeBytes": 1656,
+      "sha256": "5933417879642ba84b836bf939a7d83e7f6197381ddaef70a71c87b94ff3ea69",
+      "category": "skill",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": ".env.example",
+      "status": "modified",
+      "sizeBytes": 1020,
+      "sha256": "77d673004a7e368fdd0c723b37cd3e8c173df5a4bc83a5f760adf5de734f5848",
+      "category": "configuration",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": ".github/workflows/backup.yml",
+      "status": "deleted",
+      "category": "workflow",
+      "decision": "exclude",
+      "reasonCode": "SOURCE_FILE_REMOVED_FROM_CANDIDATE"
+    },
+    {
+      "path": ".github/workflows/deploy.yml",
+      "status": "modified",
+      "sizeBytes": 4616,
+      "sha256": "4169a628d1c562d6799698938109044515f2b0908b4b81ad6a5b02acaf5c130b",
+      "category": "workflow",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": ".github/workflows/preview.yml",
+      "status": "modified",
+      "sizeBytes": 4120,
+      "sha256": "d7ed52898e8d75f829297d6dd9b8acdb27f9edc81c8e84934f2181c67372dbe3",
+      "category": "workflow",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": ".github/workflows/restore-test.yml",
+      "status": "deleted",
+      "category": "workflow",
+      "decision": "exclude",
+      "reasonCode": "SOURCE_FILE_REMOVED_FROM_CANDIDATE"
+    },
+    {
+      "path": ".gitignore",
+      "status": "modified",
+      "sizeBytes": 589,
+      "sha256": "73aa45d4f13afab4f98a6545b4cc8b53e716bf9ba0688c7cd60ce20e6982bbb4",
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "AGENTS.md",
+      "status": "modified",
+      "sizeBytes": 5013,
+      "sha256": "d7144d4cff81525bb3108991deb7f32e852c3f2f85fd2188f4078ab88990d0cf",
+      "category": "repository-doc",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "README.md",
+      "status": "modified",
+      "sizeBytes": 9540,
+      "sha256": "8d8cc7e5f20bc9bf08254334452aca12eb2048f5abcc667c6b47dd4d0171bb80",
+      "category": "repository-doc",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/storefront/package.json",
+      "status": "modified",
+      "sizeBytes": 807,
+      "sha256": "c28fffdbb71fc607c2c9b2ce9f4bd9835e8f199da40c0d42095e8b28954bbd1e",
+      "category": "configuration",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/storefront/public/brand-assets/brand/Brand-01.webp",
+      "status": "modified",
+      "sizeBytes": 114928,
+      "sha256": "21c9cb87fa7af02c1a6a6514a49b15b6928cdd602f0cf5961e7ed277df71c318",
+      "category": "image",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/public/brand-assets/brand/Brand-02.webp",
+      "status": "modified",
+      "sizeBytes": 122478,
+      "sha256": "ba8f3a813573e9a9cb8aaf8790f0783c6a9bdb34898827cca6dc8317a652f93f",
+      "category": "image",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/public/brand-assets/brand/Brand-03.webp",
+      "status": "modified",
+      "sizeBytes": 109592,
+      "sha256": "57daf2f4c1ace645697e5cde6fbcf56d0bc256d60c5de79c567d27c5487c7717",
+      "category": "image",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/public/brand-assets/hero/about/Hero-About-01.webp",
+      "status": "modified",
+      "sizeBytes": 121216,
+      "sha256": "472bce8f6756a69ee9f77ef9fa58bfb89737eeb97c2bdbbb836119bad22f9239",
+      "category": "image",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/public/brand-assets/hero/about/Hero-About-02.webp",
+      "status": "modified",
+      "sizeBytes": 113914,
+      "sha256": "72342e4145873671336a06a3f530936d05873aa3b4c145baea32c3f7c28afb53",
+      "category": "image",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/public/brand-assets/hero/about/Hero-About-03.webp",
+      "status": "modified",
+      "sizeBytes": 108764,
+      "sha256": "84bd5dec6506eb27d644ced2b667e18c26ad3be2fc39c70e63c2a14f489290be",
+      "category": "image",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/public/brand-assets/hero/contact/Hero-Contact-01.webp",
+      "status": "modified",
+      "sizeBytes": 124584,
+      "sha256": "9d21bde8fb2053b6319a36984d06fce31e5fd1759c515f1ec52be2e0d3964ab7",
+      "category": "image",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/public/brand-assets/hero/contact/Hero-Contact-02.webp",
+      "status": "modified",
+      "sizeBytes": 91658,
+      "sha256": "09e35ffe2037e151fb041ee5c4d1b89ed0d9a9c295874e0c97b8a2592d56c558",
+      "category": "image",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/public/brand-assets/hero/products/Hero-Products-01.webp",
+      "status": "modified",
+      "sizeBytes": 69942,
+      "sha256": "8e7bef85866ed1b81c2a55e01a604e055c61edf9a4ae6b956a5991c258cb1c5a",
+      "category": "image",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/public/brand-assets/hero/products/Hero-Products-02.webp",
+      "status": "modified",
+      "sizeBytes": 71282,
+      "sha256": "53d21b624c1973e7ce65c25b64fd7a38d47002f28447660c9c608f2ebb0f6a7f",
+      "category": "image",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/public/brand-assets/hero/products/Hero-Products-03.webp",
+      "status": "modified",
+      "sizeBytes": 66370,
+      "sha256": "3ba3fcdac2d187b38597ffaed460f78d2da85c551a6bd16f2e79fcbe0ba5ede2",
+      "category": "image",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/public/brand-assets/logo/logo_01.svg",
+      "status": "deleted",
+      "category": "logo",
+      "decision": "exclude",
+      "reasonCode": "SOURCE_FILE_REMOVED_FROM_CANDIDATE"
+    },
+    {
+      "path": "apps/storefront/public/brand-assets/logo/logo_icon_01.svg",
+      "status": "deleted",
+      "category": "logo",
+      "decision": "exclude",
+      "reasonCode": "SOURCE_FILE_REMOVED_FROM_CANDIDATE"
+    },
+    {
+      "path": "apps/storefront/public/brand-assets/logo/logo_word_01.svg",
+      "status": "deleted",
+      "category": "logo",
+      "decision": "exclude",
+      "reasonCode": "SOURCE_FILE_REMOVED_FROM_CANDIDATE"
+    },
+    {
+      "path": "apps/storefront/public/brand-assets/masks/cut-01-mask.svg",
+      "status": "modified",
+      "sizeBytes": 207,
+      "sha256": "b55620d8dde26ca0377a74414e0083ae3b7ed3e2be2f11ad6d5cdcbd20344eb2",
+      "category": "image",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/public/brand-assets/products/example-product/example-product-sku-01.webp",
+      "status": "modified",
+      "sizeBytes": 51656,
+      "sha256": "4d213ee5f6bd8e6a8801a6912f0fa408e2a5cf55b16742750e70b6eaaad891eb",
+      "category": "image",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/public/brand-assets/products/example-product/example-product-sku-02.webp",
+      "status": "modified",
+      "sizeBytes": 50488,
+      "sha256": "63dcad0eb685cd065a014e72d9cf6f62566486581710fbceb49be518b83465bd",
+      "category": "image",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/public/brand-assets/products/example-product/example-product-sku-03.webp",
+      "status": "modified",
+      "sizeBytes": 46300,
+      "sha256": "2bf770729a6c0b225e019a6c1f81961422d46e68d1af0c55fb33620d1b6a84df",
+      "category": "image",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/public/brand-assets/products/example-product/example-product-sku-04.webp",
+      "status": "modified",
+      "sizeBytes": 53984,
+      "sha256": "3af88d06defbcc370584a2eb5c9b69bdbee4c6756524755c207f8776410db5f3",
+      "category": "image",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/public/brand-assets/products/example-product/example-product-sku-main.webp",
+      "status": "modified",
+      "sizeBytes": 50564,
+      "sha256": "73f5fee8e7a03aef53760532e2702dc0880b4963a5d5b3252efc3c346f4e389d",
+      "category": "image",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/public/brand-assets/products/example-product/transparency/example-product-powder-01.webp",
+      "status": "modified",
+      "sizeBytes": 65000,
+      "sha256": "391cacf24a75c78d5e8195d592bae263fe1ab330142134b8e0aec25570bbfb80",
+      "category": "image",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/public/brand-assets/products/example-product/transparency/example-product-powder-02.webp",
+      "status": "modified",
+      "sizeBytes": 66070,
+      "sha256": "e81a9cbf8bb4fd591579fa6bc7d5bb6e75aa550c1bbca32ced958ca6582175db",
+      "category": "image",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/public/brand-assets/products/example-product/transparency/example-product-powder-03.webp",
+      "status": "modified",
+      "sizeBytes": 61898,
+      "sha256": "13f36dcdf82a9fb2ec275a85b3f7f4bbcee48c5d0ff9e9f07a776d227f3873ff",
+      "category": "image",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/public/brand-assets/products/example-product/transparency/example-product-powder-04.webp",
+      "status": "modified",
+      "sizeBytes": 57584,
+      "sha256": "1391cd0c9b9e7323ae5e1931e15008134b0600dc6ed37acdbf25b538de64069b",
+      "category": "image",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/public/brand-assets/products/example-product/transparency/example-product-powder-05.webp",
+      "status": "modified",
+      "sizeBytes": 67470,
+      "sha256": "520ac95edc57f2bb08ceb208c26ec0b9d6e2b30c9057e430c7f59757ee7cfd6f",
+      "category": "image",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/public/brand-assets/products/example-product/transparency/example-product-powder-06.webp",
+      "status": "modified",
+      "sizeBytes": 64474,
+      "sha256": "309893eb15f00a9ff20da9a31174a63a7b5dec18730b07e8ccb1c4b7f94751fc",
+      "category": "image",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/public/brand-assets/video/homevideo.mp4",
+      "status": "modified",
+      "sizeBytes": 364498,
+      "sha256": "6e7c151574e98c092f87682c58a9cbdb7ae0fcbd54b3f300f5a9e721083848b2",
+      "category": "video",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/public/favicon.ico",
+      "status": "deleted",
+      "category": "favicon",
+      "decision": "exclude",
+      "reasonCode": "SOURCE_FILE_REMOVED_FROM_CANDIDATE"
+    },
+    {
+      "path": "apps/storefront/public/favicon.svg",
+      "status": "modified",
+      "sizeBytes": 301,
+      "sha256": "029757eed6a279668188a2d6d6f3d77b4ef148ab289a605944a732ec497f2c4a",
+      "category": "favicon",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/src/components/brand/ContactSection.astro",
+      "status": "modified",
+      "sizeBytes": 19665,
+      "sha256": "61363366362951d1e454e9f69025f73461a6b9b19d0e721140ab839e8a43bd0f",
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/storefront/src/components/home/HomeHero.astro",
+      "status": "modified",
+      "sizeBytes": 17160,
+      "sha256": "c08cb6d7cbaa787bcaf406c1f34a44a363fd26cc6d5eaf28bfd07a70f6c73a08",
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/storefront/src/components/shell/SiteFooter.astro",
+      "status": "modified",
+      "sizeBytes": 5391,
+      "sha256": "81058c72ce64d62c7c876f5213752cdbbffb534e1c24c45b208052a527efd76e",
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/storefront/src/components/shell/SiteHeader.astro",
+      "status": "modified",
+      "sizeBytes": 18416,
+      "sha256": "6fa354aa72cc40947da9f534e5623840df858ee567fef96b6496e240746f64a3",
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/storefront/src/content/pages/en/about.json",
+      "status": "modified",
+      "sizeBytes": 3840,
+      "sha256": "813ce95be608885572f99c46d401900cbbe3e4214708efbd28d76af546ff8e12",
+      "category": "example-content",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/storefront/src/content/pages/en/contact.json",
+      "status": "modified",
+      "sizeBytes": 4438,
+      "sha256": "11125a4f2463c86e902b128444b04636e7cb4e05af3e59dbf3586d6e6acc97a0",
+      "category": "example-content",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/storefront/src/content/pages/en/home.json",
+      "status": "modified",
+      "sizeBytes": 2770,
+      "sha256": "0b455b0db1c782c9bfa3d6b4cfb5acd0f982223021749b60df338327b453e5be",
+      "category": "example-content",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/storefront/src/content/pages/en/products.json",
+      "status": "modified",
+      "sizeBytes": 2806,
+      "sha256": "bbba99c89d9964bfc0b7ee3e539dbb029eaa05bc79da0214001e5f705a57da3e",
+      "category": "example-content",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/storefront/src/content/pages/fr/about.json",
+      "status": "modified",
+      "sizeBytes": 3794,
+      "sha256": "f08e92fdd43d7eaabb59fea4471aa47f0c1ee502e23a428371b53d0bdc606f2f",
+      "category": "example-content",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/storefront/src/content/pages/fr/contact.json",
+      "status": "modified",
+      "sizeBytes": 4522,
+      "sha256": "156bd4763072d71a412f9bdf78f8a919102651bc2e2af7d54e64eed86bb6ccd6",
+      "category": "example-content",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/storefront/src/content/pages/fr/home.json",
+      "status": "modified",
+      "sizeBytes": 2822,
+      "sha256": "2a03f1dbc2ed199b15b1d231a7abe78b393e8e250a0fb22f647be572d6fe6f42",
+      "category": "example-content",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/storefront/src/content/pages/fr/products.json",
+      "status": "modified",
+      "sizeBytes": 2916,
+      "sha256": "02f6dab65d1217bc8ac001ba7094c4375e820bad3aa8b7ea5e6b164c0dc3b1be",
+      "category": "example-content",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/storefront/src/content/pages/zh-cn/about.json",
+      "status": "modified",
+      "sizeBytes": 3774,
+      "sha256": "400c8ffa8f51d58f3e79fd44243b77663b9e6426e3673e8d7155c40d17a48404",
+      "category": "example-content",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/src/content/pages/zh-cn/contact.json",
+      "status": "modified",
+      "sizeBytes": 4254,
+      "sha256": "4a90ea7beb72ac79765d077ce530bba6e48aa0fee8dc27a4d9f21cda3c59aa55",
+      "category": "example-content",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/src/content/pages/zh-cn/home.json",
+      "status": "modified",
+      "sizeBytes": 2770,
+      "sha256": "5ab3aebe81093f33063414b6ffa45235c1749d4300144ace26b5e4dc695b65cb",
+      "category": "example-content",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/src/content/pages/zh-cn/products.json",
+      "status": "modified",
+      "sizeBytes": 2731,
+      "sha256": "db791b95554153126c1bbcd4f7fdb090326495477e90e287b92b8f16473863f2",
+      "category": "example-content",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/src/content/product-locale-pages/en/example-product.json",
+      "status": "modified",
+      "sizeBytes": 3038,
+      "sha256": "c49501ecbabb3166720162eb241434c5e1344f406281b9f6556c5c95ef3d4316",
+      "category": "example-content",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/storefront/src/content/product-locale-pages/fr/example-product.json",
+      "status": "modified",
+      "sizeBytes": 3086,
+      "sha256": "667ed5c999f4f8e61925efe625e2f9133aab820ae62de8e7ced08fcca1c6ad7e",
+      "category": "example-content",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/storefront/src/content/product-locale-pages/zh-cn/example-product.json",
+      "status": "modified",
+      "sizeBytes": 2880,
+      "sha256": "960658dd0ae5d60c12e04f7797a434c64da2982001e5f5f8dfc43315be80cd71",
+      "category": "example-content",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "apps/storefront/src/layouts/SiteDocument.astro",
+      "status": "modified",
+      "sizeBytes": 5579,
+      "sha256": "9d4599ca800364f5d8094b0e70e2adb62f481368014c41715c31a98ddd5979be",
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/storefront/src/lib/content/contentSource.ts",
+      "status": "modified",
+      "sizeBytes": 11599,
+      "sha256": "fb024cf679d2c16b03a25c01e54c465315e296cc587e134834db2735ec5f2b0c",
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/storefront/src/lib/legal/legalContent.ts",
+      "status": "modified",
+      "sizeBytes": 8689,
+      "sha256": "45a3b8af6477b39ae4dfe76f814ba93cd7f511c8e21a1dfd736631a369b97557",
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/storefront/src/pages/[locale]/[slug].astro",
+      "status": "modified",
+      "sizeBytes": 3602,
+      "sha256": "69b75a3ae1299b58f9f2a0ba3eb688ce81c3a803e37ff48190fe1597742e4d63",
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/studio/src/pageOperations/PageOperationsTool.tsx",
+      "status": "modified",
+      "sizeBytes": 24751,
+      "sha256": "cfe1b79ba29a1bf8c0c191dcdf0631304a93ea2682c6d4421d2775f93ef24e3b",
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/studio/src/productLaunch/ProductLaunchWizard.tsx",
+      "status": "modified",
+      "sizeBytes": 21430,
+      "sha256": "8fde66fbdc6613058700e54311875388af00fcc29fd610fee045c67f7a9bd0ee",
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/studio/src/productOperations/ProductOperationsTool.tsx",
+      "status": "modified",
+      "sizeBytes": 40020,
+      "sha256": "216f306ce71b3b3e53d12384cd97625323dfe1267221364bfb48ba4f6d21351d",
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/worker/coordinator.mjs",
+      "status": "untracked",
+      "sizeBytes": 9477,
+      "sha256": "ee0b498dec9873a2eb6fe9ee4edfe1a8486fb71212984c2fbb86bf49f7d25b18",
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/worker/entry.mjs",
+      "status": "untracked",
+      "sizeBytes": 92,
+      "sha256": "e1f73be5ee105a722e265990195828991f38ba0cd0af72274f8a3a736cea32be",
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/worker/index.mjs",
+      "status": "modified",
+      "sizeBytes": 33704,
+      "sha256": "3b9904acaba231ab6d2f85ddd6b120b76718e42103b6c542e5eecd2c7032470c",
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/worker/package.json",
+      "status": "modified",
+      "sizeBytes": 619,
+      "sha256": "e57421e6ee0cb9a17d8bc44e83e6be4dca63464a39af967782c704ce22ab6ca8",
+      "category": "configuration",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/worker/test/coordinator.test.mjs",
+      "status": "untracked",
+      "sizeBytes": 2569,
+      "sha256": "7a8c4df1c4112b47cfa9363a8def9b4a45d62594ef75db612f20e1fac46a31c1",
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/worker/tsconfig.json",
+      "status": "untracked",
+      "sizeBytes": 388,
+      "sha256": "9eff205447f52734f67ea2cc27518cb138d5c3d6e0e94fde21977e03c82d14f0",
+      "category": "configuration",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/worker/vitest.config.mjs",
+      "status": "untracked",
+      "sizeBytes": 302,
+      "sha256": "4b9a1b83c1740f3dd50d1f5eb18c85a82af2738b2872877a010602b9c5807a5d",
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/worker/wrangler.test.toml",
+      "status": "untracked",
+      "sizeBytes": 395,
+      "sha256": "9fa75fd7258b1585686dd3603c755dd66ceba64cfd80bbe307b06079176a4054",
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "apps/worker/wrangler.toml",
+      "status": "modified",
+      "sizeBytes": 835,
+      "sha256": "de4303db5495540cbda8131c66f7317fe6921c7b370041a2bcc2167455d26160",
+      "category": "configuration",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "docs/astro-sanity-shopify-cloudflare-retail-framework-v2.1.md",
+      "status": "deleted",
+      "category": "architecture-doc",
+      "decision": "exclude",
+      "reasonCode": "SOURCE_FILE_REMOVED_FROM_CANDIDATE"
+    },
+    {
+      "path": "docs/client-v3-architecture-advantages.md",
+      "status": "deleted",
+      "category": "commercial-delivery-doc",
+      "decision": "exclude",
+      "reasonCode": "SOURCE_FILE_REMOVED_FROM_CANDIDATE"
+    },
+    {
+      "path": "docs/compliance/ASSET_LICENSES.yml",
+      "status": "untracked",
+      "sizeBytes": 27070,
+      "sha256": "4ce8ebf35dec6ab581111556d6186807bc68b6a0ee157bebb60fcd108d96c657",
+      "category": "compliance-evidence",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "docs/compliance/assets-provenance.md",
+      "status": "untracked",
+      "sizeBytes": 16098,
+      "sha256": "20dd12151c999e42fb8f00f358f3d992b6f8dc663d9fd957e959493314a8cec3",
+      "category": "compliance-evidence",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "docs/compliance/public-text-allowlist.json",
+      "status": "untracked",
+      "sizeBytes": 8170,
+      "sha256": "131481a642cdbe965b5276e0c0d8c967a9f56dea9443a913ef306dea05a51699",
+      "category": "compliance-evidence",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "docs/compliance/public-text-scan-current.json",
+      "status": "untracked",
+      "sizeBytes": 309,
+      "sha256": "be5e76288d41fc8d48fa761e2bbb9c6d626bfe9e6b488886da6872e978d2da55",
+      "category": "compliance-evidence",
+      "decision": "exclude",
+      "reasonCode": "WORKTREE_COMPLIANCE_EVIDENCE"
+    },
+    {
+      "path": "docs/compliance/public-text-scan-history.json",
+      "status": "untracked",
+      "sizeBytes": 7501,
+      "sha256": "7cfd82b9fa457a216b701958886e901c3881325b107fb80cfc1c129ee5cb9fd7",
+      "category": "compliance-evidence",
+      "decision": "exclude",
+      "reasonCode": "WORKTREE_COMPLIANCE_EVIDENCE"
+    },
+    {
+      "path": "docs/contact-lightweight-form-design.md",
+      "status": "modified",
+      "sizeBytes": 20875,
+      "sha256": "a6aa0753b0599836ad81a83fa5337903572e16a9b7387bca790151bc992786cf",
+      "category": "architecture-doc",
+      "decision": "rewrite",
+      "reasonCode": "PUBLIC_CONTACT_DESIGN_REWRITE"
+    },
+    {
+      "path": "docs/customer-operations-cms-brand.md",
+      "status": "modified",
+      "sizeBytes": 3436,
+      "sha256": "44fcfce9a8416259eca3f5afadb1d7beb188cc33da0f5f79916e4309e423cdfe",
+      "category": "commercial-delivery-doc",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "docs/customer-operations-retail.md",
+      "status": "modified",
+      "sizeBytes": 5511,
+      "sha256": "2de617ef02b061085d9f0b2f2ec59f68e92a9a05468038771bc608735f2d2439",
+      "category": "commercial-delivery-doc",
+      "decision": "rewrite",
+      "reasonCode": "RETAIL_CATALOG_TERMINOLOGY_REWRITE"
+    },
+    {
+      "path": "docs/customer-operations-static-brand.md",
+      "status": "modified",
+      "sizeBytes": 2516,
+      "sha256": "51d87e4f45cd3af033e4ae33661573e2d657feb42fd47930c4e35096d5a3b2fb",
+      "category": "commercial-delivery-doc",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "docs/customer-operations.md",
+      "status": "modified",
+      "sizeBytes": 2497,
+      "sha256": "56680e8a37e7c87f1e079b6ddb9fe1e5327bcced04d5ad6528b20c789b339937",
+      "category": "commercial-delivery-doc",
+      "decision": "rewrite",
+      "reasonCode": "RETAIL_CATALOG_TERMINOLOGY_REWRITE"
+    },
+    {
+      "path": "docs/customer-page-operations.md",
+      "status": "modified",
+      "sizeBytes": 7346,
+      "sha256": "b12809556c50156c95e53d62b7b95cc2c0f7d164bc351d6dda91e546bb3fafd4",
+      "category": "commercial-delivery-doc",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "docs/customer-product-operations.md",
+      "status": "modified",
+      "sizeBytes": 8752,
+      "sha256": "b0424aa2a5032dee7d331c1fad45538adb1f6e8a8049cbdc9b7ad83b2a34d6b3",
+      "category": "commercial-delivery-doc",
+      "decision": "rewrite",
+      "reasonCode": "RETAIL_CATALOG_TERMINOLOGY_REWRITE"
+    },
+    {
+      "path": "docs/framework-module-audit.md",
+      "status": "deleted",
+      "category": "architecture-doc",
+      "decision": "exclude",
+      "reasonCode": "SOURCE_FILE_REMOVED_FROM_CANDIDATE"
+    },
+    {
+      "path": "docs/framework-productization-plan.md",
+      "status": "deleted",
+      "category": "architecture-doc",
+      "decision": "exclude",
+      "reasonCode": "SOURCE_FILE_REMOVED_FROM_CANDIDATE"
+    },
+    {
+      "path": "docs/gcss-v3-site-framework-template-plan.md",
+      "status": "modified",
+      "sizeBytes": 6124,
+      "sha256": "63489867a96e79d1e8db434de56c4a9a5020bf47c78b4167ec9d3eae457e1bd0",
+      "category": "architecture-doc",
+      "decision": "rewrite",
+      "reasonCode": "PUBLIC_ARCHITECTURE_REWRITE"
+    },
+    {
+      "path": "docs/legal/zh/customer-service-contact.md",
+      "status": "modified",
+      "sizeBytes": 752,
+      "sha256": "77fbbce824192f1ebc6f53ce1b8ab7daab663e7eb791098ebc911813ff0bb9c5",
+      "category": "legal-template",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "docs/legal/zh/privacy-policy.md",
+      "status": "modified",
+      "sizeBytes": 743,
+      "sha256": "de647e213254b86edf685f5bb493e7ea10df41cff1e2b07a7461d318afc3de81",
+      "category": "legal-template",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "docs/legal/zh/shipping-returns-policy.md",
+      "status": "modified",
+      "sizeBytes": 752,
+      "sha256": "3def1668044e21ac933e1b802bebf884cfbb4f4185d450730071bc09e6b3db0d",
+      "category": "legal-template",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "docs/legal/zh/terms-of-use.md",
+      "status": "modified",
+      "sizeBytes": 743,
+      "sha256": "5022ac66eb212c04a04c5db674ea33b9868fed919e40a39a631c640238ea0f29",
+      "category": "legal-template",
+      "decision": "include",
+      "reasonCode": "REWRITTEN_CANDIDATE_PENDING_GATE"
+    },
+    {
+      "path": "docs/open-source-decisions.md",
+      "status": "untracked",
+      "sizeBytes": 12233,
+      "sha256": "44edd37ba47ecfe094b0781d0c6e3e020caa98e7e9abbe288ed0d4d099d6d31a",
+      "category": "governance-doc",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "docs/open-source-preview-release-plan.md",
+      "status": "untracked",
+      "sizeBytes": 53553,
+      "sha256": "bd5e7dce03de0eb7b408a1393b35f8d05848b5eb6eb5b258b8188813f8f8911f",
+      "category": "governance-doc",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "docs/project-log/daily/2026-08-15.md",
+      "status": "untracked",
+      "sizeBytes": 17484,
+      "sha256": "60b634b50ed5c4510f4d61f2a167296ea0c6ac8a13feb3d9dc31fc7ae5dbe88e",
+      "category": "internal-log",
+      "decision": "exclude",
+      "reasonCode": "INTERNAL_PROJECT_LOG"
+    },
+    {
+      "path": "docs/project-startup-and-handoff.md",
+      "status": "modified",
+      "sizeBytes": 7365,
+      "sha256": "9e697ded1a8599f4c817dc5babd3f08ea40b8e8a472743cf88eb9ed915001e10",
+      "category": "commercial-delivery-doc",
+      "decision": "rewrite",
+      "reasonCode": "PUBLIC_REPOSITORY_WORKFLOW_REWRITE"
+    },
+    {
+      "path": "docs/release-policy.md",
+      "status": "untracked",
+      "sizeBytes": 7851,
+      "sha256": "df554e80738df5916ed1d89cf0b71e9ad41b41debd6043bfd0f6fe279d579d64",
+      "category": "governance-doc",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "docs/release-status.md",
+      "status": "untracked",
+      "sizeBytes": 7284,
+      "sha256": "b541952a922dc7fadc05d788679ff8439dab125a59fe082c224de179bad2fd11",
+      "category": "governance-doc",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "docs/roadmap.md",
+      "status": "untracked",
+      "sizeBytes": 5750,
+      "sha256": "d8d6e59448cd3d7224b47645939b0f061efe8054e1932eac5080538d1b99c7c0",
+      "category": "governance-doc",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "docs/roadmap/workflows/README.md",
+      "status": "untracked",
+      "sizeBytes": 1646,
+      "sha256": "0523166b44179be28338bd4881f87fe1b6217a92615b11c7cc18666be86b733c",
+      "category": "architecture-doc",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "docs/roadmap/workflows/backup-plan.example.yml",
+      "status": "untracked",
+      "sizeBytes": 1225,
+      "sha256": "80de6f9759e7ded3a97a6a2df4966223878ed7a08e4e37b9a661e59e3624cb66",
+      "category": "architecture-doc",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "docs/roadmap/workflows/restore-check-plan.example.yml",
+      "status": "untracked",
+      "sizeBytes": 1098,
+      "sha256": "3505cb7fd8525b3422a354ad513b2dfb9370b8e074d42344b9247907757864bb",
+      "category": "architecture-doc",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "docs/site-image-source-migration-plan.md",
+      "status": "deleted",
+      "category": "architecture-doc",
+      "decision": "exclude",
+      "reasonCode": "SOURCE_FILE_REMOVED_FROM_CANDIDATE"
+    },
+    {
+      "path": "docs/storefront-page-layering.md",
+      "status": "deleted",
+      "category": "architecture-doc",
+      "decision": "exclude",
+      "reasonCode": "SOURCE_FILE_REMOVED_FROM_CANDIDATE"
+    },
+    {
+      "path": "docs/template-placeholder-audit.md",
+      "status": "modified",
+      "sizeBytes": 3619,
+      "sha256": "19fd29f3a2d8821550fe546d8a96d758716a449345f1a943ae141d8fc908c62f",
+      "category": "architecture-doc",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "gcss.project.json",
+      "status": "modified",
+      "sizeBytes": 729,
+      "sha256": "1da44df283246cfd216795988733d35db6ca9285f81ce6293198898bd9abac0b",
+      "category": "configuration",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "gcss.project.schema.json",
+      "status": "modified",
+      "sizeBytes": 6460,
+      "sha256": "00842c301f6b2b984d6fbedbba98360da2be6e0251bbdc897511a9ce09285410",
+      "category": "configuration",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "package-lock.json",
+      "status": "modified",
+      "sizeBytes": 820632,
+      "sha256": "3cad0cbc8cb1720232ff500508d961a80aaa4906a16efe6cf0bcdea69083bd1d",
+      "category": "generated",
+      "decision": "include",
+      "reasonCode": "GENERATED_LOCKFILE"
+    },
+    {
+      "path": "package.json",
+      "status": "modified",
+      "sizeBytes": 9500,
+      "sha256": "9cad2bd2817f1d2661a9e3cbc433b80685d12c28761962842561c568d46732f2",
+      "category": "configuration",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "packages/config/src/index.d.ts",
+      "status": "modified",
+      "sizeBytes": 2777,
+      "sha256": "4870369d45d1dd6ab181274a24a572fe08192ca9eb8e21ada866dd15595208a8",
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "packages/config/src/index.mjs",
+      "status": "modified",
+      "sizeBytes": 8062,
+      "sha256": "8bb7a86b2b07979c057b6bdbec2f1d9a6333443b4d86422a65e0c3dcc40daa22",
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "packages/sanity-queries/src/index.mjs",
+      "status": "modified",
+      "sizeBytes": 7751,
+      "sha256": "70436b2c3ad2dd2bc0cc254039c665f29fbf119e9e27325445ea539de04028a5",
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "packages/schemas/src/index.d.ts",
+      "status": "modified",
+      "sizeBytes": 403,
+      "sha256": "732ea75c94939c8f180a20a29f13d5d923d937fc5fd630370f3f2a1c39e1fd14",
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "packages/schemas/src/index.mjs",
+      "status": "modified",
+      "sizeBytes": 60527,
+      "sha256": "9cb6cbb59cd120079bb48c8a723faaff3d508203c08d05b487d3488944bdee1d",
+      "category": "source-code",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/backup-sanity/plan.mjs",
+      "status": "modified",
+      "sizeBytes": 4033,
+      "sha256": "caedb7fcd239a10bbcd2525a4a0afbdcf78cc495339e41a97cf528ffe2492edc",
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/backup-shopify/plan.mjs",
+      "status": "modified",
+      "sizeBytes": 6747,
+      "sha256": "506c717859be6f38d5a2030d14e41c7de61a7140aa370a2f2b6b1714bb3e8229",
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/compliance/generate-public-file-inventory.mjs",
+      "status": "untracked",
+      "sizeBytes": 18440,
+      "sha256": "a67f74aaf8e86f52f44e8b0bd61a52204edd609ebec1f6be5f1616afd719b819",
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/fixtures/projects/README.md",
+      "status": "untracked",
+      "sizeBytes": 3519,
+      "sha256": "aaad7afd8ff838ccca3f1fb14ab41810cd2642107321eb77d71f26b7ac8cebb7",
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/fixtures/projects/a1.project.json",
+      "status": "untracked",
+      "sizeBytes": 726,
+      "sha256": "5002f7fe503f2d61dd4a254522a996d9f7bd8bc458055e4230abf9b0534b13bc",
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/fixtures/projects/a2.project.json",
+      "status": "untracked",
+      "sizeBytes": 725,
+      "sha256": "3c9f3859d5a3475ffb42f8d172a045c08e073b4238889ed5b4842b059ed471e8",
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/fixtures/projects/b.project.json",
+      "status": "untracked",
+      "sizeBytes": 741,
+      "sha256": "a683bca307fdb4f1ea7eb0c2eaf4e50ba07831df26a02ce1213138e02ad7e974",
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/fixtures/projects/c.project.json",
+      "status": "untracked",
+      "sizeBytes": 798,
+      "sha256": "6fc570616a5b7b148e54fbf19da5465cdbd24dfd112cbcf308bd4418f844aedf",
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/products/set-product-launch-status.mjs",
+      "status": "modified",
+      "sizeBytes": 7978,
+      "sha256": "9e16278249c396e48e66dca2bfb9875a1b20bfe391d88699c16252fa28ab2305",
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/restore-check/plan.mjs",
+      "status": "modified",
+      "sizeBytes": 3770,
+      "sha256": "b362d1bf6edfa1525cf2ef5f11c326b23d25542af5a319444f6f637d2e89ce98",
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/shopify/preview-product-entry-summary.mjs",
+      "status": "modified",
+      "sizeBytes": 8019,
+      "sha256": "6aa773eefc2ba0fb5c32e23ed6918aaaa46e0f7856e2b3e5a192c07375c52a65",
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/storefront/run-with-env.mjs",
+      "status": "modified",
+      "sizeBytes": 2256,
+      "sha256": "c9030b006668cf2a80b2baa0975ddc941f97c4653e7fd66f6944db230b0426a2",
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/studio/run-with-env.mjs",
+      "status": "modified",
+      "sizeBytes": 2334,
+      "sha256": "4db58a8d553d2be28f0748e0193b9d8fab4c220809b2ae2ae0447f3c7623ace6",
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/template/plan-new-project.mjs",
+      "status": "modified",
+      "sizeBytes": 6654,
+      "sha256": "133ea67b9222ec68f5f340ec5dfb1dd0dffda7bf38127a431ea11cbfe89141dc",
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/template/project-config.mjs",
+      "status": "modified",
+      "sizeBytes": 10154,
+      "sha256": "dd5001acef9423a692b55c2d3129d51f4531d4d67fd8e4fa4409507212b6a2c2",
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/template/project-renderers.mjs",
+      "status": "modified",
+      "sizeBytes": 5220,
+      "sha256": "51939fc1d748e0dd0c2513b980cce74cf543bdf201777da3c9262f86d11c5480",
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/template/validate-project-readiness.mjs",
+      "status": "modified",
+      "sizeBytes": 6861,
+      "sha256": "9528c9fe80f9a136840d9ebd1efa5697ded12ee78dd591b372286c8ea36b7845",
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/template/validate-template-placeholders.mjs",
+      "status": "modified",
+      "sizeBytes": 4304,
+      "sha256": "ae234d4648c87ebbe43fc8cd5b169175135d28ee08f13b1c3060aae9a6c8a119",
+      "category": "tooling",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/tests/run-initialized-project-fixture.mjs",
+      "status": "untracked",
+      "sizeBytes": 21954,
+      "sha256": "803a7580cc3b22ef2b361dcba4554c758ddc95c9e389cf3db4a1d527f139bce6",
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/tests/validate-backup-restore-dry-run.mjs",
+      "status": "modified",
+      "sizeBytes": 7115,
+      "sha256": "d981d1289d96cf0c31620260b2e66908782e588d1528c6b68f18b827d9f4ec36",
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/tests/validate-content-encoding.mjs",
+      "status": "untracked",
+      "sizeBytes": 5477,
+      "sha256": "45bc4a03879cb42c0d6f0c628e46ceb8fc86ae0690de128e55c5f1ac9ce754ae",
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/tests/validate-customer-operations-guides.mjs",
+      "status": "modified",
+      "sizeBytes": 4682,
+      "sha256": "f64b3020d500cd01acc80636900a8ba2e7a0b36fbd31a4fb038d6e40e5ed5004",
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/tests/validate-framework-skill.mjs",
+      "status": "modified",
+      "sizeBytes": 5757,
+      "sha256": "a06e3df27f8e4f1841e5a5b89003efdba5431d5a3ed7e8b6130d85f598039ca6",
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/tests/validate-github-workflows.mjs",
+      "status": "modified",
+      "sizeBytes": 9569,
+      "sha256": "9241809733538c74e71bc348c934939e500c3be8b02d052744da4760c9b94be4",
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/tests/validate-initialized-profile-fixtures.mjs",
+      "status": "untracked",
+      "sizeBytes": 9697,
+      "sha256": "9fac441641528a260ac1a9cfbf8905aa210b58559cb7aefc436aa0b7b7629d57",
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/tests/validate-page-workbench.mjs",
+      "status": "modified",
+      "sizeBytes": 2961,
+      "sha256": "5c8a2c5d6d4d71a733774bcde572d24f5837eff2aaa0cef35861f9cb74396f85",
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/tests/validate-product-launch-gate.mjs",
+      "status": "modified",
+      "sizeBytes": 10423,
+      "sha256": "bfe96faf7ccef7709ec8492d8d580a0d9b9c196a9e84f5431f9eeb1524137894",
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/tests/validate-product-workbench.mjs",
+      "status": "modified",
+      "sizeBytes": 5248,
+      "sha256": "8485da011870bb1163ca69bcc14d398b9a81faacfe84ab0b472bd319b6eb39b5",
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/tests/validate-profile-build-matrix.mjs",
+      "status": "deleted",
+      "category": "test",
+      "decision": "exclude",
+      "reasonCode": "SOURCE_FILE_REMOVED_FROM_CANDIDATE"
+    },
+    {
+      "path": "scripts/tests/validate-project-config.mjs",
+      "status": "modified",
+      "sizeBytes": 6034,
+      "sha256": "ec524eb2e92b30b47917e907407507711b1fb2c22be5787ab9e542c086bb5ad4",
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/tests/validate-project-initializer.mjs",
+      "status": "modified",
+      "sizeBytes": 3861,
+      "sha256": "5215fbe22faa336b0ebc9c06061a7be400148b605adf3695191489f12a7eb309",
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/tests/validate-public-assets.mjs",
+      "status": "untracked",
+      "sizeBytes": 23736,
+      "sha256": "1db90241178547b2b8fbab2389c71f4f1f5accb8bb16a1fb7892ec445bf24d5a",
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/tests/validate-public-capability-boundaries.mjs",
+      "status": "untracked",
+      "sizeBytes": 8362,
+      "sha256": "29f595bc373d0b8ce0a27b19e97c24140173abf9cf02c036ebc54b24de9b34c1",
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/tests/validate-public-text.mjs",
+      "status": "untracked",
+      "sizeBytes": 18178,
+      "sha256": "dc34202de0fbd60b5fad0c13bd455a2e09943e814dd07a57e2a4c48fc9e6bd7b",
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/tests/validate-shopify-product-entry-summary.mjs",
+      "status": "modified",
+      "sizeBytes": 5367,
+      "sha256": "649f05e13e99899e6a0938bbf26f18fff96f677497f2725cb02cd85c1bfa3600",
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/tests/validate-site-profiles.mjs",
+      "status": "modified",
+      "sizeBytes": 8104,
+      "sha256": "d1acdd7bb651b8e27b5aa714f71c1cbf5fd2a6be2b625e697e695cc67408573d",
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/tests/validate-static-check-contract.mjs",
+      "status": "untracked",
+      "sizeBytes": 3977,
+      "sha256": "fa5db0c4081cee5b43e62e9c1abf06432beec397e039eb4b9f07c03fb3db71c5",
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/tests/validate-storefront-profile-routing.mjs",
+      "status": "modified",
+      "sizeBytes": 5158,
+      "sha256": "6bbd103a57cc3bd450980e3d966a1c54a8ec9dabe40b5a6b6eaa6738e2030b36",
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/tests/validate-studio-profile-tools.mjs",
+      "status": "modified",
+      "sizeBytes": 4859,
+      "sha256": "0cc6f4f3057c963380b9c34d9e6626473a292087ec659c544ac0895c87c17498",
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/tests/validate-studio-schema-profile.mjs",
+      "status": "modified",
+      "sizeBytes": 3782,
+      "sha256": "1638a35226861c24fe11d941546aceaa2e8f4dc1df092b2f2d3349f62876d4d5",
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/tests/validate-template-tools.mjs",
+      "status": "modified",
+      "sizeBytes": 6956,
+      "sha256": "154dc538613dab85612196177789550a80c07721b7063cfdbef337adca1fe03d",
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    },
+    {
+      "path": "scripts/tests/validate-worker-routes.mjs",
+      "status": "modified",
+      "sizeBytes": 32461,
+      "sha256": "ca427656b34443eb2d4d18e8b756c4753edbcd4015ec23cb62b1e6f940d47add",
+      "category": "test",
+      "decision": "include",
+      "reasonCode": "CURRENT_PUBLIC_SOURCE"
+    }
+  ]
+}

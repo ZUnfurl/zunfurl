@@ -1,0 +1,744 @@
+---
+import LocaleSwitcher from "./LocaleSwitcher.astro";
+import ThemeToggle from "./ThemeToggle.astro";
+import { getDictionary, type ActiveLocale } from "../../i18n/config";
+import { brandName } from "gcss-config";
+
+interface NavItem {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  locale: ActiveLocale;
+  navItems: NavItem[];
+  lightLabel: string;
+  darkLabel: string;
+  currentPath?: string;
+  variant?: "default" | "overlay";
+  overlayTone?: "hero" | "theme";
+}
+
+const {
+  locale,
+  navItems,
+  lightLabel,
+  darkLabel,
+  currentPath = `/${locale}/`,
+  variant = "overlay",
+  overlayTone = "hero",
+} = Astro.props;
+
+const isOverlay = variant === "overlay";
+const dictionary = getDictionary(locale);
+---
+
+<header
+  class:list={["site-header", isOverlay && "site-header--overlay"]}
+  data-overlay-header={isOverlay ? "true" : undefined}
+  data-overlay-tone={isOverlay ? overlayTone : undefined}
+  data-site-header
+>
+  <div class="container">
+    <div class="site-header__inner">
+      <a
+        class="brandmark"
+        href={`/${locale}/`}
+        aria-label={dictionary.site.homeLinkLabel}
+      >
+        <span class="brandmark__eyebrow">{dictionary.site.brandEyebrow}</span>
+        <span class="brandmark__wordmark">{brandName}</span>
+      </a>
+      <button
+        class="site-header__menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls={`site-header-menu-${locale}`}
+        aria-label={dictionary.site.primaryNavigationLabel}
+        data-site-header-toggle
+      >
+        <span class="site-header__menu-toggle-lines" aria-hidden="true">
+          <span></span>
+          <span></span>
+        </span>
+      </button>
+      <div
+        class="site-header__menu-panel"
+        id={`site-header-menu-${locale}`}
+        data-site-header-panel
+      >
+        <div class="site-header__menu-panel-inner">
+          <div class="site-nav-shell" data-nav-shell>
+            <nav
+              class="site-nav"
+              aria-label={dictionary.site.primaryNavigationLabel}
+              data-scroll-nav
+            >
+              {
+                navItems.map((item) => (
+                  <a
+                    href={item.href}
+                    aria-current={
+                      item.href === currentPath ? "page" : undefined
+                    }
+                  >
+                    {item.label}
+                  </a>
+                ))
+              }
+            </nav>
+          </div>
+          <div class="site-header__actions">
+            <LocaleSwitcher currentLocale={locale} />
+            <ThemeToggle lightLabel={lightLabel} darkLabel={darkLabel} />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script is:inline>
+  const overlayHeaders = document.querySelectorAll(
+    '[data-overlay-header="true"]',
+  );
+
+  if (overlayHeaders.length > 0) {
+    const syncOverlayHeaderState = () => {
+      const isScrolled = window.scrollY > 36;
+      overlayHeaders.forEach((header) => {
+        header.classList.toggle("is-scrolled", isScrolled);
+      });
+    };
+
+    syncOverlayHeaderState();
+    window.addEventListener("scroll", syncOverlayHeaderState, {
+      passive: true,
+    });
+    window.addEventListener("resize", syncOverlayHeaderState);
+  }
+
+  const navShells = document.querySelectorAll("[data-nav-shell]");
+
+  if (navShells.length > 0) {
+    const syncNavShell = (shell) => {
+      const nav = shell.querySelector("[data-scroll-nav]");
+
+      if (!(nav instanceof HTMLElement)) {
+        return;
+      }
+
+      const maxOffset = Math.max(nav.scrollWidth - nav.clientWidth, 0);
+      const canScroll = maxOffset > 8;
+      const scrollLeft = nav.scrollLeft;
+
+      shell.dataset.scrollable = canScroll ? "true" : "false";
+      shell.dataset.atStart = !canScroll || scrollLeft <= 8 ? "true" : "false";
+      shell.dataset.atEnd =
+        !canScroll || scrollLeft >= maxOffset - 8 ? "true" : "false";
+    };
+
+    navShells.forEach((shell) => {
+      const nav = shell.querySelector("[data-scroll-nav]");
+
+      if (!(nav instanceof HTMLElement)) {
+        return;
+      }
+
+      syncNavShell(shell);
+      nav.addEventListener("scroll", () => syncNavShell(shell), {
+        passive: true,
+      });
+      window.addEventListener("resize", () => syncNavShell(shell));
+    });
+  }
+
+  const siteHeaders = document.querySelectorAll("[data-site-header]");
+
+  siteHeaders.forEach((header) => {
+    const toggle = header.querySelector("[data-site-header-toggle]");
+    const panel = header.querySelector("[data-site-header-panel]");
+    const themeToggle = header.querySelector("[data-theme-toggle]");
+
+    if (
+      !(toggle instanceof HTMLButtonElement) ||
+      !(panel instanceof HTMLElement)
+    ) {
+      return;
+    }
+
+    const syncMenuState = (isOpen) => {
+      header.dataset.menuOpen = isOpen ? "true" : "false";
+      toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    };
+
+    const closeMenu = () => {
+      syncMenuState(false);
+    };
+
+    toggle.addEventListener("click", () => {
+      const isOpen = header.dataset.menuOpen === "true";
+      syncMenuState(!isOpen);
+    });
+
+    document.addEventListener("pointerdown", (event) => {
+      if (window.innerWidth > 1080) {
+        return;
+      }
+
+      const target = event.target;
+
+      if (!(target instanceof Node) || header.contains(target)) {
+        return;
+      }
+
+      closeMenu();
+    });
+
+    panel.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        if (window.innerWidth <= 1080) {
+          closeMenu();
+        }
+      });
+    });
+
+    if (themeToggle instanceof HTMLButtonElement) {
+      themeToggle.addEventListener("click", () => {
+        if (window.innerWidth <= 1080) {
+          closeMenu();
+        }
+      });
+    }
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 1080) {
+        closeMenu();
+      }
+    });
+
+    header.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeMenu();
+        toggle.focus();
+      }
+    });
+
+    syncMenuState(false);
+  });
+</script>
+
+<style>
+  .site-header {
+    --header-overlay-link: rgba(243, 239, 236, 0.76);
+    --header-overlay-title: #f3efec;
+    --header-overlay-line: rgba(243, 239, 236, 0.92);
+    --header-overlay-scrolled-bg: color-mix(
+      in srgb,
+      rgb(20, 18, 18) 46%,
+      transparent
+    );
+    --header-overlay-scrolled-link: rgba(243, 239, 236, 0.78);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    padding-top: 1rem;
+    backdrop-filter: blur(28px);
+  }
+
+  html[data-theme="light"] .site-header {
+    --header-overlay-link: rgba(246, 241, 237, 0.82);
+    --header-overlay-title: #fffaf6;
+    --header-overlay-line: rgba(255, 250, 246, 0.9);
+    --header-overlay-scrolled-bg: color-mix(
+      in srgb,
+      rgba(239, 232, 226, 0.82) 84%,
+      transparent
+    );
+    --header-overlay-scrolled-shell: color-mix(
+      in srgb,
+      rgba(255, 251, 248, 0.76) 88%,
+      transparent
+    );
+    --header-overlay-scrolled-border: rgba(122, 98, 85, 0.12);
+    --header-overlay-scrolled-link: rgba(91, 70, 60, 0.9);
+    --header-overlay-scrolled-shadow: 0 18px 36px rgba(66, 42, 31, 0.08);
+  }
+
+  html[data-theme="dark"] .site-header {
+    --header-overlay-link: rgba(243, 239, 236, 0.74);
+    --header-overlay-title: #f3efec;
+    --header-overlay-line: rgba(243, 239, 236, 0.88);
+    --header-overlay-scrolled-bg: color-mix(
+      in srgb,
+      rgb(10, 10, 10) 54%,
+      transparent
+    );
+    --header-overlay-scrolled-link: rgba(243, 239, 236, 0.76);
+  }
+
+  html[data-theme="light"] .site-header[data-overlay-tone="theme"] {
+    --header-overlay-link: color-mix(
+      in srgb,
+      var(--color-text) 74%,
+      transparent
+    );
+    --header-overlay-title: var(--color-text);
+    --header-overlay-line: color-mix(
+      in srgb,
+      var(--color-text) 82%,
+      transparent
+    );
+    --header-overlay-scrolled-bg: color-mix(
+      in srgb,
+      var(--color-surface-strong) 86%,
+      transparent
+    );
+    --header-overlay-theme-shell: color-mix(
+      in srgb,
+      var(--color-surface-strong) 94%,
+      transparent
+    );
+    --header-overlay-scrolled-link: color-mix(
+      in srgb,
+      var(--color-text) 76%,
+      transparent
+    );
+  }
+
+  html[data-theme="dark"] .site-header[data-overlay-tone="theme"] {
+    --header-overlay-link: color-mix(
+      in srgb,
+      var(--color-text) 74%,
+      transparent
+    );
+    --header-overlay-title: var(--color-text);
+    --header-overlay-line: color-mix(
+      in srgb,
+      var(--color-text) 82%,
+      transparent
+    );
+    --header-overlay-scrolled-bg: color-mix(
+      in srgb,
+      var(--color-surface-strong) 86%,
+      transparent
+    );
+    --header-overlay-theme-shell: color-mix(
+      in srgb,
+      var(--color-surface-strong) 90%,
+      transparent
+    );
+    --header-overlay-scrolled-link: color-mix(
+      in srgb,
+      var(--color-text) 76%,
+      transparent
+    );
+  }
+
+  .site-header__inner {
+    display: grid;
+    grid-template-columns: minmax(max-content, 1fr) auto minmax(
+        max-content,
+        1fr
+      );
+    gap: 1rem;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    border-radius: 0;
+  }
+
+  .site-header__menu-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    justify-self: end;
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--color-text);
+    cursor: pointer;
+    transition:
+      transform 180ms ease,
+      opacity 180ms ease;
+  }
+
+  .site-header__menu-toggle:hover,
+  .site-header__menu-toggle:focus-visible {
+    transform: translateY(-1px);
+    opacity: 0.72;
+  }
+
+  .site-header__menu-toggle-lines {
+    display: inline-grid;
+    gap: 0.28rem;
+  }
+
+  .site-header__menu-toggle-lines span {
+    display: block;
+    width: 1rem;
+    height: 1px;
+    background: currentColor;
+    transform-origin: center;
+    transition:
+      transform 180ms ease,
+      opacity 180ms ease;
+  }
+
+  .site-header__menu-panel {
+    display: contents;
+  }
+
+  .site-header__menu-panel-inner {
+    display: contents;
+  }
+
+  .brandmark {
+    --brandmark-logo-color: var(--color-text);
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    text-decoration: none;
+  }
+
+  .brandmark__eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .brandmark__wordmark {
+    display: block;
+    color: var(--brandmark-logo-color);
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 2.3vw, 1.9rem);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+
+  .site-nav {
+    display: flex;
+    justify-content: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .site-nav-shell {
+    min-width: 0;
+    justify-self: center;
+  }
+
+  .site-nav a {
+    text-decoration: none;
+    font-size: 0.8rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    position: relative;
+    padding-bottom: 0.25rem;
+  }
+
+  .site-nav a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--color-accent);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform var(--transition-luxury);
+  }
+
+  .site-nav a:hover::after,
+  .site-nav a:focus-visible::after,
+  .site-nav a[aria-current="page"]::after {
+    transform: scaleX(1);
+  }
+
+  .site-nav a[aria-current="page"] {
+    color: var(--color-text);
+  }
+
+  .site-header__actions {
+    display: inline-flex;
+    gap: 0.75rem;
+    align-items: center;
+    justify-self: end;
+  }
+
+  .site-header--overlay {
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    z-index: 40;
+    padding-top: 1.25rem;
+    backdrop-filter: none;
+    transition:
+      background-color var(--transition-luxury),
+      backdrop-filter var(--transition-luxury),
+      padding-top var(--transition-luxury);
+  }
+
+  .site-header--overlay .container {
+    max-width: none;
+    padding-inline: clamp(1rem, 3vw, 2rem);
+  }
+
+  .site-header--overlay .site-header__inner {
+    padding: 0.85rem 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .site-header--overlay .brandmark__eyebrow,
+  .site-header--overlay .site-nav a {
+    color: var(--header-overlay-link);
+  }
+
+  .site-header--overlay .brandmark {
+    --brandmark-logo-color: var(--header-overlay-title);
+  }
+
+  .site-header--overlay .site-nav a[aria-current="page"] {
+    color: var(--header-overlay-title);
+  }
+
+  .site-header--overlay .site-nav a::after {
+    background: var(--header-overlay-line);
+  }
+
+  .site-header--overlay .site-header__menu-toggle {
+    color: var(--header-overlay-title);
+  }
+
+  .site-header--overlay[data-overlay-tone="theme"] {
+    background: var(--header-overlay-theme-shell);
+    backdrop-filter: blur(24px);
+  }
+
+  .site-header--overlay[data-overlay-tone="theme"] .site-header__inner {
+    backdrop-filter: none;
+  }
+
+  .site-header--overlay.is-scrolled {
+    position: sticky;
+    padding-top: 0;
+    backdrop-filter: blur(24px);
+    background: var(--header-overlay-scrolled-bg);
+  }
+
+  .site-header--overlay.is-scrolled .container {
+    padding-inline: 1.25rem;
+  }
+
+  .site-header--overlay.is-scrolled .site-header__inner {
+    padding: 0.75rem 1rem;
+    border-radius: 0;
+  }
+
+  .site-header--overlay.is-scrolled .brandmark__eyebrow,
+  .site-header--overlay.is-scrolled .site-nav a {
+    color: var(--header-overlay-scrolled-link);
+  }
+
+  .site-header--overlay.is-scrolled .brandmark {
+    --brandmark-logo-color: var(--color-text);
+  }
+
+  .site-header--overlay.is-scrolled .site-nav a[aria-current="page"] {
+    color: var(--color-text);
+  }
+
+  .site-header--overlay.is-scrolled .site-nav a::after {
+    background: var(--color-accent-strong);
+  }
+
+  .site-header--overlay.is-scrolled .site-header__menu-toggle {
+    color: var(--color-text);
+  }
+
+  .site-header--overlay.is-scrolled .site-header__actions {
+    filter: brightness(0.98);
+  }
+
+  .site-header--overlay[data-overlay-tone="theme"].is-scrolled {
+    background: var(--header-overlay-theme-shell);
+    backdrop-filter: blur(24px);
+  }
+
+  @media (max-width: 1080px) {
+    .site-header__inner {
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas:
+        "brand toggle"
+        "menu menu";
+      border-radius: 0;
+      row-gap: 0.7rem;
+      column-gap: 0.85rem;
+    }
+
+    .brandmark {
+      grid-area: brand;
+      min-width: 0;
+    }
+
+    .site-header__menu-toggle {
+      display: inline-flex;
+      grid-area: toggle;
+    }
+
+    .site-header__menu-panel {
+      grid-area: menu;
+      display: grid;
+      grid-template-rows: 0fr;
+      min-width: 0;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transition:
+        grid-template-rows 280ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 220ms ease;
+    }
+
+    .site-header[data-menu-open="true"] .site-header__menu-panel {
+      grid-template-rows: 1fr;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .site-header__menu-panel-inner {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.9rem;
+      padding-top: 0.25rem;
+      transform: translateY(-0.55rem);
+      opacity: 0;
+      transition:
+        transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 220ms ease;
+    }
+
+    .site-header[data-menu-open="true"] .site-header__menu-panel-inner {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .site-header[data-menu-open="true"]
+      .site-header__menu-toggle-lines
+      span:first-child {
+      transform: translateY(0.19rem) rotate(45deg);
+    }
+
+    .site-header[data-menu-open="true"]
+      .site-header__menu-toggle-lines
+      span:last-child {
+      transform: translateY(-0.19rem) rotate(-45deg);
+    }
+
+    .site-nav-shell {
+      min-width: 0;
+    }
+
+    .site-nav {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.4rem;
+    }
+
+    .site-nav a {
+      display: block;
+      padding: 0.2rem 0;
+      white-space: nowrap;
+    }
+
+    .site-header__actions {
+      display: flex;
+      justify-self: stretch;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding-top: 0.4rem;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .site-header--overlay .site-header__inner {
+      padding: 0.55rem 0;
+    }
+
+    .site-header--overlay.is-scrolled .site-header__inner {
+      padding: 0.6rem 0.85rem;
+      border-radius: 0;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .site-header {
+      padding-top: 0.7rem;
+    }
+
+    .site-header--overlay {
+      padding-top: 0.8rem;
+    }
+
+    .site-header--overlay .container,
+    .site-header--overlay.is-scrolled .container {
+      padding-inline: 0.9rem;
+    }
+
+    .site-header__inner {
+      padding: 0.55rem 0.8rem;
+      row-gap: 0.55rem;
+    }
+
+    .site-header--overlay .site-header__inner {
+      padding: 0.45rem 0;
+    }
+
+    .site-header--overlay.is-scrolled .site-header__inner {
+      padding: 0.5rem 0;
+    }
+
+    .brandmark__eyebrow {
+      display: none;
+    }
+
+    .brandmark__wordmark {
+      width: clamp(7rem, 32vw, 8.7rem);
+    }
+
+    .site-nav a {
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+    }
+
+    .site-header__menu-toggle {
+      min-height: 2.35rem;
+      min-width: 2.35rem;
+    }
+
+    .site-header__actions {
+      align-items: center;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .site-header__menu-panel {
+      width: 100%;
+    }
+
+    .site-header__menu-panel-inner {
+      gap: 0.75rem;
+    }
+
+    .site-header__actions {
+      gap: 0.65rem;
+    }
+  }
+</style>

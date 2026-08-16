@@ -1,0 +1,58 @@
+---
+import HomePageTemplate from "../../components/home/HomePageTemplate.astro";
+import { getHomePage, getProducts } from "../../lib/content/contentSource";
+import {
+  getSiteNavigation,
+  isCommerceEnabled,
+} from "../../lib/site/profile";
+import {
+  activeLocales,
+  getAlternateLinks,
+  getDictionary,
+  isActiveLocale,
+  type ActiveLocale,
+} from "../../i18n/config";
+
+export function getStaticPaths() {
+  return activeLocales.map((locale) => ({ params: { locale } }));
+}
+
+const localeParam = Astro.params.locale;
+
+if (!isActiveLocale(localeParam)) {
+  return Astro.redirect("/en/");
+}
+
+const locale = localeParam as ActiveLocale;
+const dictionary = getDictionary(locale);
+const alternates = getAlternateLinks("/");
+const commerceEnabled = isCommerceEnabled();
+const [homePage, sortedProducts] = await Promise.all([
+  getHomePage(locale),
+  commerceEnabled ? getProducts(locale) : Promise.resolve([]),
+]);
+
+const productSpotlightContent =
+  homePage.homeProductSpotlight ?? homePage.productSpotlight;
+
+if (
+  !homePage.hero ||
+  !homePage.brandFramework ||
+  (commerceEnabled && !productSpotlightContent) ||
+  !homePage.contactMaskSection
+) {
+  throw new Error(`Missing required homepage content for locale: ${locale}`);
+}
+
+const navItems = getSiteNavigation(locale, dictionary);
+---
+
+<HomePageTemplate
+  locale={locale}
+  dictionary={dictionary}
+  alternates={alternates}
+  navItems={navItems}
+  homePage={homePage}
+  products={sortedProducts}
+  commerceEnabled={commerceEnabled}
+/>

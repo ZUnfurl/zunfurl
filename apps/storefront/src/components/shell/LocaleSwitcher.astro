@@ -1,0 +1,100 @@
+---
+import {
+  activeLocales,
+  defaultLocale,
+  getDictionary,
+  getLocalePath,
+  type ActiveLocale,
+} from "../../i18n/config";
+
+interface Props {
+  currentLocale: ActiveLocale;
+  path?: string;
+}
+
+const { currentLocale, path = "/" } = Astro.props;
+const dictionary = getDictionary(currentLocale);
+const locales = activeLocales.map((locale) => ({
+  code: locale,
+  label: getDictionary(locale).label,
+  href: getLocalePath(locale, path),
+  isCurrent: locale === currentLocale,
+  isDefault: locale === defaultLocale,
+}));
+---
+
+<nav class="locale-switcher" aria-label={dictionary.ui.language}>
+  <ul>
+    {
+      locales.map((locale) => (
+        <li>
+          <a
+            href={locale.href}
+            aria-current={locale.isCurrent ? "page" : undefined}
+            data-default={locale.isDefault}
+          >
+            {locale.code.toUpperCase()}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .locale-switcher ul {
+    display: flex;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .locale-switcher a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    padding: 0 0.875rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    background: color-mix(in srgb, var(--color-surface) 76%, transparent);
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition:
+      background-color 180ms ease,
+      border-color 180ms ease,
+      transform 180ms ease;
+  }
+
+  .locale-switcher a:hover,
+  .locale-switcher a:focus-visible {
+    background: var(--color-surface-strong);
+    border-color: var(--color-accent);
+    transform: translateY(-1px);
+  }
+
+  .locale-switcher a[aria-current="page"] {
+    background: var(--color-text);
+    color: var(--color-bg);
+    border-color: var(--color-text);
+  }
+
+  @media (max-width: 720px) {
+    .locale-switcher ul {
+      gap: 0.3rem;
+    }
+
+    .locale-switcher a {
+      min-width: 2.15rem;
+      height: 2.15rem;
+      padding: 0 0.7rem;
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+    }
+  }
+</style>

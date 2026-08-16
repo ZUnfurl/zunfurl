@@ -1,0 +1,100 @@
+{
+  "locale": "fr",
+  "kind": "about",
+  "title": "A propos de Example Brand",
+  "seo": {
+    "title": "A propos de Example Brand | Framework de site modulaire",
+    "description": "Une page demo montrant la structure de contenu reutilisable."
+  },
+  "pageHero": {
+    "eyebrow": "A propos",
+    "title": "Une structure de contenu reutilisable.",
+    "body": "Cette page montre un hero partage, une section editoriale structuree et des blocs repetables.",
+    "slides": [
+      {
+        "src": "/brand-assets/hero/about/Hero-About-01.webp",
+        "alt": "Example Brand about hero image 1.",
+        "eyebrow": "Vue systeme",
+        "caption": "Un recit de marque structure, modifiable module par module."
+      },
+      {
+        "src": "/brand-assets/hero/about/Hero-About-02.webp",
+        "alt": "Example Brand about hero image 2.",
+        "eyebrow": "Couche editoriale",
+        "caption": "Une sequence visuelle reservee a l atmosphere et aux preuves de marque."
+      },
+      {
+        "src": "/brand-assets/hero/about/Hero-About-03.webp",
+        "alt": "Example Brand about hero image 3.",
+        "eyebrow": "Modele reutilisable",
+        "caption": "Un hero de page reutilisable pour de futurs projets clients."
+      }
+    ]
+  },
+  "aboutSignature": {
+    "eyebrow": "Structured section",
+    "title": "A visual narrative module for brand context.",
+    "body": "Use this section for founder notes, brand philosophy, campaign context, or other reusable storytelling needs.",
+    "panels": [
+      {
+        "id": "positioning",
+        "eyebrow": "Positioning",
+        "title": "Start with a clear promise.",
+        "body": "Replace this panel with the client brand position, audience, and value proposition.",
+        "imagePath": "/brand-assets/brand/Brand-01.webp",
+        "imageAlt": "Generic brand atmosphere image one.",
+        "imagePosition": "left",
+        "cta": {
+          "label": "Contact the team",
+          "href": "/en/contact/"
+        }
+      },
+      {
+        "id": "system",
+        "eyebrow": "System",
+        "title": "Keep modules predictable.",
+        "body": "Each block is intentionally structured so editors can maintain content without changing frontend code.",
+        "imagePath": "/brand-assets/brand/Brand-02.webp",
+        "imageAlt": "Generic brand atmosphere image two.",
+        "imagePosition": "right"
+      },
+      {
+        "id": "handoff",
+        "eyebrow": "Handoff",
+        "title": "Make ownership explicit.",
+        "body": "Customer docs, profile boundaries, and validation scripts define what the client can maintain after launch.",
+        "imagePath": "/brand-assets/brand/Brand-03.webp",
+        "imageAlt": "Generic brand atmosphere image three.",
+        "imagePosition": "left"
+      }
+    ]
+  },
+  "blocks": [
+    {
+      "id": "profile",
+      "eyebrow": "Profile",
+      "title": "Choose A, B, or C first.",
+      "body": "Every project starts by selecting a delivery profile, then enabling only the modules that profile needs.",
+      "items": [
+        "static-brand for fully managed sites",
+        "cms-brand for page CMS projects",
+        "retail pour le C Retail Catalog & Content Foundation"
+      ],
+      "variant": "standard"
+    },
+    {
+      "id": "workflow",
+      "eyebrow": "Workflow",
+      "title": "Editors see only relevant tools.",
+      "body": "Studio workbenches, schemas, and customer manuals are scoped by profile so daily operations stay clear.",
+      "variant": "accent"
+    },
+    {
+      "id": "validation",
+      "eyebrow": "Validation",
+      "title": "Tests protect the boundaries.",
+      "body": "Profile, schema, worker, storefront, and customer guide tests prevent disabled modules from leaking into the wrong delivery plan.",
+      "variant": "standard"
+    }
+  ]
+}

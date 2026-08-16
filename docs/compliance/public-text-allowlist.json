@@ -1,0 +1,342 @@
+{
+  "schemaVersion": 1,
+  "description": "公开候选文本扫描的显式例外。保留值必须是保留示例、第三方官方域名或已经确认公开的治理联系人。",
+  "allowedEmailDomains": [
+    {
+      "domain": "example.com",
+      "reason": "RFC 2606 保留示例域名，仅用于文档和测试。"
+    }
+  ],
+  "allowedDomains": [
+    {
+      "domain": "example.com",
+      "reason": "RFC 2606 保留示例域名。"
+    },
+    {
+      "domain": "example.org",
+      "reason": "RFC 2606 保留示例域名。"
+    },
+    {
+      "domain": "example.net",
+      "reason": "RFC 2606 保留示例域名。"
+    },
+    {
+      "domain": "example-store.myshopify.com",
+      "reason": "明确虚构的 Shopify 测试店铺。"
+    },
+    {
+      "domain": "example-brand-test.myshopify.com",
+      "reason": "明确虚构的 Shopify 合约测试店铺。"
+    }
+  ],
+  "allowedDomainBases": [
+    {
+      "domain": "apache.org",
+      "reason": "许可证官方来源。"
+    },
+    {
+      "domain": "astro.build",
+      "reason": "Astro 官方域名。"
+    },
+    {
+      "domain": "caniuse.com",
+      "reason": "Caniuse 官方数据来源及 CC-BY 归属。"
+    },
+    {
+      "domain": "cloudflare.com",
+      "reason": "Cloudflare 官方域名。"
+    },
+    {
+      "domain": "contributor-covenant.org",
+      "reason": "Contributor Covenant 行为准则官方参考。"
+    },
+    {
+      "domain": "creativecommons.org",
+      "reason": "Creative Commons CC0 官方 legal code。"
+    },
+    {
+      "domain": "copyright.gov",
+      "reason": "美国版权局官方域名。"
+    },
+    {
+      "domain": "cyclonedx.org",
+      "reason": "CycloneDX 官方 SBOM JSON Schema 域名。"
+    },
+    {
+      "domain": "developercertificate.org",
+      "reason": "DCO 官方来源。"
+    },
+    {
+      "domain": "dotenvx.com",
+      "reason": "锁文件中的依赖资助官方链接。"
+    },
+    {
+      "domain": "europa.eu",
+      "reason": "欧盟官方域名。"
+    },
+    {
+      "domain": "gcss.army.mil",
+      "reason": "名称冲突说明引用的美国陆军官方域名。"
+    },
+    {
+      "domain": "github.com",
+      "reason": "GitHub 官方域名和 API。"
+    },
+    {
+      "domain": "github.io",
+      "reason": "锁文件中的依赖维护者资助页面。"
+    },
+    {
+      "domain": "i18next.com",
+      "reason": "锁文件中的 i18next 官方资助页面。"
+    },
+    {
+      "domain": "json-schema.org",
+      "reason": "JSON Schema 官方域名。"
+    },
+    {
+      "domain": "npmjs.org",
+      "reason": "npm Registry 官方域名。"
+    },
+    {
+      "domain": "npmjs.com",
+      "reason": "npm 官方域名。"
+    },
+    {
+      "domain": "nearley.js.org",
+      "reason": "锁文件中的 Nearley 官方项目与资助页面。"
+    },
+    {
+      "domain": "locize.com",
+      "reason": "锁文件中的 i18next 维护方资助页面。"
+    },
+    {
+      "domain": "opencollective.com",
+      "reason": "锁文件中的依赖资助平台。"
+    },
+    {
+      "domain": "opensource.org",
+      "reason": "OSI 许可证说明来源。"
+    },
+    {
+      "domain": "owasp.org",
+      "reason": "CycloneDX 项目的 OWASP 官方页面与资助入口。"
+    },
+    {
+      "domain": "postmarkapp.com",
+      "reason": "Contact 设计中的第三方服务官方域名。"
+    },
+    {
+      "domain": "patreon.com",
+      "reason": "锁文件中的依赖维护者资助平台。"
+    },
+    {
+      "domain": "paulmillr.com",
+      "reason": "锁文件中的依赖维护者资助页面。"
+    },
+    {
+      "domain": "registry.google",
+      "reason": "Google Registry RDAP 官方域名。"
+    },
+    {
+      "domain": "resend.com",
+      "reason": "Resend 官方域名和 API。"
+    },
+    {
+      "domain": "sanity.io",
+      "reason": "Sanity 官方域名和 CDN。"
+    },
+    {
+      "domain": "semver.org",
+      "reason": "Semantic Versioning 2.0.0 官方规范。"
+    },
+    {
+      "domain": "shields.io",
+      "reason": "README 状态徽章服务。"
+    },
+    {
+      "domain": "shopify.com",
+      "reason": "Shopify 官方域名和 Admin URL。"
+    },
+    {
+      "domain": "sitemaps.org",
+      "reason": "Sitemap XML namespace。"
+    },
+    {
+      "domain": "tidelift.com",
+      "reason": "锁文件中的依赖资助平台。"
+    },
+    {
+      "domain": "uspto.gov",
+      "reason": "USPTO 官方域名。"
+    },
+    {
+      "domain": "verisign.com",
+      "reason": "Verisign RDAP 官方域名。"
+    },
+    {
+      "domain": "wipo.int",
+      "reason": "WIPO 官方域名。"
+    },
+    {
+      "domain": "w3.org",
+      "reason": "SVG/XML namespace 官方域名。"
+    },
+    {
+      "domain": "feross.org",
+      "reason": "锁文件中的依赖维护者资助页面。"
+    }
+  ],
+  "pathRuleHashes": [
+    {
+      "path": "package-lock.json",
+      "rule": "EMAIL_ADDRESS",
+      "summaryHash": "sha256:b0373516d594ddd1",
+      "reason": "第三方 glob 包在锁文件 deprecated metadata 中公开的上游支持联系人；不是项目或客户联系人。"
+    },
+    {
+      "path": "docs/open-source-decisions.md",
+      "rule": "EMAIL_ADDRESS",
+      "summaryHash": "sha256:b4ca53563957d8db",
+      "reason": "D-10 已确认公开的 Security/CoC 联系邮箱。"
+    },
+    {
+      "path": "docs/open-source-preview-release-plan.md",
+      "rule": "EMAIL_ADDRESS",
+      "summaryHash": "sha256:b4ca53563957d8db",
+      "reason": "D-10 已确认公开的 Security/CoC 联系邮箱。"
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "rule": "EMAIL_ADDRESS",
+      "summaryHash": "sha256:b4ca53563957d8db",
+      "reason": "D-10 已确认公开的行为准则私密联系邮箱。"
+    },
+    {
+      "path": "SECURITY.md",
+      "rule": "EMAIL_ADDRESS",
+      "summaryHash": "sha256:b4ca53563957d8db",
+      "reason": "D-10 已确认公开的安全报告邮箱。"
+    },
+    {
+      "path": "MAINTAINERS.md",
+      "rule": "EMAIL_ADDRESS",
+      "summaryHash": "sha256:b4ca53563957d8db",
+      "reason": "维护者名册交叉引用已确认的安全与行为准则邮箱。"
+    },
+    {
+      "path": "docs/release-checklist.md",
+      "rule": "EMAIL_ADDRESS",
+      "summaryHash": "sha256:b4ca53563957d8db",
+      "reason": "Release Gate 要求对 D-10 已确认的公开联系邮箱执行收件测试。"
+    },
+    {
+      "path": "scripts/tests/validate-community-files.mjs",
+      "rule": "EMAIL_ADDRESS",
+      "summaryHash": "sha256:b4ca53563957d8db",
+      "reason": "社区门禁精确断言 D-10 已确认的安全与行为准则联系邮箱。"
+    },
+    {
+      "path": "sbom.cdx.json",
+      "rule": "REAL_DOMAIN",
+      "summaryHash": "sha256:0d73a68d5fa0f7ae",
+      "reason": "根组件 PURL 内的 SemVer prerelease 与编码 VCS URL 组合，不是客户或生产域名。"
+    },
+    {
+      "path": "docs/project-log/daily/2026-08-15.md",
+      "rule": "EMAIL_ADDRESS",
+      "summaryHash": "sha256:b4ca53563957d8db",
+      "reason": "内部日志记录已确认的 D-10 联系邮箱；该日志本身从公共候选排除。"
+    },
+    {
+      "path": "docs/open-source-decisions.md",
+      "rule": "REAL_DOMAIN",
+      "summaryHash": "sha256:cfa604a63137e89d",
+      "reason": "仅用于记录已弃用且不受控制的旧 Schema namespace。"
+    },
+    {
+      "path": "docs/open-source-preview-release-plan.md",
+      "rule": "REAL_DOMAIN",
+      "summaryHash": "sha256:cfa604a63137e89d",
+      "reason": "仅用于记录已弃用且不受控制的旧 Schema namespace。"
+    },
+    {
+      "path": "docs/project-log/daily/2026-08-15.md",
+      "rule": "REAL_DOMAIN",
+      "summaryHash": "sha256:cfa604a63137e89d",
+      "reason": "内部日志记录旧 namespace；该日志从公共候选排除。"
+    },
+    {
+      "path": "scripts/template/validate-template-placeholders.mjs",
+      "rule": "CLIENT_TERM",
+      "summaryHash": "sha256:fdb65d0abd9ed7f2",
+      "reason": "现有反回归扫描器中的遗留机器名规则本身。"
+    },
+    {
+      "path": "scripts/template/validate-template-placeholders.mjs",
+      "rule": "CLIENT_TERM",
+      "summaryHash": "sha256:c5ac937331545f70",
+      "reason": "现有反回归扫描器中的遗留域名规则本身。"
+    },
+    {
+      "path": "scripts/template/validate-template-placeholders.mjs",
+      "rule": "CLIENT_TERM",
+      "summaryHash": "sha256:405ff4a237ee897e",
+      "reason": "现有反回归扫描器中的遗留商品名规则本身。"
+    },
+    {
+      "path": "scripts/template/validate-template-placeholders.mjs",
+      "rule": "CLIENT_TERM",
+      "summaryHash": "sha256:56c76caf77e0ee59",
+      "reason": "现有反回归扫描器中的遗留项目 namespace 规则本身。"
+    },
+    {
+      "path": "scripts/tests/validate-public-text.mjs",
+      "rule": "INTERNAL_ABSOLUTE_PATH",
+      "summaryHash": "sha256:c3e784be0fcff667",
+      "reason": "UNC 路径检测规则的正则表达式源码，不是路径值。"
+    },
+    {
+      "path": "apps/storefront/src/content/product-pages/example-product.json",
+      "rule": "ORDER_SHAPED_DATA",
+      "summaryHash": "sha256:c36112f0f971ea95",
+      "reason": "全零 Shopify Product GID，属于明确虚构的本地 fallback。"
+    },
+    {
+      "path": "scripts/tests/validate-shopify-product-entry-summary.mjs",
+      "rule": "ORDER_SHAPED_DATA",
+      "summaryHash": "sha256:c36112f0f971ea95",
+      "reason": "全零 Shopify Product GID，属于明确虚构测试值。"
+    },
+    {
+      "path": "scripts/tests/validate-commerce-contract.mjs",
+      "rule": "ORDER_SHAPED_DATA",
+      "summaryHash": "sha256:ea8a12ecfb2dd20a",
+      "reason": "单值 Product GID，属于最小合约测试值。"
+    },
+    {
+      "path": "scripts/tests/validate-shopify-product-entry-summary.mjs",
+      "rule": "STORE_IDENTIFIER",
+      "summaryHash": "sha256:62bf17064d091b30",
+      "reason": "明确虚构的 example-store 店铺域名。"
+    },
+    {
+      "path": "scripts/tests/validate-shopify-product-entry-summary.mjs",
+      "rule": "STORE_IDENTIFIER",
+      "summaryHash": "sha256:4b165c9f277b8ca2",
+      "reason": "由虚构店铺和全零 Product ID 组成的 Admin URL。"
+    },
+    {
+      "path": "scripts/tests/validate-worker-routes.mjs",
+      "rule": "STORE_IDENTIFIER",
+      "summaryHash": "sha256:62bf17064d091b30",
+      "reason": "明确虚构的 example-store webhook 来源。"
+    },
+    {
+      "path": "scripts/tests/validate-commerce-contract.mjs",
+      "rule": "STORE_IDENTIFIER",
+      "summaryHash": "sha256:85d4f7ff1705d73e",
+      "reason": "明确虚构的 example-brand-test 店铺域名。"
+    }
+  ]
+}

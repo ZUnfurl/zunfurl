@@ -1,0 +1,71 @@
+{
+  "locale": "zh-cn",
+  "kind": "products",
+  "title": "Example Brand 商品",
+  "seo": {
+    "title": "商品｜Example Brand",
+    "description": "C 零售目录与内容运营基础框架的中性演示页面，组合商品内容 CMS 与 Shopify 只读目录映射。"
+  },
+  "pageHero": {
+    "eyebrow": "C 商品目录演示",
+    "title": "带编辑内容层的商品目录。",
+    "body": "本页演示 C 目录与内容基础层；B Profile 项目默认不会生成或链接此路由。",
+    "slides": [
+      {
+        "src": "/brand-assets/hero/products/Hero-Products-01.webp",
+        "alt": "Example Brand 商品页面首屏示例图片一。",
+        "eyebrow": "目录框架",
+        "caption": "适用于 C Profile 商品集合的可复用首屏。"
+      },
+      {
+        "src": "/brand-assets/hero/products/Hero-Products-02.webp",
+        "alt": "Example Brand 商品页面首屏示例图片二。",
+        "eyebrow": "商品逻辑",
+        "caption": "用于说明发布背景、集合信息和陈列提示。"
+      },
+      {
+        "src": "/brand-assets/hero/products/Hero-Products-03.webp",
+        "alt": "Example Brand 商品页面首屏示例图片三。",
+        "eyebrow": "未来系列",
+        "caption": "可随未来商品系列扩展的区域。"
+      }
+    ]
+  },
+  "productSpotlight": {
+    "eyebrow": "商品来源",
+    "title": "商品卡片来自商品工作台。",
+    "body": "启用 retail 机器 Profile 时，商品卡片组合来自 Shopify 的媒体和由 Sanity 管理的编辑文案。",
+    "ariaLabel": "商品聚焦导航",
+    "previousLabel": "上一个商品",
+    "nextLabel": "下一个商品",
+    "openProductLabel": "查看商品"
+  },
+  "blocks": [
+    {
+      "id": "catalog-boundary",
+      "eyebrow": "边界",
+      "title": "Shopify 提供只读目录事实。",
+      "body": "本基础框架只映射商品身份与媒体，不包含 Cart、Checkout、支付、订单、税务、配送、履约、实时价格或实时库存。",
+      "items": [
+        "Sanity 管理编辑文案",
+        "Shopify 提供只读目录事实",
+        "Cloudflare 负责边缘交付"
+      ],
+      "variant": "standard"
+    },
+    {
+      "id": "launch-flow",
+      "eyebrow": "上线流程",
+      "title": "通过商品工作台发布目录内容。",
+      "body": "先在 Shopify 中建立目录来源记录，再用 Sanity 创建多语言页面、品牌故事和 SEO。",
+      "variant": "accent"
+    },
+    {
+      "id": "scale",
+      "eyebrow": "扩展",
+      "title": "无需重构页面即可扩展目录。",
+      "body": "启用 C Profile 后，同一套商品卡片和详情模板可以支持更多商品。",
+      "variant": "standard"
+    }
+  ]
+}

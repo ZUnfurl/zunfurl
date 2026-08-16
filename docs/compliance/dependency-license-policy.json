@@ -1,0 +1,290 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-08-15",
+  "distribution": {
+    "model": "source-only",
+    "releaseContent": "tracked-source-with-sbom",
+    "bundledThirdPartyDependencies": false,
+    "excludedArtifacts": [
+      "node_modules",
+      "FFmpeg binaries",
+      "libvips binaries",
+      "unreviewed build bundles",
+      "container images"
+    ]
+  },
+  "reviewRules": [
+    {
+      "id": "ffmpeg-static-gpl-dev-only",
+      "packagePattern": "^ffmpeg-static$",
+      "versions": [
+        "5.3.0"
+      ],
+      "licenses": [
+        "GPL-3.0-or-later"
+      ],
+      "mustNotBeGloballyAllowed": [
+        "GPL-3.0-or-later"
+      ],
+      "noticeMarkers": [
+        "`ffmpeg-static` is a GPL-3.0-or-later development dependency"
+      ],
+      "classifications": [
+        "development"
+      ],
+      "decision": "accepted-only-as-a-local-development-tool-not-redistributed-by-release",
+      "evidenceUrls": [
+        "https://github.com/eugeneware/ffmpeg-static",
+        "https://github.com/eugeneware/ffmpeg-static/blob/master/LICENSE"
+      ],
+      "conditions": [
+        "Must remain a development dependency.",
+        "The Preview release must not include downloaded FFmpeg binaries or node_modules.",
+        "Any binary, container, desktop package, or hosted transformation distribution requires a new artifact-level GPL and FFmpeg build review."
+      ],
+      "reviewTriggers": [
+        "package-version-change",
+        "dependency-scope-change",
+        "distribution-model-change"
+      ]
+    },
+    {
+      "id": "sharp-libvips-lgpl-optional-downloads",
+      "packagePattern": "^@img/sharp-(?:libvips-[a-z0-9-]+|wasm32|win32-(?:arm64|ia32|x64))$",
+      "versions": [
+        "0.35.2",
+        "0.35.3",
+        "1.3.1",
+        "1.3.2"
+      ],
+      "licenses": [
+        "Apache-2.0 AND LGPL-3.0-or-later",
+        "Apache-2.0 AND LGPL-3.0-or-later AND MIT",
+        "LGPL-3.0-or-later"
+      ],
+      "mustNotBeGloballyAllowed": [
+        "LGPL-3.0-or-later"
+      ],
+      "noticeMarkers": [
+        "Sharp declares Apache-2.0. Its optional `@img/sharp-*` platform packages"
+      ],
+      "classifications": [
+        "optional-development",
+        "optional-production"
+      ],
+      "decision": "accepted-as-optional-platform-packages-under-source-only-distribution",
+      "evidenceUrls": [
+        "https://github.com/lovell/sharp",
+        "https://github.com/lovell/sharp-libvips"
+      ],
+      "conditions": [
+        "The source release must not contain prebuilt sharp or libvips packages.",
+        "Consumers receive platform packages from npm during their own install and must retain upstream license material.",
+        "A bundled executable, container, Lambda layer, or vendored node_modules tree requires a new artifact-level LGPL review."
+      ],
+      "reviewTriggers": [
+        "package-version-change",
+        "declared-license-change",
+        "distribution-model-change"
+      ]
+    },
+    {
+      "id": "lightningcss-mpl-source-only",
+      "packagePattern": "^lightningcss(?:-[a-z0-9-]+)?$",
+      "versions": [
+        "1.33.0"
+      ],
+      "licenses": [
+        "MPL-2.0"
+      ],
+      "mustNotBeGloballyAllowed": [
+        "MPL-2.0"
+      ],
+      "noticeMarkers": [
+        "The dependency graph includes unmodified `lightningcss` platform packages"
+      ],
+      "classifications": [
+        "production",
+        "optional-production"
+      ],
+      "decision": "accepted-with-file-level-copyleft-notices-retained-upstream",
+      "evidenceUrls": [
+        "https://github.com/parcel-bundler/lightningcss",
+        "https://github.com/parcel-bundler/lightningcss/blob/master/LICENSE"
+      ],
+      "conditions": [
+        "The project does not vendor or modify lightningcss source files.",
+        "The source release retains the lockfile and points users to upstream license material.",
+        "Vendoring or modifying MPL-covered files requires source and notice review."
+      ],
+      "reviewTriggers": [
+        "package-version-change",
+        "vendoring-change",
+        "distribution-model-change"
+      ]
+    },
+    {
+      "id": "vercel-stega-mpl-source-only",
+      "packagePattern": "^@vercel/stega$",
+      "versions": [
+        "1.1.0"
+      ],
+      "licenses": [
+        "MPL-2.0"
+      ],
+      "mustNotBeGloballyAllowed": [
+        "MPL-2.0"
+      ],
+      "noticeMarkers": [
+        "`@vercel/stega` under MPL-2.0 declarations"
+      ],
+      "classifications": [
+        "production"
+      ],
+      "decision": "accepted-as-an-unmodified-transitive-package-under-source-only-distribution",
+      "evidenceUrls": [
+        "https://github.com/vercel/stega"
+      ],
+      "conditions": [
+        "The project does not vendor or modify MPL-covered source files.",
+        "Any vendoring or source modification requires a fresh MPL file-level review."
+      ],
+      "reviewTriggers": [
+        "package-version-change",
+        "vendoring-change"
+      ]
+    },
+    {
+      "id": "caniuse-lite-cc-by-attribution",
+      "packagePattern": "^caniuse-lite$",
+      "versions": [
+        "1.0.30001809"
+      ],
+      "licenses": [
+        "CC-BY-4.0"
+      ],
+      "mustNotBeGloballyAllowed": [
+        "CC-BY-4.0"
+      ],
+      "noticeMarkers": [
+        "Caniuse browser-support data is created and maintained by Alexis Deveria"
+      ],
+      "classifications": [
+        "production"
+      ],
+      "decision": "accepted-with-caniuse-data-attribution",
+      "evidenceUrls": [
+        "https://github.com/Fyrd/caniuse"
+      ],
+      "conditions": [
+        "THIRD_PARTY_NOTICES.md must retain attribution to caniuse.com and Alexis Deveria.",
+        "No claim is made that Caniuse data is covered by the project Apache-2.0 license."
+      ],
+      "reviewTriggers": [
+        "package-version-change",
+        "attribution-source-change"
+      ]
+    },
+    {
+      "id": "spdx-exceptions-cc-by-attribution",
+      "packagePattern": "^spdx-exceptions$",
+      "versions": [
+        "2.5.0"
+      ],
+      "licenses": [
+        "CC-BY-3.0"
+      ],
+      "mustNotBeGloballyAllowed": [
+        "CC-BY-3.0"
+      ],
+      "noticeMarkers": [
+        "`spdx-exceptions` derives SPDX license-exception identifiers"
+      ],
+      "classifications": [
+        "development"
+      ],
+      "decision": "accepted-as-unmodified-spdx-license-list-data-with-attribution",
+      "evidenceUrls": [
+        "https://github.com/kemitchell/spdx-exceptions.json"
+      ],
+      "conditions": [
+        "THIRD_PARTY_NOTICES.md must identify SPDX License List data.",
+        "If SPDX data is copied into a release artifact, its upstream attribution and license information must accompany it."
+      ],
+      "reviewTriggers": [
+        "package-version-change",
+        "distribution-model-change"
+      ]
+    },
+    {
+      "id": "jsonify-public-domain-declaration",
+      "packagePattern": "^jsonify$",
+      "versions": [
+        "0.0.1"
+      ],
+      "licenses": [
+        "Public Domain"
+      ],
+      "mustNotBeGloballyAllowed": [
+        "Public Domain"
+      ],
+      "noticeMarkers": [
+        "`jsonify@0.0.1` declares its legacy npm license metadata as `Public Domain`."
+      ],
+      "classifications": [
+        "production"
+      ],
+      "decision": "accepted-as-an-exact-legacy-transitive-package-with-non-spdx-public-domain-metadata",
+      "evidenceUrls": [
+        "https://github.com/substack/jsonify"
+      ],
+      "conditions": [
+        "The package is not vendored or modified by this repository.",
+        "A version, metadata, or distribution change requires replacing this legacy review."
+      ],
+      "reviewTriggers": [
+        "package-version-change",
+        "declared-license-change",
+        "distribution-model-change"
+      ]
+    }
+  ],
+  "metadataOverrides": [
+    {
+      "id": "md5-o-matic-0.1.1-concluded-mit",
+      "package": "md5-o-matic",
+      "packagePath": "node_modules/md5-o-matic",
+      "version": "0.1.1",
+      "integrity": "sha512-QBJSFpsedXUl/Lgs4ySdB2XCzUEcJ3ujpbagdZCkRaYIaC0kFnID8jhc84KEiVv6dNFtIrmW7bqow0lDxgJi6A==",
+      "concludedLicense": "MIT",
+      "evidenceUrl": "https://github.com/trentmillar/md5-o-matic/blob/master/LICENSE",
+      "reason": "npm lock metadata omits license, while the exact installed tarball and upstream repository include the MIT license.",
+      "noticeMarkers": [
+        "`md5-o-matic@0.1.1`: MIT, based on the license shipped in the npm tarball"
+      ],
+      "reviewTriggers": [
+        "package-version-change",
+        "integrity-change",
+        "upstream-license-change"
+      ]
+    },
+    {
+      "id": "parse-cache-control-1.0.1-concluded-bsd-3-clause",
+      "package": "parse-cache-control",
+      "packagePath": "node_modules/parse-cache-control",
+      "version": "1.0.1",
+      "integrity": "sha512-60zvsJReQPX5/QP0Kzfd/VrpjScIQ7SHBW6bFCYfEP+fp0Eppr1SHhIO5nd1PjZtvclzSzES9D/p5nFJurwfWg==",
+      "concludedLicense": "BSD-3-Clause",
+      "evidenceUrl": "https://github.com/roryf/parse-cache-control/blob/master/LICENSE",
+      "reason": "npm lock metadata omits license, while the exact installed tarball contains the three-clause BSD text and points to the upstream repository.",
+      "noticeMarkers": [
+        "`parse-cache-control@1.0.1`: BSD-3-Clause, based on the three-clause BSD text"
+      ],
+      "reviewTriggers": [
+        "package-version-change",
+        "integrity-change",
+        "upstream-license-change"
+      ]
+    }
+  ]
+}

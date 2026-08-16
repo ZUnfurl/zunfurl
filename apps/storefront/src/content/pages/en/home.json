@@ -1,0 +1,73 @@
+{
+  "locale": "en",
+  "kind": "home",
+  "title": "Example Brand Home",
+  "seo": {
+    "title": "Example Brand | Modular brand site template",
+    "description": "A neutral ZUnfurl demo site showing reusable Astro, Sanity, Cloudflare, and optional Shopify modules."
+  },
+  "hero": {
+    "eyebrow": "ZUnfurl demo",
+    "titleLines": [
+      "A modular brand site,",
+      "ready to become your project."
+    ],
+    "intro": "Example Brand is a neutral placeholder used to demonstrate the framework. Replace this copy, imagery, legal text, and integrations for each client project.",
+    "primaryCta": {
+      "label": "Explore the framework",
+      "href": "/en/about/"
+    },
+    "secondaryCta": {
+      "label": "Contact us",
+      "href": "/en/contact/"
+    },
+    "motionLabel": "Hero motion",
+    "videoSrc": "/brand-assets/video/homevideo.mp4",
+    "videoPoster": "/brand-assets/brand/Brand-01.webp",
+    "motionQuote": "The hero supports video, fallback imagery, and static-first delivery.",
+    "captionEyebrow": "Template layer",
+    "captionTitle": "Reusable content, strict profile boundaries."
+  },
+  "brandFramework": {
+    "eyebrow": "Framework layers",
+    "ariaLabel": "Example Brand framework layers",
+    "ctaLabel": "View details",
+    "slides": [
+      {
+        "image": "/brand-assets/brand/Brand-01.webp",
+        "title": "Static-first storefront",
+        "description": "Astro keeps public pages fast, cacheable, and simple to deploy on Cloudflare."
+      },
+      {
+        "image": "/brand-assets/brand/Brand-02.webp",
+        "title": "Editor-friendly CMS",
+        "description": "Sanity powers structured page modules when the selected profile includes content CMS."
+      },
+      {
+        "image": "/brand-assets/brand/Brand-03.webp",
+        "title": "Read-only catalog layer",
+        "description": "The C profile can map Shopify product identity and media into a static catalog without adding checkout or order handling."
+      }
+    ]
+  },
+  "homeProductSpotlight": {
+    "eyebrow": "Catalog module",
+    "title": "Optional product spotlight.",
+    "body": "This area is shown only when the retail machine profile and product-content CMS are enabled.",
+    "ariaLabel": "Product spotlight navigation",
+    "previousLabel": "Previous product",
+    "nextLabel": "Next product",
+    "openProductLabel": "View product"
+  },
+  "contactMaskSection": {
+    "eyebrow": "Contact",
+    "title": "Start a scoped conversation.",
+    "body": "Use the lightweight form module for business inquiries without storing messages in a custom database.",
+    "image": "/brand-assets/hero/contact/Hero-Contact-01.webp",
+    "imageAlt": "Example Brand contact visual",
+    "cta": {
+      "label": "Open contact page",
+      "href": "/en/contact/"
+    }
+  }
+}

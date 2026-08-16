@@ -1,0 +1,13 @@
+# Test-only runtime for GcssCoordinator. Production bindings remain profile-derived
+# in wrangler.toml and must not be inferred from this file.
+name = "gcss-worker-coordinator-test"
+main = "entry.mjs"
+compatibility_date = "2026-07-10"
+
+[[durable_objects.bindings]]
+name = "GCSS_COORDINATOR"
+class_name = "GcssCoordinator"
+
+[[migrations]]
+tag = "test-v1"
+new_sqlite_classes = ["GcssCoordinator"]

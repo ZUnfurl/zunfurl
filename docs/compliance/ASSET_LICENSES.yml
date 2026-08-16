@@ -1,0 +1,681 @@
+{
+  "schemaVersion": 1,
+  "publicRoot": "apps/storefront/public",
+  "licenseReferences": {
+    "CC0-1.0": "https://creativecommons.org/publicdomain/zero/1.0/legalcode"
+  },
+  "provenanceRecords": [
+    {
+      "id": "openai-imagegen-brand-2026-08-15",
+      "source": {
+        "type": "ai-generated",
+        "creator": "Noodle Freeman with OpenAI ImageGen",
+        "origin": "OpenAI ImageGen source output for the abstract brand-presence visual family",
+        "createdAt": "2026-08-15",
+        "tool": "OpenAI ImageGen",
+        "promptRef": "prompt-zunfurl-brand-foundation-v1",
+        "sourceSha256": "e91a631824c8a20eafba090e6cedd548ebeb60e2e8445f90c1b4a00b7afab07b"
+      },
+      "rights": {
+        "copyrightHolder": "Noodle Freeman",
+        "license": "CC0-1.0",
+        "evidence": "docs/compliance/assets-provenance.md",
+        "attribution": "not-required",
+        "syntheticContent": true,
+        "modelRelease": "not-required-synthetic",
+        "propertyRelease": "not-required-synthetic",
+        "trademarkStatus": "reviewed-no-marks"
+      }
+    },
+    {
+      "id": "openai-imagegen-product-2026-08-15",
+      "source": {
+        "type": "ai-generated",
+        "creator": "Noodle Freeman with OpenAI ImageGen",
+        "origin": "OpenAI ImageGen source output for the fictional product visual family",
+        "createdAt": "2026-08-15",
+        "tool": "OpenAI ImageGen",
+        "promptRef": "prompt-zunfurl-example-product-v1",
+        "sourceSha256": "1912ce51cab392dc1ffc0016df9493be9c3f7e43136849bbb8a731a54f3ed0be"
+      },
+      "rights": {
+        "copyrightHolder": "Noodle Freeman",
+        "license": "CC0-1.0",
+        "evidence": "docs/compliance/assets-provenance.md",
+        "attribution": "not-required",
+        "syntheticContent": true,
+        "modelRelease": "not-required-synthetic",
+        "propertyRelease": "not-required-synthetic",
+        "trademarkStatus": "reviewed-no-marks"
+      }
+    },
+    {
+      "id": "openai-imagegen-story-2026-08-15",
+      "source": {
+        "type": "ai-generated",
+        "creator": "Noodle Freeman with OpenAI ImageGen",
+        "origin": "OpenAI ImageGen source output for the fictional product-story visual family",
+        "createdAt": "2026-08-15",
+        "tool": "OpenAI ImageGen",
+        "promptRef": "prompt-zunfurl-product-story-v1",
+        "sourceSha256": "c7f604dd13c30439b53f6507004f751a25dac60a8fca52c02c58024a66863123"
+      },
+      "rights": {
+        "copyrightHolder": "Noodle Freeman",
+        "license": "CC0-1.0",
+        "evidence": "docs/compliance/assets-provenance.md",
+        "attribution": "not-required",
+        "syntheticContent": true,
+        "modelRelease": "not-required-synthetic",
+        "propertyRelease": "not-required-synthetic",
+        "trademarkStatus": "reviewed-no-marks"
+      }
+    },
+    {
+      "id": "sharp-brand-webp-2026-08-15",
+      "source": {
+        "type": "derived",
+        "creator": "Noodle Freeman",
+        "origin": "local derivatives of openai-imagegen-brand-2026-08-15",
+        "createdAt": "2026-08-15",
+        "tool": "Sharp 0.34.5",
+        "transformation": "purpose-specific crops and resizes encoded as WebP quality 84",
+        "parentProvenanceIds": [
+          "openai-imagegen-brand-2026-08-15"
+        ]
+      },
+      "rights": {
+        "copyrightHolder": "Noodle Freeman",
+        "license": "CC0-1.0",
+        "evidence": "docs/compliance/assets-provenance.md",
+        "attribution": "not-required"
+      }
+    },
+    {
+      "id": "sharp-product-webp-2026-08-15",
+      "source": {
+        "type": "derived",
+        "creator": "Noodle Freeman",
+        "origin": "local derivatives of openai-imagegen-product-2026-08-15",
+        "createdAt": "2026-08-15",
+        "tool": "Sharp 0.34.5",
+        "transformation": "purpose-specific crops and resizes encoded as WebP quality 84",
+        "parentProvenanceIds": [
+          "openai-imagegen-product-2026-08-15"
+        ]
+      },
+      "rights": {
+        "copyrightHolder": "Noodle Freeman",
+        "license": "CC0-1.0",
+        "evidence": "docs/compliance/assets-provenance.md",
+        "attribution": "not-required"
+      }
+    },
+    {
+      "id": "sharp-story-webp-2026-08-15",
+      "source": {
+        "type": "derived",
+        "creator": "Noodle Freeman",
+        "origin": "local derivatives of openai-imagegen-story-2026-08-15",
+        "createdAt": "2026-08-15",
+        "tool": "Sharp 0.34.5",
+        "transformation": "purpose-specific crops and resizes encoded as WebP quality 84",
+        "parentProvenanceIds": [
+          "openai-imagegen-story-2026-08-15"
+        ]
+      },
+      "rights": {
+        "copyrightHolder": "Noodle Freeman",
+        "license": "CC0-1.0",
+        "evidence": "docs/compliance/assets-provenance.md",
+        "attribution": "not-required"
+      }
+    },
+    {
+      "id": "ffmpeg-brand-video-2026-08-15",
+      "source": {
+        "type": "derived",
+        "creator": "Noodle Freeman",
+        "origin": "motion derivative of openai-imagegen-brand-2026-08-15",
+        "createdAt": "2026-08-15",
+        "tool": "FFmpeg 8.1.2",
+        "transformation": "six-second H.264 MP4 motion treatment with no audio stream",
+        "parentProvenanceIds": [
+          "openai-imagegen-brand-2026-08-15"
+        ]
+      },
+      "rights": {
+        "copyrightHolder": "Noodle Freeman",
+        "license": "CC0-1.0",
+        "evidence": "docs/compliance/assets-provenance.md",
+        "attribution": "not-required"
+      }
+    },
+    {
+      "id": "project-authored-svg-2026-08-15",
+      "source": {
+        "type": "original",
+        "creator": "Noodle Freeman",
+        "origin": "project-authored path geometry with no external resources or embedded text",
+        "createdAt": "2026-08-15",
+        "tool": "hand-authored SVG"
+      },
+      "rights": {
+        "copyrightHolder": "Noodle Freeman",
+        "license": "CC0-1.0",
+        "evidence": "docs/compliance/assets-provenance.md",
+        "attribution": "not-required"
+      }
+    },
+    {
+      "id": "browser-readme-screenshot-2026-08-15",
+      "source": {
+        "type": "original",
+        "creator": "Noodle Freeman",
+        "origin": "local viewport capture of the neutral ZUnfurl 0.3.0-preview.1 candidate home page",
+        "createdAt": "2026-08-15",
+        "tool": "Codex in-app browser and Sharp 0.35.3",
+        "transformation": "captured the stable built /en/ viewport and encoded it as WebP quality 86"
+      },
+      "rights": {
+        "copyrightHolder": "Noodle Freeman",
+        "license": "CC0-1.0",
+        "evidence": "docs/compliance/assets-provenance.md",
+        "attribution": "not-required",
+        "trademarkStatus": "reviewed-no-third-party-marks"
+      }
+    }
+  ],
+  "assets": [
+    {
+      "path": "brand-assets/brand/Brand-01.webp",
+      "sha256": "21c9cb87fa7af02c1a6a6514a49b15b6928cdd602f0cf5961e7ed277df71c318",
+      "mediaType": "image/webp",
+      "purpose": "brand story and home-page editorial fallback",
+      "references": [
+        "apps/storefront/src/content/pages/en/about.json",
+        "apps/storefront/src/content/pages/en/home.json",
+        "apps/storefront/src/content/pages/fr/about.json",
+        "apps/storefront/src/content/pages/fr/home.json",
+        "apps/storefront/src/content/pages/zh-cn/about.json",
+        "apps/storefront/src/content/pages/zh-cn/home.json"
+      ],
+      "bundledUnused": false,
+      "provenanceId": "sharp-brand-webp-2026-08-15",
+      "review": {
+        "status": "approved",
+        "reviewedBy": "Noodle Freeman",
+        "reviewedAt": "2026-08-15",
+        "notes": "Provenance, distribution permission, source references, digest, and synthetic-content release status reviewed."
+      }
+    },
+    {
+      "path": "brand-assets/brand/Brand-02.webp",
+      "sha256": "ba8f3a813573e9a9cb8aaf8790f0783c6a9bdb34898827cca6dc8317a652f93f",
+      "mediaType": "image/webp",
+      "purpose": "brand story and home-page editorial fallback",
+      "references": [
+        "apps/storefront/src/content/pages/en/about.json",
+        "apps/storefront/src/content/pages/en/home.json",
+        "apps/storefront/src/content/pages/fr/about.json",
+        "apps/storefront/src/content/pages/fr/home.json",
+        "apps/storefront/src/content/pages/zh-cn/about.json",
+        "apps/storefront/src/content/pages/zh-cn/home.json"
+      ],
+      "bundledUnused": false,
+      "provenanceId": "sharp-brand-webp-2026-08-15",
+      "review": {
+        "status": "approved",
+        "reviewedBy": "Noodle Freeman",
+        "reviewedAt": "2026-08-15",
+        "notes": "Provenance, distribution permission, source references, digest, and synthetic-content release status reviewed."
+      }
+    },
+    {
+      "path": "brand-assets/brand/Brand-03.webp",
+      "sha256": "57daf2f4c1ace645697e5cde6fbcf56d0bc256d60c5de79c567d27c5487c7717",
+      "mediaType": "image/webp",
+      "purpose": "brand story and home-page editorial fallback",
+      "references": [
+        "apps/storefront/src/content/pages/en/about.json",
+        "apps/storefront/src/content/pages/en/home.json",
+        "apps/storefront/src/content/pages/fr/about.json",
+        "apps/storefront/src/content/pages/fr/home.json",
+        "apps/storefront/src/content/pages/zh-cn/about.json",
+        "apps/storefront/src/content/pages/zh-cn/home.json"
+      ],
+      "bundledUnused": false,
+      "provenanceId": "sharp-brand-webp-2026-08-15",
+      "review": {
+        "status": "approved",
+        "reviewedBy": "Noodle Freeman",
+        "reviewedAt": "2026-08-15",
+        "notes": "Provenance, distribution permission, source references, digest, and synthetic-content release status reviewed."
+      }
+    },
+    {
+      "path": "brand-assets/hero/about/Hero-About-01.webp",
+      "sha256": "472bce8f6756a69ee9f77ef9fa58bfb89737eeb97c2bdbbb836119bad22f9239",
+      "mediaType": "image/webp",
+      "purpose": "about-page hero fallback",
+      "references": [
+        "apps/storefront/src/content/pages/en/about.json",
+        "apps/storefront/src/content/pages/fr/about.json",
+        "apps/storefront/src/content/pages/zh-cn/about.json",
+        "scripts/tests/validate-sanity-image-cdn-pilot.mjs"
+      ],
+      "bundledUnused": false,
+      "provenanceId": "sharp-brand-webp-2026-08-15",
+      "review": {
+        "status": "approved",
+        "reviewedBy": "Noodle Freeman",
+        "reviewedAt": "2026-08-15",
+        "notes": "Provenance, distribution permission, source references, digest, and synthetic-content release status reviewed."
+      }
+    },
+    {
+      "path": "brand-assets/hero/about/Hero-About-02.webp",
+      "sha256": "72342e4145873671336a06a3f530936d05873aa3b4c145baea32c3f7c28afb53",
+      "mediaType": "image/webp",
+      "purpose": "about-page hero fallback",
+      "references": [
+        "apps/storefront/src/content/pages/en/about.json",
+        "apps/storefront/src/content/pages/fr/about.json",
+        "apps/storefront/src/content/pages/zh-cn/about.json"
+      ],
+      "bundledUnused": false,
+      "provenanceId": "sharp-brand-webp-2026-08-15",
+      "review": {
+        "status": "approved",
+        "reviewedBy": "Noodle Freeman",
+        "reviewedAt": "2026-08-15",
+        "notes": "Provenance, distribution permission, source references, digest, and synthetic-content release status reviewed."
+      }
+    },
+    {
+      "path": "brand-assets/hero/about/Hero-About-03.webp",
+      "sha256": "84bd5dec6506eb27d644ced2b667e18c26ad3be2fc39c70e63c2a14f489290be",
+      "mediaType": "image/webp",
+      "purpose": "about-page hero fallback",
+      "references": [
+        "apps/storefront/src/content/pages/en/about.json",
+        "apps/storefront/src/content/pages/fr/about.json",
+        "apps/storefront/src/content/pages/zh-cn/about.json"
+      ],
+      "bundledUnused": false,
+      "provenanceId": "sharp-brand-webp-2026-08-15",
+      "review": {
+        "status": "approved",
+        "reviewedBy": "Noodle Freeman",
+        "reviewedAt": "2026-08-15",
+        "notes": "Provenance, distribution permission, source references, digest, and synthetic-content release status reviewed."
+      }
+    },
+    {
+      "path": "brand-assets/hero/contact/Hero-Contact-01.webp",
+      "sha256": "9d21bde8fb2053b6319a36984d06fce31e5fd1759c515f1ec52be2e0d3964ab7",
+      "mediaType": "image/webp",
+      "purpose": "contact-page and home CTA editorial fallback",
+      "references": [
+        "apps/storefront/src/content/pages/en/contact.json",
+        "apps/storefront/src/content/pages/en/home.json",
+        "apps/storefront/src/content/pages/fr/contact.json",
+        "apps/storefront/src/content/pages/fr/home.json",
+        "apps/storefront/src/content/pages/zh-cn/contact.json",
+        "apps/storefront/src/content/pages/zh-cn/home.json",
+        "scripts/tests/validate-sanity-image-cdn-pilot.mjs"
+      ],
+      "bundledUnused": false,
+      "provenanceId": "sharp-brand-webp-2026-08-15",
+      "review": {
+        "status": "approved",
+        "reviewedBy": "Noodle Freeman",
+        "reviewedAt": "2026-08-15",
+        "notes": "Provenance, distribution permission, source references, digest, and synthetic-content release status reviewed."
+      }
+    },
+    {
+      "path": "brand-assets/hero/contact/Hero-Contact-02.webp",
+      "sha256": "09e35ffe2037e151fb041ee5c4d1b89ed0d9a9c295874e0c97b8a2592d56c558",
+      "mediaType": "image/webp",
+      "purpose": "contact-page and home CTA editorial fallback",
+      "references": [
+        "apps/storefront/src/content/pages/en/contact.json",
+        "apps/storefront/src/content/pages/fr/contact.json",
+        "apps/storefront/src/content/pages/zh-cn/contact.json"
+      ],
+      "bundledUnused": false,
+      "provenanceId": "sharp-brand-webp-2026-08-15",
+      "review": {
+        "status": "approved",
+        "reviewedBy": "Noodle Freeman",
+        "reviewedAt": "2026-08-15",
+        "notes": "Provenance, distribution permission, source references, digest, and synthetic-content release status reviewed."
+      }
+    },
+    {
+      "path": "brand-assets/hero/products/Hero-Products-01.webp",
+      "sha256": "8e7bef85866ed1b81c2a55e01a604e055c61edf9a4ae6b956a5991c258cb1c5a",
+      "mediaType": "image/webp",
+      "purpose": "product-index hero fallback",
+      "references": [
+        "apps/storefront/src/content/pages/en/products.json",
+        "apps/storefront/src/content/pages/fr/products.json",
+        "apps/storefront/src/content/pages/zh-cn/products.json"
+      ],
+      "bundledUnused": false,
+      "provenanceId": "sharp-product-webp-2026-08-15",
+      "review": {
+        "status": "approved",
+        "reviewedBy": "Noodle Freeman",
+        "reviewedAt": "2026-08-15",
+        "notes": "Provenance, distribution permission, source references, digest, and synthetic-content release status reviewed."
+      }
+    },
+    {
+      "path": "brand-assets/hero/products/Hero-Products-02.webp",
+      "sha256": "53d21b624c1973e7ce65c25b64fd7a38d47002f28447660c9c608f2ebb0f6a7f",
+      "mediaType": "image/webp",
+      "purpose": "product-index hero fallback",
+      "references": [
+        "apps/storefront/src/content/pages/en/products.json",
+        "apps/storefront/src/content/pages/fr/products.json",
+        "apps/storefront/src/content/pages/zh-cn/products.json"
+      ],
+      "bundledUnused": false,
+      "provenanceId": "sharp-product-webp-2026-08-15",
+      "review": {
+        "status": "approved",
+        "reviewedBy": "Noodle Freeman",
+        "reviewedAt": "2026-08-15",
+        "notes": "Provenance, distribution permission, source references, digest, and synthetic-content release status reviewed."
+      }
+    },
+    {
+      "path": "brand-assets/hero/products/Hero-Products-03.webp",
+      "sha256": "3ba3fcdac2d187b38597ffaed460f78d2da85c551a6bd16f2e79fcbe0ba5ede2",
+      "mediaType": "image/webp",
+      "purpose": "product-index hero fallback",
+      "references": [
+        "apps/storefront/src/content/pages/en/products.json",
+        "apps/storefront/src/content/pages/fr/products.json",
+        "apps/storefront/src/content/pages/zh-cn/products.json"
+      ],
+      "bundledUnused": false,
+      "provenanceId": "sharp-product-webp-2026-08-15",
+      "review": {
+        "status": "approved",
+        "reviewedBy": "Noodle Freeman",
+        "reviewedAt": "2026-08-15",
+        "notes": "Provenance, distribution permission, source references, digest, and synthetic-content release status reviewed."
+      }
+    },
+    {
+      "path": "brand-assets/masks/cut-01-mask.svg",
+      "sha256": "b55620d8dde26ca0377a74414e0083ae3b7ed3e2be2f11ad6d5cdcbd20344eb2",
+      "mediaType": "image/svg+xml",
+      "purpose": "home contact CTA layout mask",
+      "references": [
+        "apps/storefront/src/components/home/HomeContactCtaSection.astro"
+      ],
+      "bundledUnused": false,
+      "provenanceId": "project-authored-svg-2026-08-15",
+      "review": {
+        "status": "approved",
+        "reviewedBy": "Noodle Freeman",
+        "reviewedAt": "2026-08-15",
+        "notes": "Provenance, distribution permission, source references, digest, and synthetic-content release status reviewed."
+      }
+    },
+    {
+      "path": "brand-assets/products/example-product/example-product-sku-01.webp",
+      "sha256": "4d213ee5f6bd8e6a8801a6912f0fa408e2a5cf55b16742750e70b6eaaad891eb",
+      "mediaType": "image/webp",
+      "purpose": "fictional example product gallery fallback",
+      "references": [
+        "apps/storefront/src/content/product-locale-pages/en/example-product.json",
+        "apps/storefront/src/content/product-locale-pages/fr/example-product.json",
+        "apps/storefront/src/content/product-locale-pages/zh-cn/example-product.json"
+      ],
+      "bundledUnused": false,
+      "provenanceId": "sharp-product-webp-2026-08-15",
+      "review": {
+        "status": "approved",
+        "reviewedBy": "Noodle Freeman",
+        "reviewedAt": "2026-08-15",
+        "notes": "Provenance, distribution permission, source references, digest, and synthetic-content release status reviewed."
+      }
+    },
+    {
+      "path": "brand-assets/products/example-product/example-product-sku-02.webp",
+      "sha256": "63dcad0eb685cd065a014e72d9cf6f62566486581710fbceb49be518b83465bd",
+      "mediaType": "image/webp",
+      "purpose": "fictional example product gallery fallback",
+      "references": [
+        "apps/storefront/src/content/product-locale-pages/en/example-product.json",
+        "apps/storefront/src/content/product-locale-pages/fr/example-product.json",
+        "apps/storefront/src/content/product-locale-pages/zh-cn/example-product.json"
+      ],
+      "bundledUnused": false,
+      "provenanceId": "sharp-product-webp-2026-08-15",
+      "review": {
+        "status": "approved",
+        "reviewedBy": "Noodle Freeman",
+        "reviewedAt": "2026-08-15",
+        "notes": "Provenance, distribution permission, source references, digest, and synthetic-content release status reviewed."
+      }
+    },
+    {
+      "path": "brand-assets/products/example-product/example-product-sku-03.webp",
+      "sha256": "2bf770729a6c0b225e019a6c1f81961422d46e68d1af0c55fb33620d1b6a84df",
+      "mediaType": "image/webp",
+      "purpose": "fictional example product gallery fallback",
+      "references": [
+        "apps/storefront/src/content/product-locale-pages/en/example-product.json",
+        "apps/storefront/src/content/product-locale-pages/fr/example-product.json",
+        "apps/storefront/src/content/product-locale-pages/zh-cn/example-product.json"
+      ],
+      "bundledUnused": false,
+      "provenanceId": "sharp-product-webp-2026-08-15",
+      "review": {
+        "status": "approved",
+        "reviewedBy": "Noodle Freeman",
+        "reviewedAt": "2026-08-15",
+        "notes": "Provenance, distribution permission, source references, digest, and synthetic-content release status reviewed."
+      }
+    },
+    {
+      "path": "brand-assets/products/example-product/example-product-sku-04.webp",
+      "sha256": "3af88d06defbcc370584a2eb5c9b69bdbee4c6756524755c207f8776410db5f3",
+      "mediaType": "image/webp",
+      "purpose": "fictional example product gallery fallback",
+      "references": [
+        "apps/storefront/src/content/product-locale-pages/en/example-product.json",
+        "apps/storefront/src/content/product-locale-pages/fr/example-product.json",
+        "apps/storefront/src/content/product-locale-pages/zh-cn/example-product.json"
+      ],
+      "bundledUnused": false,
+      "provenanceId": "sharp-product-webp-2026-08-15",
+      "review": {
+        "status": "approved",
+        "reviewedBy": "Noodle Freeman",
+        "reviewedAt": "2026-08-15",
+        "notes": "Provenance, distribution permission, source references, digest, and synthetic-content release status reviewed."
+      }
+    },
+    {
+      "path": "brand-assets/products/example-product/example-product-sku-main.webp",
+      "sha256": "73f5fee8e7a03aef53760532e2702dc0880b4963a5d5b3252efc3c346f4e389d",
+      "mediaType": "image/webp",
+      "purpose": "fictional example product primary-card fallback",
+      "references": [
+        "apps/storefront/src/content/product-locale-pages/en/example-product.json",
+        "apps/storefront/src/content/product-locale-pages/fr/example-product.json",
+        "apps/storefront/src/content/product-locale-pages/zh-cn/example-product.json"
+      ],
+      "bundledUnused": false,
+      "provenanceId": "sharp-product-webp-2026-08-15",
+      "review": {
+        "status": "approved",
+        "reviewedBy": "Noodle Freeman",
+        "reviewedAt": "2026-08-15",
+        "notes": "Provenance, distribution permission, source references, digest, and synthetic-content release status reviewed."
+      }
+    },
+    {
+      "path": "brand-assets/products/example-product/transparency/example-product-powder-01.webp",
+      "sha256": "391cacf24a75c78d5e8195d592bae263fe1ab330142134b8e0aec25570bbfb80",
+      "mediaType": "image/webp",
+      "purpose": "fictional example product transparency-story fallback",
+      "references": [
+        "apps/storefront/src/content/product-locale-pages/en/example-product.json",
+        "apps/storefront/src/content/product-locale-pages/fr/example-product.json",
+        "apps/storefront/src/content/product-locale-pages/zh-cn/example-product.json"
+      ],
+      "bundledUnused": false,
+      "provenanceId": "sharp-story-webp-2026-08-15",
+      "review": {
+        "status": "approved",
+        "reviewedBy": "Noodle Freeman",
+        "reviewedAt": "2026-08-15",
+        "notes": "Provenance, distribution permission, source references, digest, and synthetic-content release status reviewed."
+      }
+    },
+    {
+      "path": "brand-assets/products/example-product/transparency/example-product-powder-02.webp",
+      "sha256": "e81a9cbf8bb4fd591579fa6bc7d5bb6e75aa550c1bbca32ced958ca6582175db",
+      "mediaType": "image/webp",
+      "purpose": "fictional example product transparency-story fallback",
+      "references": [
+        "apps/storefront/src/content/product-locale-pages/en/example-product.json",
+        "apps/storefront/src/content/product-locale-pages/fr/example-product.json",
+        "apps/storefront/src/content/product-locale-pages/zh-cn/example-product.json"
+      ],
+      "bundledUnused": false,
+      "provenanceId": "sharp-story-webp-2026-08-15",
+      "review": {
+        "status": "approved",
+        "reviewedBy": "Noodle Freeman",
+        "reviewedAt": "2026-08-15",
+        "notes": "Provenance, distribution permission, source references, digest, and synthetic-content release status reviewed."
+      }
+    },
+    {
+      "path": "brand-assets/products/example-product/transparency/example-product-powder-03.webp",
+      "sha256": "13f36dcdf82a9fb2ec275a85b3f7f4bbcee48c5d0ff9e9f07a776d227f3873ff",
+      "mediaType": "image/webp",
+      "purpose": "fictional example product transparency-story fallback",
+      "references": [
+        "apps/storefront/src/content/product-locale-pages/en/example-product.json",
+        "apps/storefront/src/content/product-locale-pages/fr/example-product.json",
+        "apps/storefront/src/content/product-locale-pages/zh-cn/example-product.json"
+      ],
+      "bundledUnused": false,
+      "provenanceId": "sharp-story-webp-2026-08-15",
+      "review": {
+        "status": "approved",
+        "reviewedBy": "Noodle Freeman",
+        "reviewedAt": "2026-08-15",
+        "notes": "Provenance, distribution permission, source references, digest, and synthetic-content release status reviewed."
+      }
+    },
+    {
+      "path": "brand-assets/products/example-product/transparency/example-product-powder-04.webp",
+      "sha256": "1391cd0c9b9e7323ae5e1931e15008134b0600dc6ed37acdbf25b538de64069b",
+      "mediaType": "image/webp",
+      "purpose": "fictional example product transparency-story fallback",
+      "references": [],
+      "bundledUnused": true,
+      "provenanceId": "sharp-story-webp-2026-08-15",
+      "review": {
+        "status": "approved",
+        "reviewedBy": "Noodle Freeman",
+        "reviewedAt": "2026-08-15",
+        "notes": "Provenance, distribution permission, source references, digest, and synthetic-content release status reviewed."
+      }
+    },
+    {
+      "path": "brand-assets/products/example-product/transparency/example-product-powder-05.webp",
+      "sha256": "520ac95edc57f2bb08ceb208c26ec0b9d6e2b30c9057e430c7f59757ee7cfd6f",
+      "mediaType": "image/webp",
+      "purpose": "fictional example product transparency-story fallback",
+      "references": [],
+      "bundledUnused": true,
+      "provenanceId": "sharp-story-webp-2026-08-15",
+      "review": {
+        "status": "approved",
+        "reviewedBy": "Noodle Freeman",
+        "reviewedAt": "2026-08-15",
+        "notes": "Provenance, distribution permission, source references, digest, and synthetic-content release status reviewed."
+      }
+    },
+    {
+      "path": "brand-assets/products/example-product/transparency/example-product-powder-06.webp",
+      "sha256": "309893eb15f00a9ff20da9a31174a63a7b5dec18730b07e8ccb1c4b7f94751fc",
+      "mediaType": "image/webp",
+      "purpose": "fictional example product transparency-story fallback",
+      "references": [],
+      "bundledUnused": true,
+      "provenanceId": "sharp-story-webp-2026-08-15",
+      "review": {
+        "status": "approved",
+        "reviewedBy": "Noodle Freeman",
+        "reviewedAt": "2026-08-15",
+        "notes": "Provenance, distribution permission, source references, digest, and synthetic-content release status reviewed."
+      }
+    },
+    {
+      "path": "brand-assets/screenshots/zunfurl-preview-home.webp",
+      "sha256": "51f319f6fb05f1de2b5ae9a98168a2e96262eccb7d882e4dc26a00f49f3b02ef",
+      "mediaType": "image/webp",
+      "purpose": "README viewport screenshot of the neutral ZUnfurl example home page",
+      "references": [
+        "README.md"
+      ],
+      "bundledUnused": false,
+      "provenanceId": "browser-readme-screenshot-2026-08-15",
+      "review": {
+        "status": "approved",
+        "reviewedBy": "Noodle Freeman",
+        "reviewedAt": "2026-08-15",
+        "notes": "Candidate UI, source assets, visible text, digest, distribution permission, and absence of third-party marks reviewed."
+      }
+    },
+    {
+      "path": "brand-assets/video/homevideo.mp4",
+      "sha256": "6e7c151574e98c092f87682c58a9cbdb7ae0fcbd54b3f300f5a9e721083848b2",
+      "mediaType": "video/mp4",
+      "purpose": "home-page hero motion fallback",
+      "references": [
+        "apps/storefront/src/content/pages/en/home.json",
+        "apps/storefront/src/content/pages/fr/home.json",
+        "apps/storefront/src/content/pages/zh-cn/home.json"
+      ],
+      "bundledUnused": false,
+      "provenanceId": "ffmpeg-brand-video-2026-08-15",
+      "review": {
+        "status": "approved",
+        "reviewedBy": "Noodle Freeman",
+        "reviewedAt": "2026-08-15",
+        "notes": "Provenance, distribution permission, source references, digest, and synthetic-content release status reviewed."
+      }
+    },
+    {
+      "path": "favicon.svg",
+      "sha256": "029757eed6a279668188a2d6d6f3d77b4ef148ab289a605944a732ec497f2c4a",
+      "mediaType": "image/svg+xml",
+      "purpose": "browser favicon",
+      "references": [
+        "apps/storefront/src/layouts/SiteDocument.astro"
+      ],
+      "bundledUnused": false,
+      "provenanceId": "project-authored-svg-2026-08-15",
+      "review": {
+        "status": "approved",
+        "reviewedBy": "Noodle Freeman",
+        "reviewedAt": "2026-08-15",
+        "notes": "Provenance, distribution permission, source references, digest, and synthetic-content release status reviewed."
+      }
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "slug": "example-product",
+  "productStatus": "active",
+  "shopifyProductGid": "gid://shopify/Product/0000000000000",
+  "shopifyHandle": "example-product",
+  "shopifyTitle": "Example Product",
+  "shopifyVendor": "Example Brand",
+  "shopifyProductType": "Demo Product",
+  "shopifyTags": [
+    "demo"
+  ],
+  "shopifyUpdatedAt": "2026-01-01T00:00:00Z"
+}

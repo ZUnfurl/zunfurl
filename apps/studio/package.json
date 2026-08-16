@@ -1,0 +1,28 @@
+{
+  "name": "gcss-studio",
+  "type": "module",
+  "version": "0.3.0-preview.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "scripts": {
+    "dev": "sanity dev --host 127.0.0.1",
+    "build": "sanity build",
+    "deploy": "sanity deploy --yes",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@sanity/ui": "^3.5.3",
+    "@sanity/vision": "^6.9.2",
+    "@types/react": "^19.2.18",
+    "gcss-config": "file:../../packages/config",
+    "gcss-schemas": "file:../../packages/schemas",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "sanity": "^6.9.2",
+    "styled-components": "^6.1.19"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "typescript": "^5.9.3"
+  }
+}

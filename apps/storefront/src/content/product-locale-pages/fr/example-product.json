@@ -1,0 +1,66 @@
+{
+  "locale": "fr",
+  "slug": "example-product",
+  "name": "Example Product",
+  "collection": "Example Collection",
+  "roadmapOrder": 1,
+  "tagline": "Une démonstration catalogue-contenu neutre pour les projets de profil C.",
+  "primaryImage": "/brand-assets/products/example-product/example-product-sku-main.webp",
+  "roadmapLinkLabel": "View product detail",
+  "launchStatus": "live",
+  "shopifyHandle": "example-product",
+  "detailHero": {
+    "summary": "Example Product illustre le contrat catalogue-contenu C : Shopify fournit des faits catalogue et média en lecture seule, tandis que Sanity gère le récit, les langues et le SEO.",
+    "gallery": [
+      {
+        "src": "/brand-assets/products/example-product/example-product-sku-01.webp",
+        "alt": "Example Product gallery image 1"
+      },
+      {
+        "src": "/brand-assets/products/example-product/example-product-sku-02.webp",
+        "alt": "Example Product gallery image 2"
+      },
+      {
+        "src": "/brand-assets/products/example-product/example-product-sku-03.webp",
+        "alt": "Example Product gallery image 3"
+      },
+      {
+        "src": "/brand-assets/products/example-product/example-product-sku-04.webp",
+        "alt": "Example Product gallery image 4"
+      }
+    ]
+  },
+  "storyPages": [
+    {
+      "id": "product-introduction",
+      "eyebrow": "Product Introduction",
+      "title": "Un exemple simple de catalogue et contenu.",
+      "body": "Use this section to introduce the product promise, intended customer, and launch context.",
+      "supporting": "Replace this placeholder story with project-specific product copy during client onboarding.",
+      "image": "/brand-assets/products/example-product/transparency/example-product-powder-01.webp",
+      "imageAlt": "Example Product story image 1"
+    },
+    {
+      "id": "editorial-story",
+      "eyebrow": "Editorial Story",
+      "title": "A content layer maintained in Sanity.",
+      "body": "Use this section for brand storytelling, usage context, or campaign narrative.",
+      "supporting": "Replace this placeholder story with project-specific product copy during client onboarding.",
+      "image": "/brand-assets/products/example-product/transparency/example-product-powder-02.webp",
+      "imageAlt": "Example Product story image 2"
+    },
+    {
+      "id": "catalog-boundary",
+      "eyebrow": "Périmètre catalogue",
+      "title": "Shopify fournit les faits catalogue en lecture seule.",
+      "body": "Cette base mappe uniquement l'identité et les médias produit ; panier, checkout, paiement, commandes, taxes, livraison, exécution, prix et stock en temps réel ne sont pas inclus.",
+      "supporting": "Replace this placeholder story with project-specific product copy during client onboarding.",
+      "image": "/brand-assets/products/example-product/transparency/example-product-powder-03.webp",
+      "imageAlt": "Example Product story image 3"
+    }
+  ],
+  "seo": {
+    "title": "Example Product | Example Brand",
+    "description": "Un produit demo neutre pour les projets ZUnfurl profil C."
+  }
+}

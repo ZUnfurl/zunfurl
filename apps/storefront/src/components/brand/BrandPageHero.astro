@@ -1,0 +1,876 @@
+---
+import { resolveContentImage } from "../../lib/images/imageSources";
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  body: string;
+  pageHero: {
+    slides: Array<{
+      imageSource?: "sanity" | "local";
+      src: string;
+      sanityImageUrl?: string;
+      sanityImageAssetRef?: string;
+      alt: string;
+      eyebrow: string;
+      caption: string;
+    }>;
+  };
+  tone?: "about" | "products" | "contact";
+}
+
+const { eyebrow, title, body, pageHero, tone = "about" } = Astro.props;
+const slides = pageHero.slides.map((slide) => ({
+  ...slide,
+  resolvedImage: resolveContentImage(slide, {
+    decorative: true,
+    localKeys: ["src"],
+  }),
+}));
+const titleSegments = title
+  .split(",")
+  .map((segment) => segment.trim())
+  .filter(Boolean);
+const titleLead = titleSegments[0] ?? title;
+const titleTail = titleSegments.slice(1).join(", ");
+---
+
+<section class={`page-hero page-hero--${tone}`} data-page-hero>
+  <div class="page-hero__media" aria-hidden="true">
+    <div class="page-hero__carousel" data-page-hero-carousel>
+      {
+        slides.map((slide, index) => (
+          <figure class:list={["page-hero__slide", index === 0 && "is-active"]}>
+            <img
+              class="page-hero__image"
+              src={slide.resolvedImage.src}
+              alt={slide.resolvedImage.alt}
+              loading={index === 0 ? "eager" : "lazy"}
+              fetchpriority={index === 0 ? "high" : undefined}
+              draggable="false"
+            />
+          </figure>
+        ))
+      }
+    </div>
+    <div class="page-hero__film-grain"></div>
+    <div class="page-hero__scanline"></div>
+    <div class="page-hero__backdrop" aria-hidden="true">
+      <div class="page-hero__backdrop-glow page-hero__backdrop-glow--one"></div>
+      <div class="page-hero__backdrop-glow page-hero__backdrop-glow--two"></div>
+      <div class="page-hero__orb page-hero__orb--large"></div>
+      <div class="page-hero__orb page-hero__orb--small"></div>
+    </div>
+    <div class="page-hero__overlay"></div>
+    <div class="page-hero__progress" aria-hidden="true">
+      <span class="page-hero__progress-track" data-page-hero-progress></span>
+    </div>
+  </div>
+
+  <div class="page-hero__inner">
+    <div class="container page-hero__layout">
+      <div class="page-hero__content">
+        <div class="page-hero__eyebrow-row">
+          <p class="eyebrow">{eyebrow}</p>
+        </div>
+
+        <div class="page-hero__heading-group">
+          <h1 class="display-title page-hero__title">
+            <span class="page-hero__title-line">{titleLead}</span>
+            {
+              titleTail && (
+                <span class="page-hero__title-line page-hero__title-line--offset">
+                  {titleTail}
+                </span>
+              )
+            }
+          </h1>
+
+          <div class="page-hero__deck">
+            <p class="body-copy page-hero__body">{body}</p>
+            <div
+              class="page-hero__controls"
+              aria-label="Hero image carousel controls"
+            >
+              <div class="page-hero__dots">
+                {
+                  slides.map((slide, index) => (
+                    <button
+                      class:list={[
+                        "page-hero__dot",
+                        index === 0 && "is-active",
+                      ]}
+                      type="button"
+                      aria-label={`${slide.eyebrow}: ${slide.caption}`}
+                      data-page-hero-dot
+                    />
+                  ))
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container page-hero__meta-row">
+      <div class="page-hero__caption-list">
+        {
+          slides.map((slide, index) => (
+            <div
+              class:list={["page-hero__caption", index === 0 && "is-active"]}
+            >
+              <p class="eyebrow">{slide.eyebrow}</p>
+              <p class="body-copy page-hero__caption-copy">{slide.caption}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // @ts-nocheck
+  import { createHorizontalGesture } from "../../lib/gesture/createHorizontalGesture";
+
+  const pageHeroes = document.querySelectorAll("[data-page-hero]");
+
+  pageHeroes.forEach((hero) => {
+    const carousel = hero.querySelector("[data-page-hero-carousel]");
+    const gestureSurface = hero instanceof HTMLElement ? hero : null;
+    const slides = hero.querySelectorAll(".page-hero__slide");
+    const captions = hero.querySelectorAll(".page-hero__caption");
+    const dots = hero.querySelectorAll("[data-page-hero-dot]");
+    const progress = hero.querySelector("[data-page-hero-progress]");
+
+    /**
+     * @param {Element | null} element
+     * @param {number} minFontSize
+     */
+    function fitTextBlock(element, minFontSize) {
+      if (!(element instanceof HTMLElement) || element.clientHeight <= 0) {
+        return;
+      }
+
+      const computed = window.getComputedStyle(element);
+      const baseFontSize = Number.parseFloat(
+        element.dataset.baseFontSize ?? computed.fontSize,
+      );
+      const computedLineHeight = Number.parseFloat(computed.lineHeight);
+      const baseLineHeightRatio = Number.isFinite(computedLineHeight)
+        ? computedLineHeight / baseFontSize
+        : 1.2;
+
+      element.dataset.baseFontSize = `${baseFontSize}`;
+      element.dataset.baseLineHeightRatio = `${baseLineHeightRatio}`;
+
+      let fontSize = baseFontSize;
+      element.style.fontSize = `${baseFontSize}px`;
+      element.style.lineHeight = `${baseLineHeightRatio}`;
+
+      while (
+        element.scrollHeight > element.clientHeight + 1 &&
+        fontSize > minFontSize
+      ) {
+        fontSize -= 0.5;
+        element.style.fontSize = `${fontSize}px`;
+        element.style.lineHeight = `${baseLineHeightRatio}`;
+      }
+    }
+
+    const fitVisibleText = () => {
+      const activeCaptionCopy = hero.querySelector(
+        ".page-hero__caption.is-active .page-hero__caption-copy",
+      );
+
+      if (activeCaptionCopy instanceof HTMLElement) {
+        const computed = window.getComputedStyle(activeCaptionCopy);
+        const baseFontSize = Number.parseFloat(
+          activeCaptionCopy.dataset.baseFontSize ?? computed.fontSize,
+        );
+        fitTextBlock(activeCaptionCopy, baseFontSize * 0.82);
+      }
+    };
+
+    const scheduleTextFit = () => {
+      window.requestAnimationFrame(() => {
+        fitVisibleText();
+      });
+    };
+
+    if (slides.length <= 1) {
+      scheduleTextFit();
+      return;
+    }
+
+    let activeIndex = 0;
+    /** @type {number | undefined} */
+    let autoplayId = undefined;
+
+    /** @param {number} nextIndex */
+    function update(nextIndex) {
+      activeIndex = (nextIndex + slides.length) % slides.length;
+
+      slides.forEach((slide, index) => {
+        slide.classList.toggle("is-active", index === activeIndex);
+      });
+
+      captions.forEach((caption, index) => {
+        caption.classList.toggle("is-active", index === activeIndex);
+      });
+
+      dots.forEach((dot, index) => {
+        dot.classList.toggle("is-active", index === activeIndex);
+        dot.setAttribute(
+          "aria-pressed",
+          index === activeIndex ? "true" : "false",
+        );
+      });
+
+      if (progress instanceof HTMLElement) {
+        progress.style.setProperty(
+          "--page-hero-progress",
+          `${((activeIndex + 1) / slides.length) * 100}%`,
+        );
+      }
+
+      scheduleTextFit();
+    }
+
+    const stopAutoplay = () => {
+      window.clearInterval(autoplayId);
+    };
+
+    const getNextIndex = () => {
+      return activeIndex === slides.length - 1 ? 0 : activeIndex + 1;
+    };
+
+    const getPreviousIndex = () => {
+      return activeIndex === 0 ? slides.length - 1 : activeIndex - 1;
+    };
+
+    const startAutoplay = () => {
+      stopAutoplay();
+      autoplayId = window.setInterval(() => {
+        update(getNextIndex());
+      }, 5200);
+    };
+
+    /** @param {boolean} dragging */
+    function setDraggingState(dragging) {
+      hero.classList.toggle("is-dragging", dragging);
+
+      if (carousel instanceof HTMLElement) {
+        carousel.classList.toggle("is-dragging", dragging);
+      }
+
+      if (!dragging) {
+        window.getSelection()?.removeAllRanges();
+      }
+    }
+
+    dots.forEach((dot, index) => {
+      dot.addEventListener("click", () => {
+        update(index);
+        startAutoplay();
+      });
+    });
+
+    if (gestureSurface instanceof HTMLElement) {
+      createHorizontalGesture(gestureSurface, {
+        mode: "paged",
+        interactiveSelector:
+          "[data-page-hero-dot], button, input, textarea, select, [contenteditable='true']",
+        onDragStart: () => {
+          setDraggingState(true);
+          stopAutoplay();
+        },
+        onDragEnd: (_, commit) => {
+          setDraggingState(false);
+
+          if (commit.shouldCommit) {
+            update(
+              commit.direction === "next" ? getNextIndex() : getPreviousIndex(),
+            );
+          }
+
+          startAutoplay();
+        },
+        onCancel: () => {
+          setDraggingState(false);
+          startAutoplay();
+        },
+      });
+    }
+
+    hero.addEventListener("pointerenter", stopAutoplay);
+    hero.addEventListener("pointerleave", startAutoplay);
+    hero.addEventListener("focusin", stopAutoplay);
+    hero.addEventListener("focusout", startAutoplay);
+
+    window.addEventListener("resize", scheduleTextFit);
+
+    update(0);
+    startAutoplay();
+  });
+</script>
+
+<style>
+  .page-hero {
+    position: relative;
+    min-height: 100svh;
+    overflow: clip;
+    isolation: isolate;
+    touch-action: pan-y;
+    background: #111110;
+    color: #f3efec;
+  }
+
+  .page-hero__media {
+    position: absolute;
+    inset: 0;
+  }
+
+  .page-hero__carousel,
+  .page-hero__slide,
+  .page-hero__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .page-hero__slide {
+    opacity: 0;
+    transform: scale(1.06);
+    transition:
+      opacity 560ms ease,
+      transform 6.4s ease;
+  }
+
+  .page-hero__slide.is-active {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+
+  .page-hero__carousel {
+    cursor: grab;
+    touch-action: pan-y;
+  }
+
+  .page-hero__carousel.is-dragging {
+    cursor: grabbing;
+  }
+
+  .page-hero.is-dragging,
+  .page-hero.is-dragging * {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .page-hero__image {
+    object-fit: cover;
+    object-position: center;
+    filter: saturate(0.92) contrast(1.03) brightness(0.84);
+  }
+
+  .page-hero__backdrop,
+  .page-hero__film-grain,
+  .page-hero__scanline,
+  .page-hero__overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .page-hero__backdrop-glow,
+  .page-hero__orb {
+    position: absolute;
+    border-radius: 999px;
+  }
+
+  .page-hero__backdrop-glow {
+    filter: blur(48px);
+    opacity: 0.58;
+  }
+
+  .page-hero__backdrop-glow--one {
+    width: 28rem;
+    height: 28rem;
+    top: -6rem;
+    right: 4%;
+    background: rgba(205, 169, 146, 0.2);
+  }
+
+  .page-hero__backdrop-glow--two {
+    width: 20rem;
+    height: 20rem;
+    left: -4rem;
+    bottom: 10rem;
+    background: rgba(166, 131, 110, 0.18);
+  }
+
+  .page-hero__orb {
+    filter: blur(28px);
+  }
+
+  .page-hero__orb--large {
+    /* 光斑 */
+    width: 18rem;
+    height: 18rem;
+    top: 7rem;
+    right: 6rem;
+    background: rgba(205, 169, 146, 0.1);
+  }
+
+  .page-hero__orb--small {
+    width: 10rem;
+    height: 10rem;
+    left: 8%;
+    bottom: 12rem;
+    background: rgba(166, 131, 110, 0.22);
+  }
+
+  .page-hero__overlay {
+    z-index: 1;
+    background:
+      linear-gradient(
+        90deg,
+        rgba(9, 10, 10, 0.82) 0%,
+        rgba(9, 10, 10, 0.44) 34%,
+        rgba(9, 10, 10, 0.12) 62%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(9, 10, 10, 0.18) 0%,
+        rgba(9, 10, 10, 0.04) 30%,
+        rgba(9, 10, 10, 0.76) 100%
+      );
+  }
+
+  .page-hero__film-grain {
+    z-index: 1;
+    background-image:
+      radial-gradient(
+        circle at 20% 30%,
+        rgba(255, 255, 255, 0.1) 0 0.05rem,
+        transparent 0.07rem
+      ),
+      radial-gradient(
+        circle at 80% 70%,
+        rgba(24, 23, 23, 0.1) 0 0.05rem,
+        transparent 0.07rem
+      );
+    background-size:
+      1.4rem 1.4rem,
+      1.8rem 1.8rem;
+    mix-blend-mode: soft-light;
+    opacity: 0.34;
+  }
+
+  .page-hero__scanline {
+    z-index: 1;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.08),
+      transparent 12%,
+      transparent 88%,
+      rgba(24, 23, 23, 0.1)
+    );
+    opacity: 0.42;
+  }
+
+  .page-hero__progress {
+    position: absolute;
+    left: clamp(0.9rem, 2vw, 1.75rem);
+    right: clamp(0.9rem, 2vw, 1.75rem);
+    bottom: clamp(0.9rem, 2vw, 1.75rem);
+    height: 0.2rem;
+    border-radius: 999px;
+    background: rgba(243, 239, 236, 0.16);
+    overflow: hidden;
+    z-index: 2;
+  }
+
+  .page-hero__progress-track {
+    display: block;
+    height: 100%;
+    width: var(--page-hero-progress, 33.34%);
+    background: linear-gradient(
+      90deg,
+      var(--color-accent),
+      rgba(239, 238, 238, 0.92)
+    );
+    transition: width 320ms ease;
+  }
+
+  .page-hero__inner {
+    position: relative;
+    z-index: 2;
+    min-height: 100svh;
+    display: grid;
+    align-content: end;
+    padding-top: clamp(7rem, 10vw, 8.5rem);
+    padding-bottom: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  .page-hero__layout {
+    position: relative;
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.72fr);
+    gap: clamp(1rem, 3vw, 2rem);
+    align-items: end;
+    margin-bottom: clamp(1rem, 4vw, 2.5rem);
+  }
+
+  .page-hero__content {
+    display: grid;
+    gap: 1.35rem;
+    max-width: min(56rem, 70vw);
+  }
+
+  .page-hero__eyebrow-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 1rem;
+    max-width: min(48rem, 100%);
+  }
+
+  .page-hero__heading-group {
+    display: grid;
+    gap: 0.98rem;
+  }
+
+  .page-hero__title {
+    max-width: min(58rem, 100%);
+    margin-left: -0.04em;
+    font-size: clamp(3.36rem, 7vw, 6.3rem);
+    line-height: 0.9;
+    text-wrap: balance;
+  }
+
+  .page-hero__title-line {
+    display: block;
+  }
+
+  .page-hero__title-line--offset {
+    padding-left: clamp(1.5rem, 6vw, 5rem);
+  }
+
+  .page-hero__deck {
+    display: grid;
+    grid-template-columns: minmax(0, 26rem) auto;
+    gap: 1.05rem;
+    align-items: end;
+    max-width: min(52rem, 100%);
+  }
+
+  .page-hero__content .eyebrow,
+  .page-hero__content .body-copy,
+  .page-hero__caption .eyebrow,
+  .page-hero__caption .body-copy,
+  .page-hero__float-shell .eyebrow,
+  .page-hero__float-shell .body-copy {
+    color: #f3efec;
+  }
+
+  .page-hero__content .eyebrow {
+    color: rgba(239, 238, 238, 0.74);
+    text-shadow: 0 0 18px rgba(12, 13, 13, 0.22);
+  }
+
+  .page-hero__body {
+    max-width: 34ch;
+    font-size: 0.92rem;
+    color: rgba(239, 238, 238, 0.86);
+    text-shadow: 0 10px 30px rgba(12, 13, 13, 0.28);
+    text-wrap: pretty;
+  }
+
+  .page-hero__controls {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.8rem;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .page-hero__dots {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .page-hero__dot {
+    width: 0.42rem;
+    height: 0.42rem;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid rgba(243, 239, 236, 0.42);
+    background: transparent;
+    cursor: pointer;
+    transition:
+      transform 180ms ease,
+      background-color 180ms ease,
+      border-color 180ms ease;
+  }
+
+  .page-hero__dot.is-active {
+    transform: scale(1.4);
+    background: rgba(239, 238, 238, 0.94);
+    border-color: rgba(239, 238, 238, 0.94);
+  }
+
+  .page-hero__meta-row {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    min-height: clamp(6.25rem, 10vw, 8rem);
+    padding-top: 1.1rem;
+    padding-bottom: clamp(1.15rem, 2vw, 1.85rem);
+    border-top: 1px solid rgba(243, 239, 236, 0.18);
+    border-bottom: 1px solid rgba(243, 239, 236, 0.1);
+    isolation: isolate;
+  }
+
+  .page-hero__meta-row::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    bottom: -1px;
+    left: calc(50% - 50vw);
+    width: 100vw;
+    border-top: 1px solid rgba(243, 239, 236, 0.18);
+    border-bottom: 1px solid rgba(243, 239, 236, 0.1);
+    background: linear-gradient(
+      180deg,
+      rgba(17, 17, 16, 0.32),
+      rgba(17, 17, 16, 0.08)
+    );
+    backdrop-filter: blur(14px);
+    z-index: -1;
+  }
+
+  .page-hero__caption .eyebrow {
+    padding-top: 0.1rem;
+    color: rgba(243, 239, 236, 0.58);
+  }
+
+  .page-hero__caption-copy {
+    max-width: 42ch;
+    font-size: 0.92rem;
+    line-height: 1.7;
+    color: rgba(239, 238, 238, 0.78);
+    min-height: 0;
+    overflow: hidden;
+    text-wrap: pretty;
+  }
+
+  .page-hero__caption-list {
+    display: grid;
+    width: min(36rem, 100%);
+    min-width: 0;
+  }
+
+  .page-hero__caption {
+    display: none;
+    grid-template-rows: auto auto;
+    gap: 0.45rem;
+    justify-items: start;
+    align-content: start;
+    width: 100%;
+    min-height: 0;
+    padding-left: 0;
+    border-left: none;
+  }
+
+  .page-hero__caption.is-active {
+    display: grid;
+  }
+
+  .page-hero__caption-copy {
+    margin: 0;
+    min-width: 0;
+  }
+
+  .page-hero--products .page-hero__backdrop-glow--one {
+    background: rgba(205, 169, 146, 0.24);
+  }
+
+  .page-hero--contact .page-hero__backdrop-glow--two {
+    background: rgba(239, 238, 238, 0.14);
+  }
+
+  @media (max-width: 980px) {
+    .page-hero__layout {
+      grid-template-columns: 1fr;
+    }
+
+    .page-hero__content {
+      max-width: min(44rem, 100%);
+    }
+
+    .page-hero__deck {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .page-hero__title-line--offset {
+      padding-left: clamp(0rem, 4vw, 2rem);
+    }
+
+    .page-hero__meta-row {
+      justify-content: flex-start;
+      min-height: auto;
+      height: auto;
+    }
+
+    .page-hero__caption-list {
+      width: min(36rem, 100%);
+    }
+
+    .page-hero__caption {
+      padding-left: 0;
+      padding-top: 1rem;
+      border-left: none;
+      border-top: 1px solid rgba(243, 239, 236, 0.12);
+    }
+  }
+
+  @media (max-width: 720px) {
+    .page-hero {
+      min-height: 0;
+      background:
+        linear-gradient(
+          180deg,
+          rgba(17, 17, 16, 0) 0%,
+          rgba(17, 17, 16, 0) 100%
+        ),
+        #111110;
+    }
+
+    .page-hero__media {
+      inset: 0 0 auto;
+      height: 100svh;
+    }
+
+    .page-hero__inner {
+      min-height: 0;
+      display: block;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    .page-hero__layout {
+      min-height: 100svh;
+      align-items: end;
+      align-content: end;
+      margin-bottom: 0;
+      padding-top: 6rem;
+      padding-bottom: 2.2rem;
+    }
+
+    .page-hero__content {
+      max-width: none;
+      gap: 1.05rem;
+    }
+
+    .page-hero__eyebrow-row {
+      align-items: start;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .page-hero__title {
+      font-size: clamp(2.52rem, 11.2vw, 3.64rem);
+      line-height: 0.92;
+    }
+
+    .page-hero__title-line--offset {
+      padding-left: 0;
+    }
+
+    .page-hero__body {
+      max-width: 32ch;
+      font-size: 0.96rem;
+      line-height: 1.62;
+    }
+
+    .page-hero__deck {
+      gap: 0.85rem;
+    }
+
+    .page-hero__controls {
+      left: 50%;
+      bottom: 1.9rem;
+      width: max-content;
+      gap: 0.65rem;
+      justify-content: center;
+    }
+
+    .page-hero__dots {
+      justify-content: center;
+    }
+
+    .page-hero__meta-row {
+      margin-top: 0;
+      min-height: 9.5rem;
+      padding-top: 1rem;
+      padding-bottom: 3.5rem;
+      background: #111110;
+      border-top: none;
+      border-bottom: none;
+    }
+
+    .page-hero__meta-row::before {
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      border-top: 1px solid rgba(243, 239, 236, 0.1);
+      border-bottom: none;
+      background: linear-gradient(
+        180deg,
+        rgba(24, 23, 23, 0.96),
+        rgba(17, 17, 16, 1)
+      );
+      backdrop-filter: none;
+    }
+
+    .page-hero__caption.is-active {
+      gap: 0.35rem;
+    }
+
+    .page-hero__caption .eyebrow {
+      color: rgba(243, 239, 236, 0.5);
+    }
+
+    .page-hero__caption-copy {
+      max-width: none;
+      font-size: 0.88rem;
+      line-height: 1.58;
+      color: rgba(239, 238, 238, 0.74);
+    }
+
+    .page-hero__caption {
+      gap: 0.4rem;
+      padding-top: 0.9rem;
+      grid-template-rows: auto auto;
+    }
+
+    .page-hero__progress {
+      left: 1rem;
+      right: 1rem;
+      bottom: 0.8rem;
+    }
+  }
+</style>

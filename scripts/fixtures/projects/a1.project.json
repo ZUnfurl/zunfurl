@@ -1,0 +1,33 @@
+{
+  "$schema": "./gcss.project.schema.json",
+  "schemaVersion": 1,
+  "frameworkVersion": "0.3.0-preview.1",
+  "templateMode": false,
+  "identity": {
+    "projectName": "northstar-brand-a1",
+    "brandName": "Northstar A1",
+    "domain": "a1.northstar.test"
+  },
+  "delivery": {
+    "profile": "static-brand",
+    "contentSource": "local",
+    "defaultLocale": "en",
+    "locales": [
+      "en",
+      "zh-cn"
+    ]
+  },
+  "features": {
+    "contactForm": false,
+    "legalPages": [
+      "privacy-policy",
+      "terms-of-use",
+      "customer-service-contact"
+    ]
+  },
+  "deployment": {
+    "workerName": "northstar-brand-a1",
+    "studioHost": "northstar-brand-a1-studio",
+    "githubRepository": "ZUnfurl/northstar-brand-a1"
+  }
+}

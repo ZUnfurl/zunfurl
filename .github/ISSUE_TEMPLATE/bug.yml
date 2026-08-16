@@ -1,0 +1,135 @@
+{
+  "name": "Bug 报告",
+  "description": "报告可公开、可复现的框架问题；安全漏洞请使用私密渠道。",
+  "title": "[Bug] ",
+  "labels": ["bug", "triage"],
+  "body": [
+    {
+      "type": "markdown",
+      "attributes": {
+        "value": "安全漏洞、凭据泄露或可利用的供应链问题请按 SECURITY.md 私密报告。此表单不得包含客户数据、secret、真实生产标识或无权公开的素材。"
+      }
+    },
+    {
+      "type": "checkboxes",
+      "id": "preflight",
+      "attributes": {
+        "label": "提交前确认",
+        "options": [
+          {
+            "label": "我已搜索现有 Issue，并在最新 0.x Preview 或当前候选版本上复现。",
+            "required": true
+          },
+          {
+            "label": "我已移除客户数据、凭据、真实域名、生产 ID 和无权公开的素材。",
+            "required": true
+          },
+          {
+            "label": "这不是需要私密报告的安全漏洞。",
+            "required": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "input",
+      "id": "framework_version",
+      "attributes": {
+        "label": "Framework version / commit",
+        "description": "填写 release 版本；使用未发布代码时填写完整 commit SHA。",
+        "placeholder": "0.3.0-preview.1 或完整 commit SHA"
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "dropdown",
+      "id": "profile",
+      "attributes": {
+        "label": "受影响 Profile",
+        "options": [
+          "A1 — static-brand / contactForm=false",
+          "A2 — static-brand / contactForm=true",
+          "B — cms-brand",
+          "C — retail catalog/content foundation",
+          "Framework-wide / 无法确定"
+        ]
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "current_behavior",
+      "attributes": {
+        "label": "实际行为",
+        "description": "说明发生了什么，以及最小、已脱敏的上下文。"
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "expected_behavior",
+      "attributes": {
+        "label": "预期行为",
+        "description": "说明你依据哪个文档或合约期待什么结果。"
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "reproduction",
+      "attributes": {
+        "label": "最小复现",
+        "description": "提供从中性 fixture 或脱敏配置开始的确定性步骤和命令。",
+        "placeholder": "1. npm.cmd ci\n2. npm.cmd run ...\n3. 观察到 ..."
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "sanitized_config",
+      "attributes": {
+        "label": "脱敏项目契约或配置",
+        "description": "如问题与配置有关，仅保留复现所需字段；删除域名、平台 ID、客户信息和任何 secret。",
+        "render": "json"
+      },
+      "validations": {
+        "required": false
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "environment",
+      "attributes": {
+        "label": "环境",
+        "description": "至少填写 OS、Node 和 npm；前端问题补充浏览器。",
+        "value": "OS:\nNode:\nnpm:\nBrowser（如适用）：",
+        "render": "text"
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "evidence",
+      "attributes": {
+        "label": "脱敏日志与测试证据",
+        "description": "只粘贴复现所需片段，并明确哪些门禁通过、失败或未运行。",
+        "render": "shell"
+      },
+      "validations": {
+        "required": false
+      }
+    }
+  ]
+}

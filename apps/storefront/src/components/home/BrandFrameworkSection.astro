@@ -1,0 +1,459 @@
+---
+import { resolveContentImage } from "../../lib/images/imageSources";
+
+interface BrandFrameworkSlide {
+  imageSource?: "sanity" | "local";
+  image: string;
+  sanityImageUrl?: string;
+  sanityImageAssetRef?: string;
+  title: string;
+  description: string;
+}
+
+interface BrandFrameworkContent {
+  eyebrow: string;
+  ariaLabel: string;
+  ctaLabel: string;
+  slides: BrandFrameworkSlide[];
+}
+
+interface Props {
+  content: BrandFrameworkContent;
+  productsHref: string;
+}
+
+const { content, productsHref } = Astro.props;
+const { eyebrow, ariaLabel, ctaLabel } = content;
+const slides = content.slides.map((slide) => ({
+  ...slide,
+  resolvedImage: resolveContentImage(slide, {
+    altFallback: slide.title,
+    localKeys: ["image"],
+  }),
+}));
+---
+
+<section class="feature-grid" id="about" data-feature-carousel>
+  <div class="feature-grid__carousel" aria-label={ariaLabel}>
+    {
+      slides.map((slide, index) => (
+        <article
+          class:list={["feature-grid__slide", index === 0 && "is-active"]}
+          data-feature-slide
+        >
+          <img
+            class="feature-grid__image"
+            src={slide.resolvedImage.src}
+            alt={slide.resolvedImage.alt}
+            loading={index === 0 ? "eager" : "lazy"}
+            fetchpriority={index === 0 ? "high" : undefined}
+            draggable="false"
+          />
+          <div class="feature-grid__overlay" />
+          <div
+            class="feature-grid__content"
+            data-reveal={index === 0 ? "up" : "scale"}
+          >
+            <p class="eyebrow">{eyebrow}</p>
+            <h2 class="feature-grid__title">{slide.title}</h2>
+            <p class="body-copy feature-grid__description">
+              {slide.description}
+            </p>
+            <a
+              class="button button--primary feature-grid__button"
+              href={productsHref}
+            >
+              {ctaLabel}
+            </a>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+
+  <div class="feature-grid__controls">
+    <div class="feature-grid__dots" aria-label={ariaLabel}>
+      {
+        slides.map((slide, index) => (
+          <button
+            class:list={["feature-grid__dot", index === 0 && "is-active"]}
+            type="button"
+            aria-label={`${content.ariaLabel}: ${slide.title}`}
+            data-feature-dot
+          />
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="feature-grid__progress" aria-hidden="true">
+    <span class="feature-grid__progress-track" data-feature-progress></span>
+  </div>
+</section>
+
+<script>
+  // @ts-nocheck
+  import { createHorizontalGesture } from "../../lib/gesture/createHorizontalGesture";
+
+  const featureCarousels = document.querySelectorAll("[data-feature-carousel]");
+
+  featureCarousels.forEach((carousel) => {
+    const carouselTrack = carousel.querySelector(".feature-grid__carousel");
+    const gestureSurface = carousel instanceof HTMLElement ? carousel : null;
+    const slides = carousel.querySelectorAll("[data-feature-slide]");
+    const dots = carousel.querySelectorAll("[data-feature-dot]");
+    const progress = carousel.querySelector("[data-feature-progress]");
+
+    if (slides.length <= 1) {
+      return;
+    }
+
+    let activeIndex = 0;
+    let autoplayId = 0;
+
+    function update(nextIndex = 0) {
+      activeIndex = (nextIndex + slides.length) % slides.length;
+
+      slides.forEach((slide, index) => {
+        slide.classList.toggle("is-active", index === activeIndex);
+      });
+
+      dots.forEach((dot, index) => {
+        dot.classList.toggle("is-active", index === activeIndex);
+        dot.setAttribute(
+          "aria-pressed",
+          index === activeIndex ? "true" : "false",
+        );
+      });
+
+      if (progress instanceof HTMLElement) {
+        progress.style.setProperty(
+          "--feature-progress",
+          `${((activeIndex + 1) / slides.length) * 100}%`,
+        );
+      }
+    }
+
+    const stopAutoplay = () => {
+      window.clearInterval(autoplayId);
+    };
+
+    const getNextIndex = () => {
+      return activeIndex === slides.length - 1 ? 0 : activeIndex + 1;
+    };
+
+    const getPreviousIndex = () => {
+      return activeIndex === 0 ? slides.length - 1 : activeIndex - 1;
+    };
+
+    const startAutoplay = () => {
+      stopAutoplay();
+      autoplayId = window.setInterval(() => update(getNextIndex()), 5600);
+    };
+
+    function setDraggingState(dragging = false) {
+      carousel.classList.toggle("is-dragging", dragging);
+
+      if (carouselTrack instanceof HTMLElement) {
+        carouselTrack.classList.toggle("is-dragging", dragging);
+      }
+
+      if (!dragging) {
+        window.getSelection()?.removeAllRanges();
+      }
+    }
+
+    dots.forEach((dot, index) => {
+      dot.addEventListener("click", () => {
+        update(index);
+        startAutoplay();
+      });
+    });
+
+    if (gestureSurface instanceof HTMLElement) {
+      createHorizontalGesture(gestureSurface, {
+        mode: "paged",
+        interactiveSelector:
+          "[data-feature-dot], button, input, textarea, select, [contenteditable='true']",
+        onDragStart: () => {
+          setDraggingState(true);
+          stopAutoplay();
+        },
+        onDragEnd: (_, commit) => {
+          setDraggingState(false);
+
+          if (commit.shouldCommit) {
+            update(
+              commit.direction === "next" ? getNextIndex() : getPreviousIndex(),
+            );
+          }
+
+          startAutoplay();
+        },
+        onCancel: () => {
+          setDraggingState(false);
+          startAutoplay();
+        },
+      });
+    }
+
+    carousel.addEventListener("pointerenter", stopAutoplay);
+    carousel.addEventListener("pointerleave", startAutoplay);
+    carousel.addEventListener("focusin", stopAutoplay);
+    carousel.addEventListener("focusout", startAutoplay);
+
+    update(0);
+    startAutoplay();
+  });
+</script>
+
+<style>
+  .feature-grid {
+    position: relative;
+    margin-top: 0;
+    background: #0f0e0d;
+    color: #f3efec;
+    overflow: clip;
+    touch-action: pan-y;
+  }
+
+  .feature-grid__carousel {
+    position: relative;
+    min-height: 100svh;
+    cursor: grab;
+    touch-action: pan-y;
+  }
+
+  .feature-grid__carousel.is-dragging {
+    cursor: grabbing;
+  }
+
+  .feature-grid.is-dragging,
+  .feature-grid.is-dragging * {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .feature-grid__slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 520ms ease;
+  }
+
+  .feature-grid__slide.is-active {
+    opacity: 1;
+  }
+
+  .feature-grid__image,
+  .feature-grid__overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .feature-grid__image {
+    object-fit: cover;
+    object-position: center;
+    filter: saturate(0.94) contrast(1.02) brightness(0.82);
+  }
+
+  .feature-grid__overlay {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(10, 10, 10, 0.08) 0%,
+        rgba(10, 10, 10, 0.12) 22%,
+        rgba(10, 10, 10, 0.58) 100%
+      ),
+      linear-gradient(
+        90deg,
+        rgba(10, 10, 10, 0.56) 0%,
+        rgba(10, 10, 10, 0.18) 36%,
+        rgba(10, 10, 10, 0.08) 100%
+      );
+  }
+
+  .feature-grid__content {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    align-content: end;
+    justify-items: center;
+    gap: 1.05rem;
+    min-height: 100svh;
+    padding: clamp(7rem, 10vw, 8.5rem) clamp(1.25rem, 4vw, 2.5rem)
+      clamp(7.25rem, 10vw, 8.75rem);
+    max-width: min(48rem, 78vw);
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .feature-grid__title {
+    margin: 0;
+    font-family: var(--font-display);
+    max-width: min(56rem, 90vw);
+    font-size: clamp(2.9rem, 6vw, 5.2rem);
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+
+  .feature-grid__description {
+    max-width: min(46rem, 60vw);
+    margin: 0 auto;
+    font-size: 0.98rem;
+    line-height: 1.72;
+    color: rgba(243, 239, 236, 0.84);
+    text-wrap: pretty;
+  }
+
+  .feature-grid__content .button--primary.feature-grid__button {
+    justify-self: center;
+    background: linear-gradient(
+      135deg,
+      rgba(239, 238, 238, 0.98) 0%,
+      rgba(205, 169, 146, 0.94) 52%,
+      rgba(166, 131, 110, 0.96) 100%
+    );
+    color: #181717;
+    border-color: rgba(239, 238, 238, 0.78);
+    box-shadow:
+      0 18px 40px rgba(12, 13, 13, 0.22),
+      inset 0 1px 0 rgba(255, 255, 255, 0.42),
+      0 0 0 1px rgba(205, 169, 146, 0.16);
+  }
+
+  .feature-grid__content .button--primary.feature-grid__button:hover,
+  .feature-grid__content .button--primary.feature-grid__button:focus-visible {
+    box-shadow:
+      0 24px 52px rgba(12, 13, 13, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5),
+      0 0 0 1px rgba(205, 169, 146, 0.24);
+  }
+
+  .feature-grid__controls {
+    position: absolute;
+    left: 50%;
+    bottom: clamp(2rem, 4vw, 2.8rem);
+    transform: translateX(-50%);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .feature-grid__dots {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .feature-grid__progress {
+    position: absolute;
+    left: clamp(0.9rem, 2vw, 1.75rem);
+    right: clamp(0.9rem, 2vw, 1.75rem);
+    bottom: clamp(1rem, 2vw, 1.75rem);
+    z-index: 2;
+    height: 0.2rem;
+    border-radius: 999px;
+    background: rgba(243, 239, 236, 0.22);
+    overflow: hidden;
+  }
+
+  .feature-grid__progress-track {
+    display: block;
+    width: var(--feature-progress, 33.34%);
+    height: 100%;
+    background: rgba(243, 239, 236, 0.94);
+    transition: width 320ms ease;
+  }
+
+  .feature-grid__dot {
+    border: 0;
+    color: rgba(243, 239, 236, 0.94);
+    background: transparent;
+  }
+
+  .feature-grid__dot {
+    width: 0.42rem;
+    height: 0.42rem;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid rgba(243, 239, 236, 0.42);
+    cursor: pointer;
+    transition:
+      transform 180ms ease,
+      background-color 180ms ease,
+      border-color 180ms ease;
+  }
+
+  .feature-grid__dot.is-active {
+    transform: scale(1.4);
+    background: rgba(243, 239, 236, 0.94);
+    border-color: rgba(243, 239, 236, 0.94);
+  }
+
+  html[data-theme="light"] .feature-grid {
+    color: #fff8f3;
+  }
+
+  html[data-theme="light"] .feature-grid__overlay {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(34, 22, 18, 0.06) 0%,
+        rgba(34, 22, 18, 0.16) 24%,
+        rgba(34, 22, 18, 0.52) 100%
+      ),
+      linear-gradient(
+        90deg,
+        rgba(34, 22, 18, 0.48) 0%,
+        rgba(34, 22, 18, 0.12) 36%,
+        rgba(34, 22, 18, 0.06) 100%
+      );
+  }
+
+  @media (max-width: 720px) {
+    .feature-grid {
+      margin-top: 0;
+    }
+
+    .feature-grid__carousel,
+    .feature-grid__content {
+      min-height: 100svh;
+    }
+
+    .feature-grid__content {
+      max-width: none;
+      align-content: end;
+      gap: 0.85rem;
+      padding: 5.4rem 1rem 7.8rem;
+    }
+
+    .feature-grid__title {
+      font-size: clamp(2.1rem, 9.6vw, 3.1rem);
+      max-width: 12ch;
+    }
+
+    .feature-grid__description {
+      font-size: 0.94rem;
+      max-width: 33ch;
+    }
+
+    .feature-grid__controls {
+      bottom: 1.9rem;
+    }
+
+    .feature-grid__dots {
+      gap: 0.45rem;
+    }
+
+    .feature-grid__progress {
+      left: 1rem;
+      right: 1rem;
+      bottom: 0.8rem;
+    }
+  }
+</style>

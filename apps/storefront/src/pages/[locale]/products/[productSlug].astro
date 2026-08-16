@@ -1,0 +1,61 @@
+---
+import ProductDetailTemplate from "../../../components/product-detail/ProductDetailTemplate.astro";
+import {
+  getProduct,
+  getProductStory,
+  getProductStoryPaths,
+} from "../../../lib/content/contentSource";
+import {
+  getAlternateLinks,
+  getDictionary,
+  type ActiveLocale,
+} from "../../../i18n/config";
+import {
+  assertCommerceEnabled,
+  getSiteNavigation,
+  isCommerceEnabled,
+} from "../../../lib/site/profile";
+
+export async function getStaticPaths() {
+  if (!isCommerceEnabled()) {
+    return [];
+  }
+
+  const storyEntries = await getProductStoryPaths();
+
+  return storyEntries.map((entry) => ({
+    params: {
+      locale: entry.locale,
+      productSlug: entry.productSlug,
+    },
+  }));
+}
+
+const locale = Astro.params.locale as ActiveLocale;
+const productSlug = Astro.params.productSlug as string;
+
+assertCommerceEnabled(`Product route /${locale}/products/${productSlug}`);
+
+const dictionary = getDictionary(locale);
+const alternates = getAlternateLinks(`/products/${productSlug}`);
+
+const [product, story] = await Promise.all([
+  getProduct(locale, productSlug),
+  getProductStory(locale, productSlug),
+]);
+
+if (!product || !story) {
+  throw new Error(`Missing product content for: ${locale}/${productSlug}`);
+}
+
+const navItems = getSiteNavigation(locale, dictionary);
+---
+
+<ProductDetailTemplate
+  locale={locale}
+  dictionary={dictionary}
+  alternates={alternates}
+  navItems={navItems}
+  product={product}
+  story={story}
+/>

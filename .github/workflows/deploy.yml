@@ -1,0 +1,140 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    name: Build configured profile and deploy Worker
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # production Environment 集中承载生产 vars/secrets。
+    # required reviewers 与 deployment branch policy 属于发布前远程 Gate；workflow 不声称已配置。
+    environment:
+      name: production
+    steps:
+      - name: Verify manual production authorization
+        shell: bash
+        env:
+          REQUESTED_REF: ${{ github.ref }}
+          PRODUCTION_DEPLOYMENT_ARMED: ${{ vars.PRODUCTION_DEPLOYMENT_ARMED }}
+        run: |
+          if [ "$REQUESTED_REF" != "refs/heads/main" ]; then
+            echo "::error::Production deployment requires the main branch."
+            exit 1
+          fi
+          if [ "$PRODUCTION_DEPLOYMENT_ARMED" != "true" ]; then
+            echo "::error::Production deployment is not armed in the production Environment."
+            exit 1
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Node 22.12
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22.12.0"
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Export project contract
+        run: node scripts/template/export-project-env.mjs --github-env "$GITHUB_ENV"
+
+      - name: Reject template deployment
+        if: env.GCSS_TEMPLATE_MODE == 'true'
+        run: |
+          echo "Template mode cannot deploy a client site. Initialize gcss.project.json first."
+          exit 1
+
+      - name: Validate project readiness
+        run: npm run project:scan
+
+      - name: Validate framework and workflow boundaries
+        run: npm run framework:audit
+
+      - name: Validate Sanity boundaries
+        if: env.GCSS_HAS_STUDIO == 'true'
+        run: npm run test:sanity
+
+      - name: Validate commerce boundaries
+        if: env.GCSS_HAS_COMMERCE == 'true'
+        run: npm run test:commerce && npm run test:shopify-summary
+
+      - name: Validate Worker routes
+        run: npm run test:worker
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build Sanity Studio for B profile
+        if: env.GCSS_HAS_STUDIO == 'true' && env.GCSS_HAS_COMMERCE != 'true'
+        env:
+          SANITY_STUDIO_PROJECT_ID: ${{ secrets.SANITY_PROJECT_ID }}
+          SANITY_STUDIO_DATASET: ${{ secrets.SANITY_DATASET }}
+        run: npm run studio:build
+
+      - name: Build Sanity Studio for C profile
+        if: env.GCSS_HAS_COMMERCE == 'true'
+        env:
+          SANITY_STUDIO_PROJECT_ID: ${{ secrets.SANITY_PROJECT_ID }}
+          SANITY_STUDIO_DATASET: ${{ secrets.SANITY_DATASET }}
+          SANITY_STUDIO_SHOPIFY_STORE_DOMAIN: ${{ secrets.SHOPIFY_STORE_DOMAIN }}
+          SANITY_STUDIO_SHOPIFY_STOREFRONT_ACCESS_TOKEN: ${{ secrets.SHOPIFY_STOREFRONT_ACCESS_TOKEN }}
+          SANITY_STUDIO_SHOPIFY_STOREFRONT_API_VERSION: ${{ secrets.SHOPIFY_STOREFRONT_API_VERSION }}
+        run: npm run studio:build
+
+      - name: Build A profile storefront
+        if: env.GCSS_HAS_STUDIO != 'true'
+        env:
+          PUBLIC_TURNSTILE_SITE_KEY: ${{ secrets.PUBLIC_TURNSTILE_SITE_KEY }}
+        run: npm run build
+
+      - name: Build B profile storefront
+        if: env.GCSS_HAS_STUDIO == 'true' && env.GCSS_HAS_COMMERCE != 'true'
+        env:
+          SANITY_PROJECT_ID: ${{ secrets.SANITY_PROJECT_ID }}
+          SANITY_DATASET: ${{ secrets.SANITY_DATASET }}
+          SANITY_API_VERSION: ${{ secrets.SANITY_API_VERSION }}
+          SANITY_USE_CDN: ${{ secrets.SANITY_USE_CDN }}
+          SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
+          PUBLIC_TURNSTILE_SITE_KEY: ${{ secrets.PUBLIC_TURNSTILE_SITE_KEY }}
+        run: npm run build
+
+      - name: Build C profile storefront
+        if: env.GCSS_HAS_COMMERCE == 'true'
+        env:
+          SANITY_PROJECT_ID: ${{ secrets.SANITY_PROJECT_ID }}
+          SANITY_DATASET: ${{ secrets.SANITY_DATASET }}
+          SANITY_API_VERSION: ${{ secrets.SANITY_API_VERSION }}
+          SANITY_USE_CDN: ${{ secrets.SANITY_USE_CDN }}
+          SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
+          SHOPIFY_STORE_DOMAIN: ${{ secrets.SHOPIFY_STORE_DOMAIN }}
+          SHOPIFY_STOREFRONT_ACCESS_TOKEN: ${{ secrets.SHOPIFY_STOREFRONT_ACCESS_TOKEN }}
+          SHOPIFY_STOREFRONT_API_VERSION: ${{ secrets.SHOPIFY_STOREFRONT_API_VERSION }}
+          PUBLIC_TURNSTILE_SITE_KEY: ${{ secrets.PUBLIC_TURNSTILE_SITE_KEY }}
+        run: npm run build
+
+      - name: Validate Worker deployment package
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: npm --workspace gcss-worker run deploy -- --dry-run
+
+      - name: Deploy Cloudflare Worker
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: npm --workspace gcss-worker run deploy

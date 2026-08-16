@@ -1,0 +1,625 @@
+---
+import type { ContactLegalNotice, ContactSectionContent } from "gcss-blocks";
+import type { ActiveLocale } from "../../i18n/config";
+import { isEnabledLegalSlug, isLegalSlug } from "../../lib/legal/legalContent";
+
+interface Props {
+  content: ContactSectionContent;
+  locale: ActiveLocale;
+}
+
+const { content, locale } = Astro.props as Props;
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
+const canSubmit = content.enabled && Boolean(turnstileSiteKey);
+const messageMaxLength = 2000;
+const fallbackReferencePattern =
+  /fallback|备用邮箱|备份邮箱|备用邮件|直接发送邮件|service@|e-mail de secours|email link/i;
+const errorCopyByLocale: Record<ActiveLocale, { body: string }> = {
+  en: {
+    body: "Please try again later.",
+  },
+  fr: {
+    body: "Veuillez reessayer plus tard.",
+  },
+  "zh-cn": {
+    body: "请稍后重试。",
+  },
+};
+const disabledCopyByLocale: Record<ActiveLocale, { body: string }> = {
+  en: {
+    body: "The form is temporarily unavailable. Please try again later.",
+  },
+  fr: {
+    body: "Le formulaire est temporairement indisponible. Veuillez reessayer plus tard.",
+  },
+  "zh-cn": {
+    body: "在线表单当前暂不可用，请稍后再试。",
+  },
+};
+const rateLimitCopyByLocale: Record<ActiveLocale, { title: string; body: string }> = {
+  en: {
+    title: "Too many submissions.",
+    body: "Please wait before trying again.",
+  },
+  fr: {
+    title: "Trop d'envois.",
+    body: "Veuillez patienter avant de reessayer.",
+  },
+  "zh-cn": {
+    title: "提交过于频繁。",
+    body: "请稍后再试。",
+  },
+};
+const messageLimitCopyByLocale: Record<ActiveLocale, string> = {
+  en: `Maximum ${messageMaxLength} characters`,
+  fr: `${messageMaxLength} caracteres maximum`,
+  "zh-cn": `最多 ${messageMaxLength} 个字符`,
+};
+const legalNoticeCopyByLocale: Record<ActiveLocale, ContactLegalNotice> = {
+  en: {
+    title: "Before you send",
+    body: "By contacting Example Brand through this form, you confirm that the information you provide may be used to review and reply to your request. Please do not include passwords, payment credentials, verification codes, full identity documents, medical records, or other unrelated sensitive information.",
+    links: [
+      { label: "Privacy Policy", href: "/en/privacy-policy/" },
+      { label: "Terms of Use and Sale", href: "/en/terms-of-use/" },
+      { label: "Shipping, Returns and Refunds", href: "/en/shipping-returns-policy/" },
+      { label: "Contact and Customer Service", href: "/en/customer-service-contact/" },
+    ],
+    acceptance: "Selecting Send request means you have read and accept the applicable notices above.",
+  },
+  fr: {
+    title: "Avant l'envoi",
+    body: "En contactant Example Brand via ce formulaire, vous confirmez que les informations transmises peuvent etre utilisees pour examiner votre demande et y repondre. N'incluez pas de mots de passe, donnees de paiement, codes de verification, documents d'identite complets, dossiers medicaux ou autres informations sensibles sans rapport.",
+    links: [
+      { label: "Politique de confidentialite", href: "/fr/privacy-policy/" },
+      { label: "Conditions d'utilisation et de vente", href: "/fr/terms-of-use/" },
+      { label: "Livraison, retours et remboursements", href: "/fr/shipping-returns-policy/" },
+      { label: "Contact et service client", href: "/fr/customer-service-contact/" },
+    ],
+    acceptance: "En cliquant sur Envoyer, vous confirmez avoir lu et accepte les informations applicables ci-dessus.",
+  },
+  "zh-cn": {
+    title: "提交前请阅读",
+    body: "通过本表单联系 Example Brand，即表示您确认所填写的信息可用于查看、分类和回复本次请求。请不要在表单中提交密码、支付凭证、验证码、完整身份证件、医疗记录或其他无关敏感信息。",
+    links: [
+      { label: "隐私条款", href: "/zh-cn/privacy-policy/" },
+      { label: "使用条款与销售条款", href: "/zh-cn/terms-of-use/" },
+      { label: "送货、退货与退款政策", href: "/zh-cn/shipping-returns-policy/" },
+      { label: "联系我们与客服说明", href: "/zh-cn/customer-service-contact/" },
+    ],
+    acceptance: "点击“提交请求”，即表示您已阅读并接受上述适用条款与说明。",
+  },
+};
+const cleanFallbackCopy = (value: string | undefined, replacement: string) =>
+  !value || fallbackReferencePattern.test(value) ? replacement : value;
+const rateLimitCopy = rateLimitCopyByLocale[locale];
+const legalNoticeSource = content.legalNotice ?? legalNoticeCopyByLocale[locale];
+const legalNotice = {
+  ...legalNoticeSource,
+  links: legalNoticeSource.links.filter((link) => {
+    if (!link.href.startsWith("/")) return true;
+    const slug = link.href.split("/").filter(Boolean).at(-1);
+    return !isLegalSlug(slug) || isEnabledLegalSlug(slug);
+  }),
+};
+const messageLimitLabel = content.fieldCopy.messageLimitLabel ?? messageLimitCopyByLocale[locale];
+const disabledBody = cleanFallbackCopy(content.disabledBody, disabledCopyByLocale[locale].body);
+const errorBody = cleanFallbackCopy(content.errorBody, errorCopyByLocale[locale].body);
+const formMessages = JSON.stringify({
+  successTitle: content.successTitle,
+  successBody: content.successBody,
+  errorTitle: content.errorTitle,
+  errorBody,
+  rateLimitTitle: rateLimitCopy.title,
+  rateLimitBody: rateLimitCopy.body,
+});
+---
+
+<section class="section contact-section" id="contact-form">
+  <div class="container contact-section__layout">
+    <div class="contact-section__intro" data-reveal="left">
+      <p class="eyebrow">{content.eyebrow}</p>
+      <h2 class="section-title contact-section__title">{content.title}</h2>
+      <p class="body-copy contact-section__body">{content.body}</p>
+
+      <div class="contact-section__directions" aria-label={content.eyebrow}>
+        {
+          content.businessDirections.map((direction) => (
+            <article class="contact-section__direction">
+              <h3>{direction.title}</h3>
+              <p>{direction.body}</p>
+            </article>
+          ))
+        }
+      </div>
+
+      <p class="contact-section__response">{content.responseTime}</p>
+    </div>
+
+    <div class="surface-card contact-section__form-card" data-reveal="right">
+      {
+        canSubmit ? (
+          <>
+            <form
+              class="contact-form"
+              data-contact-form
+              data-contact-messages={formMessages}
+              data-locale={locale}
+            >
+              <div class="contact-form__field">
+                <label for="contact-name">{content.fieldCopy.nameLabel}</label>
+                <input
+                  id="contact-name"
+                  name="name"
+                  type="text"
+                  autocomplete="name"
+                  placeholder={content.fieldCopy.namePlaceholder}
+                  maxlength="80"
+                  required
+                />
+              </div>
+
+              <div class="contact-form__field">
+                <label for="contact-email">{content.fieldCopy.emailLabel}</label>
+                <input
+                  id="contact-email"
+                  name="email"
+                  type="email"
+                  autocomplete="email"
+                  placeholder={content.fieldCopy.emailPlaceholder}
+                  maxlength="254"
+                  required
+                />
+              </div>
+
+              <div class="contact-form__field">
+                <label for="contact-topic">{content.fieldCopy.topicLabel}</label>
+                <select id="contact-topic" name="topic" required>
+                  {content.topics.map((topic) => (
+                    <option value={topic.value}>{topic.label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div class="contact-form__field">
+                <label for="contact-order">{content.fieldCopy.orderNumberLabel}</label>
+                <input
+                  id="contact-order"
+                  name="orderNumber"
+                  type="text"
+                  placeholder={content.fieldCopy.orderNumberPlaceholder}
+                  maxlength="80"
+                />
+              </div>
+
+              <div class="contact-form__field contact-form__field--full">
+                <div class="contact-form__label-row">
+                  <label for="contact-message">{content.fieldCopy.messageLabel}</label>
+                  <span data-message-counter>
+                    0 / {messageMaxLength}
+                  </span>
+                </div>
+                <p class="contact-form__limit">{messageLimitLabel}</p>
+                <textarea
+                  id="contact-message"
+                  name="message"
+                  rows="7"
+                  placeholder={content.fieldCopy.messagePlaceholder}
+                  maxlength={messageMaxLength}
+                  data-message-field
+                  required
+                ></textarea>
+              </div>
+
+              <section class="contact-form__legal" aria-label={legalNotice.title}>
+                <h3>{legalNotice.title}</h3>
+                <p>{legalNotice.body}</p>
+                <nav class="contact-form__legal-links" aria-label={legalNotice.title}>
+                  {legalNotice.links.map((link) => (
+                    <a href={link.href}>{link.label}</a>
+                  ))}
+                </nav>
+                <p>{legalNotice.acceptance}</p>
+              </section>
+
+              <div
+                class="cf-turnstile contact-form__turnstile"
+                data-contact-turnstile
+                data-sitekey={turnstileSiteKey}
+                data-theme="auto"
+                data-execution="execute"
+                data-appearance="execute"
+              ></div>
+
+              <button class="button button--primary contact-form__submit" type="submit">
+                {content.submitLabel}
+              </button>
+
+              <p class="contact-form__status" data-contact-status hidden></p>
+            </form>
+            <script
+              is:inline
+              src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+              async
+              defer
+            ></script>
+          </>
+        ) : (
+          <div class="contact-section__disabled">
+            <p class="eyebrow">{content.disabledTitle}</p>
+            <p class="body-copy">{disabledBody}</p>
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  for (const form of document.querySelectorAll("[data-contact-form]")) {
+    const messages = JSON.parse(form.dataset.contactMessages || "{}");
+    const status = form.querySelector("[data-contact-status]");
+    const submit = form.querySelector(".contact-form__submit");
+    const topic = form.querySelector('select[name="topic"]');
+    const message = form.querySelector("[data-message-field]");
+    const messageCounter = form.querySelector("[data-message-counter]");
+    const messageMaxLength = Number(message?.getAttribute("maxlength") || "0");
+
+    const updateMessageCounter = () => {
+      if (!message || !messageCounter || !messageMaxLength) return;
+      messageCounter.textContent = `${message.value.length} / ${messageMaxLength}`;
+    };
+
+    message?.addEventListener("input", updateMessageCounter);
+    updateMessageCounter();
+
+    const setStatus = (type, title, body) => {
+      if (!status) return;
+      status.hidden = false;
+      status.dataset.status = type;
+      status.textContent = `${title} ${body}`.trim();
+    };
+
+    const waitForTurnstile = () =>
+      new Promise((resolve, reject) => {
+        const startedAt = Date.now();
+        const tick = () => {
+          if (window.turnstile) {
+            resolve(window.turnstile);
+            return;
+          }
+
+          if (Date.now() - startedAt > 10000) {
+            reject(new Error("turnstile_unavailable"));
+            return;
+          }
+
+          window.setTimeout(tick, 120);
+        };
+
+        tick();
+      });
+
+    const waitForTurnstileToken = () =>
+      new Promise((resolve, reject) => {
+        const startedAt = Date.now();
+        const tick = () => {
+          const token = form.querySelector('input[name="cf-turnstile-response"]')?.value;
+
+          if (token) {
+            resolve(token);
+            return;
+          }
+
+          if (Date.now() - startedAt > 60000) {
+            reject(new Error("turnstile_timeout"));
+            return;
+          }
+
+          window.setTimeout(tick, 160);
+        };
+
+        tick();
+      });
+
+    const executeTurnstile = async () => {
+      const turnstile = await waitForTurnstile();
+      const widget = form.querySelector("[data-contact-turnstile]");
+
+      if (!widget) {
+        throw new Error("turnstile_widget_missing");
+      }
+
+      turnstile.reset(widget);
+      turnstile.execute(widget);
+      return waitForTurnstileToken();
+    };
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const selectedTopic = topic?.options[topic.selectedIndex];
+      const turnstileWidget = form.querySelector("[data-contact-turnstile]");
+
+      submit?.setAttribute("disabled", "true");
+      if (status) {
+        status.hidden = true;
+      }
+
+      try {
+        const turnstileToken = await executeTurnstile();
+        const latestFormData = new FormData(form);
+
+        const payload = {
+          name: latestFormData.get("name"),
+          email: latestFormData.get("email"),
+          topic: latestFormData.get("topic"),
+          topicLabel: selectedTopic?.textContent?.trim() || latestFormData.get("topic"),
+          orderNumber: latestFormData.get("orderNumber"),
+          message: latestFormData.get("message"),
+          privacyAccepted: true,
+          turnstileToken,
+          locale: form.dataset.locale,
+          pageUrl: window.location.href,
+        };
+
+        const response = await fetch("/api/contact", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        const result = await response.json().catch(() => null);
+
+        if (!response.ok || result?.delivered !== true) {
+          throw new Error(result?.code || "contact_submit_failed");
+        }
+
+        form.reset();
+        updateMessageCounter();
+        if (turnstileWidget) {
+          window.turnstile?.reset(turnstileWidget);
+        }
+        setStatus("success", messages.successTitle, messages.successBody);
+      } catch (error) {
+        if (turnstileWidget) {
+          window.turnstile?.reset(turnstileWidget);
+        }
+        const code = error instanceof Error ? error.message : "contact_submit_failed";
+        const isRateLimited =
+          code === "contact_rate_limited" ||
+          code === "contact_global_rate_limited" ||
+          code === "contact_ip_rate_limited" ||
+          code === "contact_email_rate_limited";
+
+        if (isRateLimited) {
+          setStatus("error", messages.rateLimitTitle, messages.rateLimitBody);
+        } else {
+          setStatus("error", messages.errorTitle, messages.errorBody);
+        }
+      } finally {
+        submit?.removeAttribute("disabled");
+      }
+    });
+  }
+</script>
+
+<style>
+  .contact-section {
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-bg) 92%, transparent),
+        color-mix(in srgb, var(--color-bg-soft) 96%, transparent)
+      );
+  }
+
+  .contact-section__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 0.92fr) minmax(20rem, 1.08fr);
+    gap: clamp(1.5rem, 5vw, 4rem);
+    align-items: start;
+  }
+
+  .contact-section__intro {
+    display: grid;
+    gap: 1.1rem;
+    position: sticky;
+    top: 6rem;
+  }
+
+  .contact-section__title {
+    max-width: 11ch;
+  }
+
+  .contact-section__body {
+    max-width: 36rem;
+  }
+
+  .contact-section__directions {
+    display: grid;
+    gap: 0.85rem;
+    margin-top: 0.75rem;
+    border-top: var(--border-soft);
+    padding-top: 1rem;
+  }
+
+  .contact-section__direction {
+    display: grid;
+    gap: 0.35rem;
+    padding-block: 0.2rem 0.85rem;
+    border-bottom: var(--border-soft);
+  }
+
+  .contact-section__direction h3 {
+    font-size: 0.95rem;
+    font-weight: 650;
+  }
+
+  .contact-section__direction p,
+  .contact-section__response,
+  .contact-form__limit,
+  .contact-form__legal,
+  .contact-form__status {
+    font-size: 0.88rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .contact-section__form-card {
+    border-radius: var(--radius-md);
+  }
+
+  .contact-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .contact-form__field,
+  .contact-section__disabled {
+    display: grid;
+    gap: 0.45rem;
+    align-content: start;
+  }
+
+  .contact-form__field--full,
+  .contact-form__legal,
+  .contact-form__turnstile,
+  .contact-form__submit,
+  .contact-form__status,
+  .contact-section__disabled {
+    grid-column: 1 / -1;
+  }
+
+  .contact-form label,
+  .contact-form__label-row {
+    font-size: 0.82rem;
+    font-weight: 650;
+    color: var(--color-text);
+  }
+
+  .contact-form input,
+  .contact-form textarea,
+  .contact-form select {
+    width: 100%;
+    border: var(--border-soft);
+    border-radius: 0.65rem;
+    background: color-mix(in srgb, var(--color-surface-strong) 72%, transparent);
+    color: var(--color-text);
+    padding: 0.82rem 0.9rem;
+    outline: none;
+    transition:
+      border-color var(--transition-luxury),
+      box-shadow var(--transition-luxury);
+  }
+
+  .contact-form input:not([type="checkbox"]),
+  .contact-form select {
+    min-height: 3.15rem;
+  }
+
+  .contact-form textarea {
+    resize: vertical;
+    min-height: 10rem;
+  }
+
+  .contact-form input:focus,
+  .contact-form textarea:focus,
+  .contact-form select:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 22%, transparent);
+  }
+
+  .contact-form__label-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .contact-form__label-row span,
+  .contact-form__limit {
+    color: var(--color-text-muted);
+    font-size: 0.78rem;
+    font-weight: 500;
+  }
+
+  .contact-form__limit {
+    margin: -0.1rem 0 0;
+  }
+
+  .contact-form__legal {
+    display: grid;
+    gap: 0.7rem;
+    padding: 1rem;
+    border: var(--border-soft);
+    border-radius: 0.75rem;
+    background: color-mix(in srgb, var(--color-surface-strong) 52%, transparent);
+  }
+
+  .contact-form__legal h3,
+  .contact-form__legal p {
+    margin: 0;
+  }
+
+  .contact-form__legal h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .contact-form__legal-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem 0.8rem;
+  }
+
+  .contact-form__legal-links a {
+    color: var(--color-text);
+    font-size: 0.82rem;
+    font-weight: 650;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+  }
+
+  .contact-form__submit {
+    justify-self: start;
+    cursor: pointer;
+  }
+
+  .contact-form__submit[disabled] {
+    cursor: wait;
+    opacity: 0.62;
+  }
+
+  .contact-form__status {
+    padding: 0.85rem 1rem;
+    border-radius: 0.75rem;
+    border: var(--border-soft);
+  }
+
+  .contact-form__status[data-status="success"] {
+    color: #25634d;
+    background: rgba(94, 234, 212, 0.13);
+  }
+
+  .contact-form__status[data-status="error"] {
+    color: #7d342c;
+    background: rgba(205, 169, 146, 0.16);
+  }
+
+  .contact-section__disabled {
+    align-content: center;
+    min-height: 22rem;
+  }
+
+  @media (max-width: 900px) {
+    .contact-section__layout,
+    .contact-form {
+      grid-template-columns: 1fr;
+    }
+
+    .contact-section__intro {
+      position: static;
+    }
+  }
+</style>

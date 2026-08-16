@@ -1,0 +1,181 @@
+---
+import SiteDocument from "../../layouts/SiteDocument.astro";
+import SiteFrame from "../shared/SiteFrame.astro";
+import type { LegalPage } from "../../lib/legal/legalContent";
+import type { ActiveLocale } from "../../i18n/config";
+
+interface AlternateLink {
+  locale: string;
+  href: string;
+}
+
+interface NavItem {
+  label: string;
+  href: string;
+}
+
+interface Dictionary {
+  htmlLang: string;
+  ui: {
+    skipToContent: string;
+    themeLight: string;
+    themeDark: string;
+  };
+  footer: {
+    copyright: string;
+  };
+}
+
+interface Props {
+  locale: ActiveLocale;
+  dictionary: Dictionary;
+  alternates: AlternateLink[];
+  navItems: NavItem[];
+  page: LegalPage;
+}
+
+const { locale, dictionary, alternates, navItems, page } = Astro.props as Props;
+const metadata = [page.lastUpdated, page.effectiveDate].filter(Boolean).join(" / ");
+---
+
+<SiteDocument
+  lang={dictionary.htmlLang}
+  title={page.title}
+  description={page.description}
+  pathname={`/${locale}/${page.slug}/`}
+  alternates={alternates}
+  skipLabel={dictionary.ui.skipToContent}
+  footer={{
+    locale,
+    navItems,
+    copyright: dictionary.footer.copyright,
+  }}
+>
+  <SiteFrame
+    locale={locale}
+    navItems={navItems}
+    lightLabel={dictionary.ui.themeLight}
+    darkLabel={dictionary.ui.themeDark}
+    currentPath={`/${locale}/${page.slug}/`}
+  >
+    <article class="legal-page">
+      <div class="container legal-page__container">
+        <header class="legal-page__header">
+          <p class="eyebrow">Legal</p>
+          <h1>{page.title}</h1>
+          {metadata ? <p class="legal-page__meta">{metadata}</p> : null}
+        </header>
+
+        <div class="legal-page__body" set:html={page.bodyHtml} />
+      </div>
+    </article>
+  </SiteFrame>
+</SiteDocument>
+
+<style>
+  .legal-page {
+    padding: clamp(7rem, 12vw, 10rem) 0 clamp(4rem, 8vw, 7rem);
+    background:
+      radial-gradient(
+        circle at 20% 0%,
+        rgba(205, 169, 146, 0.16),
+        transparent 34%
+      ),
+      linear-gradient(180deg, var(--color-bg) 0%, var(--color-bg-soft) 100%);
+  }
+
+  .legal-page__container {
+    max-width: 860px;
+  }
+
+  .legal-page__header {
+    display: grid;
+    gap: 0.9rem;
+    margin-bottom: clamp(2rem, 5vw, 3.5rem);
+  }
+
+  .legal-page__header h1 {
+    max-width: 12ch;
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 500;
+    line-height: 0.95;
+  }
+
+  .legal-page__meta {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    letter-spacing: 0.04em;
+  }
+
+  .legal-page__body {
+    display: grid;
+    gap: 1.05rem;
+    color: var(--color-text);
+    font-size: 1rem;
+    line-height: 1.82;
+  }
+
+  .legal-page__body :global(h2),
+  .legal-page__body :global(h3),
+  .legal-page__body :global(h4) {
+    margin: 1.35rem 0 0;
+    color: var(--color-text);
+    line-height: 1.3;
+  }
+
+  .legal-page__body :global(h2) {
+    font-size: clamp(1.55rem, 3vw, 2.1rem);
+  }
+
+  .legal-page__body :global(h3) {
+    font-size: 1.2rem;
+  }
+
+  .legal-page__body :global(p),
+  .legal-page__body :global(ul),
+  .legal-page__body :global(ol),
+  .legal-page__body :global(pre) {
+    margin: 0;
+  }
+
+  .legal-page__body :global(ul),
+  .legal-page__body :global(ol) {
+    display: grid;
+    gap: 0.45rem;
+    padding-left: 1.25rem;
+  }
+
+  .legal-page__body :global(code) {
+    border-radius: 0.35rem;
+    background: color-mix(in srgb, var(--color-surface-strong) 72%, transparent);
+    padding: 0.08rem 0.32rem;
+    font-size: 0.92em;
+  }
+
+  .legal-page__body :global(pre) {
+    overflow-x: auto;
+    border: var(--border-soft);
+    border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--color-surface-strong) 70%, transparent);
+    padding: 1rem;
+  }
+
+  .legal-page__body :global(pre code) {
+    background: transparent;
+    padding: 0;
+    white-space: pre;
+  }
+
+  @media (max-width: 720px) {
+    .legal-page {
+      padding-top: 6.5rem;
+    }
+
+    .legal-page__header h1 {
+      max-width: 14ch;
+    }
+  }
+</style>

@@ -1,0 +1,23 @@
+{
+  "name": "gcss-worker",
+  "type": "module",
+  "version": "0.3.0-preview.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "dependencies": {
+    "gcss-config": "file:../../packages/config"
+  },
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "generate:types": "wrangler types worker-configuration.generated.d.ts",
+    "test:runtime": "vitest run --config vitest.config.mjs",
+    "typecheck": "npm run generate:types && tsc --noEmit --project tsconfig.json"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.21.3",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.10",
+    "wrangler": "^4.123.0"
+  }
+}

@@ -1,0 +1,639 @@
+---
+import ProductCard from "./ProductCard.astro";
+import type { ProductContent, ProductSpotlightContent } from "gcss-blocks";
+
+interface Props {
+  locale: string;
+  content: ProductSpotlightContent;
+  products: ProductContent[];
+}
+
+const { locale, content, products } = Astro.props;
+---
+
+<section class="spotlight" id="collections">
+  <div class="container spotlight__intro" data-reveal="up">
+    <p class="eyebrow">{content.eyebrow}</p>
+    <h2 class="section-title spotlight__title">{content.title}</h2>
+    <p class="body-copy spotlight__body">{content.body}</p>
+  </div>
+
+  <div class="spotlight__rail-shell" data-reveal="scale">
+    <div class="spotlight__rail" data-spotlight-rail>
+      {
+        products.map((product, index) => (
+          <div
+            class="spotlight__panel"
+            data-spotlight-panel
+            data-panel-index={index}
+          >
+            <ProductCard
+              locale={locale}
+              product={product}
+              fallbackLinkLabel={content.openProductLabel}
+            />
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="spotlight__controls" aria-label={content.ariaLabel}>
+    <button
+      class="spotlight__control-button"
+      type="button"
+      data-spotlight-prev
+      aria-label={content.previousLabel}
+    >
+      &lt;
+    </button>
+    <div class="spotlight__control-index" aria-live="polite">
+      <span data-spotlight-current>1</span>
+      <span>/</span>
+      <span>{products.length}</span>
+    </div>
+    <button
+      class="spotlight__control-button"
+      type="button"
+      data-spotlight-next
+      aria-label={content.nextLabel}
+    >
+      &gt;
+    </button>
+  </div>
+</section>
+
+<script>
+  // @ts-nocheck
+  import { createHorizontalGesture } from "../../lib/gesture/createHorizontalGesture";
+  import {
+    getDefaultGesturePlatform,
+    getHorizontalGesturePolicy,
+  } from "../../lib/gesture/gesturePresets";
+
+  const spotlightSections = document.querySelectorAll(".spotlight");
+
+  spotlightSections.forEach((section) => {
+    const railShell = section.querySelector(".spotlight__rail-shell");
+    const rail = section.querySelector("[data-spotlight-rail]");
+    const panels = Array.from(
+      section.querySelectorAll("[data-spotlight-panel]"),
+    );
+    const prevButton = section.querySelector("[data-spotlight-prev]");
+    const nextButton = section.querySelector("[data-spotlight-next]");
+    const currentLabel = section.querySelector("[data-spotlight-current]");
+
+    if (
+      !(railShell instanceof HTMLElement) ||
+      !(rail instanceof HTMLElement) ||
+      panels.length === 0
+    ) {
+      return;
+    }
+
+    const platform = getDefaultGesturePlatform();
+    const isMobile = platform === "mobile";
+    const gesturePolicy = getHorizontalGesturePolicy(platform, "free-rail");
+    const dragResponse = 1;
+    const inertiaBoost = 1;
+    const inertiaFriction = gesturePolicy.inertiaFriction;
+
+    let activeIndex = 0;
+    let motionFrameId = 0;
+    let activeIndexFrameId = 0;
+    let currentOffset = 0;
+    let minOffset = 0;
+    let maxOffset = 0;
+    let velocityX = 0;
+    let firstPanelOffset = 0;
+    let dragOriginOffset = 0;
+
+    const clampIndex = (value) =>
+      Math.max(0, Math.min(value, panels.length - 1));
+
+    const clampOffset = (value) =>
+      Math.max(minOffset, Math.min(value, maxOffset));
+
+    const applyEdgeResistance = (value) => {
+      if (value < minOffset) {
+        return minOffset + (value - minOffset) * gesturePolicy.edgeResistance;
+      }
+
+      if (value > maxOffset) {
+        return maxOffset + (value - maxOffset) * gesturePolicy.edgeResistance;
+      }
+
+      return value;
+    };
+
+    const stopMotion = () => {
+      if (motionFrameId !== 0) {
+        window.cancelAnimationFrame(motionFrameId);
+        motionFrameId = 0;
+      }
+    };
+
+    const applyOffset = () => {
+      if (isMobile) {
+        return;
+      }
+
+      rail.style.setProperty("--spotlight-offset", `${currentOffset}px`);
+      requestActiveIndexUpdate();
+    };
+
+    const setDraggingState = (isActive) => {
+      section.classList.toggle("is-dragging", isActive);
+      rail.classList.toggle("is-dragging", isActive);
+
+      if (!isActive) {
+        window.getSelection()?.removeAllRanges();
+      }
+    };
+
+    const getTravelAllowance = () => {
+      return Math.min(Math.max(railShell.clientWidth * 0.08, 28), 84);
+    };
+
+    const measureBounds = () => {
+      firstPanelOffset =
+        panels[0] instanceof HTMLElement ? panels[0].offsetLeft : 0;
+
+      if (isMobile) {
+        minOffset = 0;
+        maxOffset = 0;
+        return;
+      }
+
+      const contentWidth = rail.scrollWidth;
+      const viewportWidth = railShell.clientWidth;
+      const travelAllowance = getTravelAllowance();
+
+      if (contentWidth <= viewportWidth) {
+        minOffset = -travelAllowance;
+        maxOffset = viewportWidth - contentWidth + travelAllowance;
+      } else {
+        minOffset = viewportWidth - contentWidth - travelAllowance;
+        maxOffset = travelAllowance;
+      }
+    };
+
+    const getPanelTargetOffset = (panel) => {
+      if (!(panel instanceof HTMLElement)) {
+        return currentOffset;
+      }
+
+      if (isMobile) {
+        const centeredOffset =
+          panel.offsetLeft - (railShell.clientWidth - panel.clientWidth) / 2;
+        const maxScrollLeft = Math.max(
+          railShell.scrollWidth - railShell.clientWidth,
+          0,
+        );
+
+        return Math.max(0, Math.min(centeredOffset, maxScrollLeft));
+      }
+
+      return clampOffset(firstPanelOffset - panel.offsetLeft);
+    };
+
+    const startMotion = (initialVelocity = 0, targetOffset = null) => {
+      stopMotion();
+      velocityX = initialVelocity;
+      const resolvedTarget =
+        typeof targetOffset === "number" ? clampOffset(targetOffset) : null;
+
+      const step = () => {
+        if (resolvedTarget !== null) {
+          const distance = resolvedTarget - currentOffset;
+          velocityX = velocityX * 0.78 + distance * 0.12;
+        } else {
+          velocityX *= inertiaFriction;
+
+          if (currentOffset < minOffset || currentOffset > maxOffset) {
+            const rebound = clampOffset(currentOffset) - currentOffset;
+            velocityX += rebound * 0.14;
+            velocityX *= 0.82;
+          }
+        }
+
+        currentOffset += velocityX;
+
+        if (resolvedTarget === null && Math.abs(velocityX) < 0.08) {
+          currentOffset = clampOffset(currentOffset);
+          applyOffset();
+          stopMotion();
+          return;
+        }
+
+        if (resolvedTarget !== null) {
+          const distance = resolvedTarget - currentOffset;
+
+          if (Math.abs(distance) < 0.4 && Math.abs(velocityX) < 0.05) {
+            currentOffset = resolvedTarget;
+            applyOffset();
+            stopMotion();
+            return;
+          }
+        }
+
+        applyOffset();
+        motionFrameId = window.requestAnimationFrame(step);
+      };
+
+      motionFrameId = window.requestAnimationFrame(step);
+    };
+
+    const syncControls = () => {
+      panels.forEach((panel, index) => {
+        if (panel instanceof HTMLElement) {
+          panel.classList.toggle("is-active", index === activeIndex);
+        }
+      });
+
+      if (currentLabel instanceof HTMLElement) {
+        currentLabel.textContent = String(activeIndex + 1);
+      }
+
+      if (prevButton instanceof HTMLButtonElement) {
+        prevButton.disabled = activeIndex === 0;
+      }
+
+      if (nextButton instanceof HTMLButtonElement) {
+        nextButton.disabled = activeIndex === panels.length - 1;
+      }
+    };
+
+    const alignToIndex = (nextIndex, behavior = "smooth") => {
+      const targetIndex = clampIndex(nextIndex);
+      const panel = panels[targetIndex];
+
+      if (!(panel instanceof HTMLElement)) {
+        return;
+      }
+
+      activeIndex = targetIndex;
+      syncControls();
+
+      const targetOffset = getPanelTargetOffset(panel);
+
+      if (isMobile) {
+        const resolvedBehavior = behavior === "auto" ? "auto" : "smooth";
+
+        railShell.scrollTo({
+          left: targetOffset,
+          behavior: resolvedBehavior,
+        });
+        return;
+      }
+
+      if (behavior === "auto") {
+        stopMotion();
+        currentOffset = targetOffset;
+        applyOffset();
+        return;
+      }
+
+      startMotion(0, targetOffset);
+    };
+
+    const updateActiveIndex = () => {
+      let closestIndex = 0;
+      let closestDistance = Number.POSITIVE_INFINITY;
+
+      const referenceOffset = isMobile
+        ? railShell.scrollLeft + railShell.clientWidth / 2
+        : currentOffset + firstPanelOffset;
+
+      panels.forEach((panel, index) => {
+        if (!(panel instanceof HTMLElement)) {
+          return;
+        }
+
+        const distance = isMobile
+          ? Math.abs(
+              referenceOffset - (panel.offsetLeft + panel.clientWidth / 2),
+            )
+          : Math.abs(referenceOffset - panel.offsetLeft);
+
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = index;
+        }
+      });
+
+      activeIndex = closestIndex;
+      syncControls();
+      activeIndexFrameId = 0;
+    };
+
+    const requestActiveIndexUpdate = () => {
+      if (activeIndexFrameId !== 0) {
+        return;
+      }
+
+      activeIndexFrameId = window.requestAnimationFrame(updateActiveIndex);
+    };
+
+    if (isMobile) {
+      railShell.addEventListener("scroll", requestActiveIndexUpdate, {
+        passive: true,
+      });
+
+      prevButton?.addEventListener("click", () => {
+        alignToIndex(activeIndex - 1);
+      });
+
+      nextButton?.addEventListener("click", () => {
+        alignToIndex(activeIndex + 1);
+      });
+
+      const handleResize = () => {
+        measureBounds();
+        alignToIndex(activeIndex, "auto");
+      };
+
+      window.addEventListener("resize", handleResize);
+
+      measureBounds();
+      alignToIndex(0, "auto");
+      return;
+    }
+
+    createHorizontalGesture(railShell, {
+      platform,
+      mode: "free-rail",
+      interactiveSelector:
+        "button, input, textarea, select, [contenteditable='true']",
+      onDragStart: () => {
+        stopMotion();
+        velocityX = 0;
+        dragOriginOffset = currentOffset;
+        setDraggingState(true);
+      },
+      onDragMove: (snapshot) => {
+        velocityX = snapshot.velocityX * inertiaBoost;
+        currentOffset = applyEdgeResistance(
+          dragOriginOffset + snapshot.deltaX * dragResponse,
+        );
+        applyOffset();
+      },
+      onDragEnd: (snapshot) => {
+        setDraggingState(false);
+
+        if (Math.abs(snapshot.velocityX) > 0.01) {
+          startMotion(snapshot.velocityX * inertiaBoost);
+          return;
+        }
+
+        currentOffset = clampOffset(currentOffset);
+        applyOffset();
+      },
+      onCancel: () => {
+        setDraggingState(false);
+        currentOffset = clampOffset(currentOffset);
+        applyOffset();
+      },
+    });
+
+    prevButton?.addEventListener("click", () => {
+      alignToIndex(activeIndex - 1);
+    });
+
+    nextButton?.addEventListener("click", () => {
+      alignToIndex(activeIndex + 1);
+    });
+
+    const handleResize = () => {
+      measureBounds();
+      alignToIndex(activeIndex, "auto");
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    measureBounds();
+    alignToIndex(0, "auto");
+  });
+</script>
+
+<style>
+  .spotlight {
+    --spotlight-bg-top: rgba(245, 241, 236, 0.56);
+    --spotlight-bg-bottom: rgba(17, 15, 13, 0.08);
+    --spotlight-panel-glow: rgba(255, 255, 255, 0.68);
+    --spotlight-panel-bg-start: rgba(255, 248, 243, 0.96);
+    --spotlight-panel-bg-end: rgba(241, 232, 223, 0.96);
+    --spotlight-figure-bg: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.58) 0%,
+      rgba(247, 238, 230, 0.82) 100%
+    );
+    --spotlight-text-strong: #181717;
+    --spotlight-text-muted: rgba(24, 23, 23, 0.78);
+    --spotlight-text-soft: rgba(24, 23, 23, 0.64);
+    --spotlight-link: #181717;
+    --spotlight-link-hover: rgba(24, 23, 23, 0.7);
+    --spotlight-image-shadow: drop-shadow(0 22px 44px rgba(23, 20, 18, 0.16));
+    position: relative;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    min-height: 100svh;
+    padding-block: clamp(4rem, 8vw, 6.5rem);
+    background:
+      linear-gradient(
+        180deg,
+        var(--spotlight-bg-top) 0%,
+        rgba(245, 241, 236, 0) 18%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(17, 15, 13, 0.02) 0%,
+        var(--spotlight-bg-bottom) 100%
+      );
+    overflow: clip;
+  }
+
+  .spotlight__intro {
+    display: grid;
+    justify-items: center;
+    gap: 0.7rem;
+    max-width: min(46rem, calc(100% - 2rem));
+    margin-inline: auto;
+    margin-bottom: clamp(1.2rem, 3vw, 2rem);
+    text-align: center;
+  }
+
+  .spotlight__title {
+    max-width: 20ch;
+    margin-inline: auto;
+  }
+
+  .spotlight__body {
+    max-width: 38ch;
+    margin-inline: auto;
+  }
+
+  .spotlight__rail-shell {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    min-height: 0;
+    overflow: hidden;
+    touch-action: pan-y;
+  }
+
+  .spotlight__rail {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: clamp(19rem, 31vw, 27rem);
+    gap: clamp(0.9rem, 2vw, 1.35rem);
+    width: max-content;
+    min-height: 100%;
+    padding-inline: clamp(1rem, 4vw, 3rem);
+    cursor: grab;
+    touch-action: pan-y;
+    transform: translate3d(var(--spotlight-offset, 0px), 0, 0);
+    will-change: transform;
+  }
+
+  .spotlight__rail.is-dragging {
+    cursor: grabbing;
+  }
+
+  .spotlight.is-dragging,
+  .spotlight.is-dragging * {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .spotlight__panel {
+    display: grid;
+    min-height: 100%;
+  }
+
+  .spotlight__controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.9rem;
+    margin-top: 1.15rem;
+    color: var(--spotlight-text-strong);
+  }
+
+  .spotlight__control-button {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: inherit;
+    font-size: 0.92rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .spotlight__control-button:disabled {
+    opacity: 0.28;
+    cursor: default;
+  }
+
+  .spotlight__control-index {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    min-width: 3rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  html[data-theme="dark"] .spotlight {
+    --spotlight-bg-top: rgba(17, 14, 12, 0.16);
+    --spotlight-bg-bottom: rgba(0, 0, 0, 0.28);
+    --spotlight-panel-glow: rgba(239, 238, 238, 0.12);
+    --spotlight-panel-bg-start: rgba(28, 25, 24, 0.96);
+    --spotlight-panel-bg-end: rgba(18, 16, 15, 0.98);
+    --spotlight-figure-bg: linear-gradient(
+      180deg,
+      rgba(239, 238, 238, 0.06) 0%,
+      rgba(205, 169, 146, 0.08) 100%
+    );
+    --spotlight-text-strong: #efeeee;
+    --spotlight-text-muted: rgba(239, 238, 238, 0.76);
+    --spotlight-text-soft: rgba(239, 238, 238, 0.6);
+    --spotlight-link: #efeeee;
+    --spotlight-link-hover: rgba(239, 238, 238, 0.74);
+    --spotlight-image-shadow: drop-shadow(0 24px 52px rgba(0, 0, 0, 0.34));
+  }
+
+  @media (max-width: 1080px) {
+    .spotlight__rail {
+      grid-auto-columns: clamp(18rem, 52vw, 24rem);
+    }
+  }
+
+  @media (max-width: 720px) {
+    .spotlight {
+      min-height: 100svh;
+      padding-block: 3.5rem 4.5rem;
+    }
+
+    .spotlight__intro {
+      max-width: calc(100% - 2rem);
+      margin-bottom: 1.25rem;
+    }
+
+    .spotlight__rail-shell {
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      touch-action: auto;
+      overscroll-behavior-x: contain;
+      scroll-padding-inline: 50%;
+    }
+
+    .spotlight__rail-shell::-webkit-scrollbar {
+      display: none;
+    }
+
+    .spotlight__rail {
+      grid-auto-columns: calc(100vw - 2.25rem);
+      gap: 0.8rem;
+      padding-inline: 1.125rem;
+      transform: none;
+      touch-action: auto;
+      will-change: auto;
+    }
+
+    .spotlight__panel {
+      min-height: 100%;
+      scroll-snap-align: center;
+      scroll-snap-stop: always;
+    }
+
+    .spotlight__panel :global(.product-card) {
+      transform: scale(0.96);
+      opacity: 0.88;
+      transition:
+        transform 260ms ease,
+        opacity 260ms ease,
+        box-shadow 260ms ease;
+    }
+
+    .spotlight__panel.is-active :global(.product-card) {
+      transform: scale(1);
+      opacity: 1;
+      box-shadow: 0 18px 38px rgba(23, 20, 18, 0.12);
+    }
+
+    html[data-theme="dark"]
+      .spotlight__panel.is-active
+      :global(.product-card) {
+      box-shadow: 0 22px 42px rgba(0, 0, 0, 0.32);
+    }
+
+    .spotlight__controls {
+      margin-top: 1rem;
+    }
+  }
+</style>

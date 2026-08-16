@@ -1,0 +1,50 @@
+# build output
+dist/
+
+# generated types
+.astro/
+.sanity/
+
+# Cloudflare local state
+.wrangler/
+apps/worker/worker-configuration.generated.d.ts
+
+# dependencies
+node_modules/
+
+# logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# environment variables
+.env
+.env.*
+!.env.example
+!.env.*.example
+.dev.vars
+.dev.vars.*
+
+# test and tool caches
+coverage/
+.cache/
+.vite/
+tmp/
+
+# macOS-specific files
+.DS_Store
+
+# editor-specific files
+.vscode/
+
+# local agent metadata
+.agents/*
+!.agents/skills/
+!.agents/skills/**
+.codex/
+.codex-runtime/
+
+# jetbrains setting folder
+.idea/

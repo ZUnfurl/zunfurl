@@ -1,0 +1,124 @@
+{
+  "locale": "en",
+  "kind": "contact",
+  "title": "Contact Example Brand",
+  "seo": {
+    "title": "Contact Example Brand",
+    "description": "Contact Example Brand for project, content, partnership, or support inquiries."
+  },
+  "pageHero": {
+    "eyebrow": "Contact",
+    "title": "Send a clear request.",
+    "body": "Use this page to route project, content, partnership, or support requests to the right team.",
+    "slides": [
+      {
+        "src": "/brand-assets/hero/contact/Hero-Contact-01.webp",
+        "alt": "Example Brand contact hero image 1.",
+        "eyebrow": "Inquiry",
+        "caption": "Send a concise request through the contact form."
+      },
+      {
+        "src": "/brand-assets/hero/contact/Hero-Contact-02.webp",
+        "alt": "Example Brand contact hero image 2.",
+        "eyebrow": "Routing",
+        "caption": "Keep the request clear so the right team can respond."
+      }
+    ]
+  },
+  "contactSection": {
+    "enabled": true,
+    "eyebrow": "Contact form",
+    "title": "Submit one focused request.",
+    "body": "Share only the information needed to understand and route your request.",
+    "businessDirections": [
+      {
+        "title": "Project inquiries",
+        "body": "New site briefs, scope questions, and delivery planning."
+      },
+      {
+        "title": "Content operations",
+        "body": "Page updates, CMS questions, and editorial maintenance."
+      },
+      {
+        "title": "Partnerships",
+        "body": "Collaboration, media, channel, and business requests."
+      }
+    ],
+    "responseTime": "To provide a better service experience, we are refining our contact and customer support workflow. During this transition, replies, qualification, and follow-up may take longer than usual.",
+    "fieldCopy": {
+      "nameLabel": "Name",
+      "namePlaceholder": "Your name",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@example.com",
+      "topicLabel": "Inquiry type",
+      "orderNumberLabel": "Reference",
+      "orderNumberPlaceholder": "Optional",
+      "messageLabel": "Message",
+      "messagePlaceholder": "Share the context, goal, and any relevant timing.",
+      "messageLimitLabel": "Maximum 2000 characters"
+    },
+    "legalNotice": {
+      "title": "Before you send",
+      "body": "By submitting this form, you confirm that the information may be used to review, categorize, and respond to your request. Do not include passwords, payment credentials, verification codes, full identity documents, medical records, or unrelated sensitive information.",
+      "links": [
+        {
+          "label": "Privacy Policy",
+          "href": "/en/privacy-policy/"
+        },
+        {
+          "label": "Terms of Use",
+          "href": "/en/terms-of-use/"
+        },
+        {
+          "label": "Shipping and Returns",
+          "href": "/en/shipping-returns-policy/"
+        },
+        {
+          "label": "Contact and Customer Service",
+          "href": "/en/customer-service-contact/"
+        }
+      ],
+      "acceptance": "Selecting Send request means you have read and accept the applicable notices above."
+    },
+    "topics": [
+      {
+        "label": "Project inquiry",
+        "value": "project"
+      },
+      {
+        "label": "Content update",
+        "value": "content"
+      },
+      {
+        "label": "Partnership",
+        "value": "partnership"
+      },
+      {
+        "label": "Support",
+        "value": "support"
+      }
+    ],
+    "submitLabel": "Send request",
+    "successTitle": "Message received.",
+    "successBody": "Thank you. We will review your request by email.",
+    "errorTitle": "The message could not be sent.",
+    "errorBody": "Please try again later.",
+    "disabledTitle": "Online form unavailable",
+    "disabledBody": "The form is temporarily unavailable. Please try again later."
+  },
+  "showContentBlocks": false,
+  "blocks": [
+    {
+      "id": "contact-boundary",
+      "eyebrow": "Scope",
+      "title": "A lightweight email handoff.",
+      "body": "This contact page is designed for low-volume business inquiries. It does not create a custom support database or customer account.",
+      "items": [
+        "No message body is stored in Sanity, Shopify, coordinator storage, KV, D1, or R2",
+        "Turnstile and rate limits protect the recipient mailbox",
+        "The public page uses the form only and does not expose a direct mailto link"
+      ],
+      "variant": "standard"
+    }
+  ]
+}

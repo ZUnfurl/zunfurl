@@ -1,0 +1,124 @@
+---
+import SiteDocument from "../../layouts/SiteDocument.astro";
+import SiteFrame from "../shared/SiteFrame.astro";
+import AboutSignatureSection from "./AboutSignatureSection.astro";
+import BrandContentBlocks from "./BrandContentBlocks.astro";
+import BrandPageHero from "./BrandPageHero.astro";
+import ContactSection from "./ContactSection.astro";
+import ProductSpotlightSection from "../product/ProductSpotlightSection.astro";
+import type {
+  PageContent,
+  ProductContent,
+} from "gcss-blocks";
+import type { ActiveLocale } from "../../i18n/config";
+
+type BrandPageKind = "about" | "products" | "contact";
+
+interface AlternateLink {
+  locale: string;
+  href: string;
+}
+
+interface NavItem {
+  label: string;
+  href: string;
+}
+
+interface Dictionary {
+  htmlLang: string;
+  ui: {
+    skipToContent: string;
+    themeLight: string;
+    themeDark: string;
+  };
+  footer: {
+    copyright: string;
+  };
+}
+
+interface Props {
+  locale: ActiveLocale;
+  pageKind: BrandPageKind;
+  dictionary: Dictionary;
+  alternates: AlternateLink[];
+  navItems: NavItem[];
+  page: PageContent;
+  products: ProductContent[];
+  commerceEnabled: boolean;
+  contactFormEnabled: boolean;
+}
+
+const {
+  locale,
+  pageKind,
+  dictionary,
+  alternates,
+  navItems,
+  page,
+  products,
+  commerceEnabled,
+  contactFormEnabled,
+} = Astro.props as Props;
+
+const showContentBlocks = page.showContentBlocks !== false;
+const visibleContentBlocks = showContentBlocks ? (page.blocks ?? []) : [];
+const contactSectionContent = page.contactSection;
+---
+
+<SiteDocument
+  lang={dictionary.htmlLang}
+  title={page.seo.title}
+  description={page.seo.description}
+  pathname={`/${locale}/${pageKind}/`}
+  alternates={alternates}
+  skipLabel={dictionary.ui.skipToContent}
+  footer={{
+    locale,
+    navItems,
+    copyright: dictionary.footer.copyright,
+  }}
+>
+  <SiteFrame
+    locale={locale}
+    navItems={navItems}
+    lightLabel={dictionary.ui.themeLight}
+    darkLabel={dictionary.ui.themeDark}
+    currentPath={`/${locale}/${pageKind}/`}
+  >
+    <BrandPageHero
+      eyebrow={page.pageHero!.eyebrow}
+      title={page.pageHero!.title}
+      body={page.pageHero!.body}
+      pageHero={page.pageHero!}
+      tone={pageKind}
+    />
+    {
+      pageKind === "about" ? (
+        <AboutSignatureSection content={page.aboutSignature!} />
+      ) : null
+    }
+    {
+      pageKind === "contact" && contactFormEnabled && contactSectionContent ? (
+        <ContactSection content={contactSectionContent} locale={locale} />
+      ) : null
+    }
+    {
+      pageKind === "products" && commerceEnabled && products.length > 0 ? (
+        <ProductSpotlightSection
+          locale={locale}
+          content={{
+            ...page.productSpotlight!,
+            openProductLabel:
+              page.productSpotlight?.openProductLabel ?? "View product",
+          }}
+          products={products}
+        />
+      ) : null
+    }
+    {
+      visibleContentBlocks.length > 0 ? (
+        <BrandContentBlocks blocks={visibleContentBlocks} />
+      ) : null
+    }
+  </SiteFrame>
+</SiteDocument>

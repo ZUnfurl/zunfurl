@@ -1,0 +1,149 @@
+name: CI / Pull Request Validation
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Node 22.12 primary validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Node 22.12
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22.12.0"
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Reject high or critical vulnerabilities
+        run: npm audit --audit-level=high
+
+      - name: Reject production high or critical vulnerabilities
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Validate supply-chain artifacts and license policy
+        run: npm run test:supply-chain
+
+      - name: Validate public assets and text
+        run: npm run test:phase1
+
+      - name: Validate open-source metadata and community contracts
+        run: npm run test:phase5:metadata
+
+      - name: Export project contract
+        run: node scripts/template/export-project-env.mjs --github-env "$GITHUB_ENV"
+
+      - name: Validate framework contract
+        run: npm run framework:audit
+
+      - name: Validate template placeholders
+        if: env.GCSS_TEMPLATE_MODE == 'true'
+        run: npm run template:scan
+
+      - name: Validate project readiness
+        if: env.GCSS_TEMPLATE_MODE != 'true'
+        run: npm run project:scan
+
+      - name: Validate Sanity boundaries
+        if: env.GCSS_HAS_STUDIO == 'true'
+        run: npm run test:sanity
+
+      - name: Validate commerce boundaries
+        if: env.GCSS_HAS_COMMERCE == 'true'
+        run: npm run test:commerce && npm run test:shopify-summary
+
+      - name: Validate Worker routes
+        run: npm run test:worker
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build local-content Studio
+        if: env.GCSS_HAS_STUDIO == 'true' && env.CONTENT_SOURCE == 'local'
+        run: npm run studio:build
+
+      - name: Build local-content storefront
+        if: env.CONTENT_SOURCE == 'local'
+        run: npm run build
+
+      - name: Validate Worker package
+        run: npm --workspace gcss-worker run deploy -- --dry-run
+
+  node-24-compatibility:
+    name: Node 24 compatibility
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Node 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24.x"
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate framework contract
+        run: npm run framework:audit
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Validate Worker package
+        run: npm --workspace gcss-worker run deploy -- --dry-run
+
+  fixtures:
+    name: Fixture ${{ matrix.variant }} / Node 22.12
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        variant:
+          - A1
+          - A2
+          - B
+          - C
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Node 22.12
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22.12.0"
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate initialized profile fixture
+        run: npm run test:fixtures -- --variant "${{ matrix.variant }}"

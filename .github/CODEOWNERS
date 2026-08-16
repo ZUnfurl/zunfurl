@@ -1,0 +1,16 @@
+# 默认所有路径由当前唯一维护者审查。
+* @mp4102
+
+# 安全、治理、供应链和 Skill 边界保持显式所有权。
+/.github/ @mp4102
+/.agents/ @mp4102
+/docs/compliance/ @mp4102
+/CODE_OF_CONDUCT.md @mp4102
+/CONTRIBUTING.md @mp4102
+/GOVERNANCE.md @mp4102
+/LICENSE @mp4102
+/MAINTAINERS.md @mp4102
+/NOTICE @mp4102
+/SECURITY.md @mp4102
+/SUPPORT.md @mp4102
+/TRADEMARKS.md @mp4102

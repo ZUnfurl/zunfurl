@@ -1,0 +1,100 @@
+{
+  "locale": "zh-cn",
+  "kind": "about",
+  "title": "关于 Example Brand",
+  "seo": {
+    "title": "关于 Example Brand｜模块化网站框架",
+    "description": "了解 ZUnfurl 演示如何分离页面结构、可编辑内容、图片和可选的只读商品目录映射。"
+  },
+  "pageHero": {
+    "eyebrow": "关于",
+    "title": "可复用的内容结构。",
+    "body": "本页演示如何用共享首屏、结构化编辑区和可重复内容模块组成品牌页面。",
+    "slides": [
+      {
+        "src": "/brand-assets/hero/about/Hero-About-01.webp",
+        "alt": "Example Brand 关于页面首屏示例图片一。",
+        "eyebrow": "系统视角",
+        "caption": "可以按模块编辑的结构化品牌叙事。"
+      },
+      {
+        "src": "/brand-assets/hero/about/Hero-About-02.webp",
+        "alt": "Example Brand 关于页面首屏示例图片二。",
+        "eyebrow": "编辑层",
+        "caption": "用于呈现品牌氛围和证明信息的视觉序列。"
+      },
+      {
+        "src": "/brand-assets/hero/about/Hero-About-03.webp",
+        "alt": "Example Brand 关于页面首屏示例图片三。",
+        "eyebrow": "可复用模式",
+        "caption": "可在不同客户项目中复用的内页首屏。"
+      }
+    ]
+  },
+  "aboutSignature": {
+    "eyebrow": "结构化区域",
+    "title": "用于说明品牌背景的视觉叙事模块。",
+    "body": "可用此区域呈现创始人说明、品牌理念、活动背景或其他可复用的叙事内容。",
+    "panels": [
+      {
+        "id": "positioning",
+        "eyebrow": "定位",
+        "title": "从清晰的承诺开始。",
+        "body": "请用客户品牌的定位、目标受众和价值主张替换此面板。",
+        "imagePath": "/brand-assets/brand/Brand-01.webp",
+        "imageAlt": "通用品牌氛围示例图片一。",
+        "imagePosition": "left",
+        "cta": {
+          "label": "联系团队",
+          "href": "/zh-cn/contact/"
+        }
+      },
+      {
+        "id": "system",
+        "eyebrow": "系统",
+        "title": "让模块保持可预测。",
+        "body": "每个区块都有明确结构，编辑人员无需修改前端代码也能维护内容。",
+        "imagePath": "/brand-assets/brand/Brand-02.webp",
+        "imageAlt": "通用品牌氛围示例图片二。",
+        "imagePosition": "right"
+      },
+      {
+        "id": "handoff",
+        "eyebrow": "交付",
+        "title": "明确资产和操作权属。",
+        "body": "客户文档、Profile 边界和验证脚本共同定义网站上线后由客户维护的内容。",
+        "imagePath": "/brand-assets/brand/Brand-03.webp",
+        "imageAlt": "通用品牌氛围示例图片三。",
+        "imagePosition": "left"
+      }
+    ]
+  },
+  "blocks": [
+    {
+      "id": "profile",
+      "eyebrow": "Profile",
+      "title": "先选择 A、B 或 C。",
+      "body": "每个项目先选择一个交付 Profile，再只启用该 Profile 需要的模块。",
+      "items": [
+        "static-brand：由交付方完整维护的品牌网站",
+        "cms-brand：带页面 CMS 的品牌网站",
+        "retail：C 零售目录与内容运营基础框架"
+      ],
+      "variant": "standard"
+    },
+    {
+      "id": "workflow",
+      "eyebrow": "工作流",
+      "title": "编辑人员只看到相关工具。",
+      "body": "Studio 工作台、Schema 和客户手册都按 Profile 裁剪，让日常操作保持清晰。",
+      "variant": "accent"
+    },
+    {
+      "id": "validation",
+      "eyebrow": "验证",
+      "title": "测试保护能力边界。",
+      "body": "Profile、Schema、Worker、前台和客户指南测试可防止禁用模块进入错误的交付方案。",
+      "variant": "standard"
+    }
+  ]
+}

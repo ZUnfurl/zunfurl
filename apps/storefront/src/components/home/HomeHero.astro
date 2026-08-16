@@ -1,0 +1,721 @@
+---
+interface Cta {
+  label: string;
+  href: string;
+}
+
+interface HeroData {
+  eyebrow: string;
+  titleLines: string[];
+  intro: string;
+  primaryCta?: Cta;
+  secondaryCta?: Cta;
+  motionLabel: string;
+  videoSrc?: string;
+  videoPoster?: string;
+  motionQuote: string;
+  captionEyebrow: string;
+  captionTitle: string;
+}
+
+interface Props {
+  hero: HeroData;
+}
+
+const { hero } = Astro.props;
+const posterImage = hero.videoPoster;
+const hasVideo = Boolean(hero.videoSrc);
+const titleLines = hero.titleLines.filter(Boolean);
+const mediaLabel = [hero.eyebrow, ...titleLines].filter(Boolean).join(" ");
+---
+
+<section class="hero-section" data-hero-section>
+  <div
+    class="hero-section__media"
+    aria-label={mediaLabel}
+    data-reveal="scale"
+    data-parallax-target
+  >
+    {
+      hasVideo ? (
+        <video
+          class="hero-section__video"
+          autoplay
+          muted
+          loop
+          playsinline
+          poster={posterImage}
+        >
+          <source src={hero.videoSrc} type="video/mp4" />
+        </video>
+      ) : (
+        <div class="hero-section__poster-stage">
+          <img
+            class="hero-section__poster hero-section__poster--main"
+            src={posterImage}
+            alt={mediaLabel}
+            loading="eager"
+            fetchpriority="high"
+          />
+          <img
+            class="hero-section__poster hero-section__poster--echo"
+            src={posterImage}
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+          />
+        </div>
+      )
+    }
+    <div class="hero-section__film-grain"></div>
+    <div class="hero-section__scanline"></div>
+    <div class="hero-section__backdrop" aria-hidden="true">
+      <div class="hero-section__backdrop-glow hero-section__backdrop-glow--one">
+      </div>
+      <div class="hero-section__backdrop-glow hero-section__backdrop-glow--two">
+      </div>
+      <div class="hero-section__orb hero-section__orb--large"></div>
+      <div class="hero-section__orb hero-section__orb--small"></div>
+    </div>
+    <div class="hero-section__overlay"></div>
+    <div class="hero-section__progress" aria-hidden="true">
+      <span class="hero-section__progress-track"></span>
+    </div>
+  </div>
+
+  <div class="hero-section__inner">
+    <div class="container hero-section__layout">
+      <div class="hero-section__content" data-reveal="up">
+        <div class="hero-section__eyebrow-row">
+          <p class="eyebrow">{hero.eyebrow}</p>
+        </div>
+
+        <div class="hero-section__heading-group">
+          <h1 class="display-title hero-section__title">
+            {
+              titleLines.map((line, index) => (
+                <span
+                  class:list={[
+                    "hero-section__title-line",
+                    index > 0 && "hero-section__title-line--offset",
+                  ]}
+                >
+                  {line}
+                </span>
+              ))
+            }
+          </h1>
+          <div class="hero-section__deck">
+            <p class="body-copy hero-section__intro">{hero.intro}</p>
+            {
+              (hero.primaryCta || hero.secondaryCta) && (
+                <div class="hero-section__actions">
+                  {hero.primaryCta && (
+                    <a class="button button--primary" href={hero.primaryCta.href}>
+                      {hero.primaryCta.label}
+                    </a>
+                  )}
+                  {hero.secondaryCta && (
+                    <a class="button button--ghost" href={hero.secondaryCta.href}>
+                      {hero.secondaryCta.label}
+                    </a>
+                  )}
+                </div>
+              )
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container hero-section__meta-row">
+      <div class="hero-section__motion-note">
+        <p class="eyebrow">{hero.motionLabel}</p>
+        <p class="body-copy">{hero.motionQuote}</p>
+      </div>
+      <div class="hero-section__caption">
+        <p class="eyebrow">{hero.captionEyebrow}</p>
+        <h3>{hero.captionTitle}</h3>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero-section {
+    position: relative;
+    min-height: 100svh;
+    overflow: clip;
+    isolation: isolate;
+    background: #111110;
+    color: #f3efec;
+  }
+
+  .hero-section__media {
+    position: absolute;
+    inset: 0;
+    transform: translateY(calc(var(--hero-parallax, 0px) * 0.18));
+  }
+
+  .hero-section__video,
+  .hero-section__poster-stage,
+  .hero-section__poster {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .hero-section__video,
+  .hero-section__poster {
+    object-fit: cover;
+    object-position: center;
+    filter: saturate(0.92) contrast(1.02) brightness(0.86);
+  }
+
+  .hero-section__poster-stage {
+    overflow: hidden;
+  }
+
+  .hero-section__backdrop {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .hero-section__backdrop-glow {
+    position: absolute;
+    border-radius: 999px;
+    filter: blur(48px);
+    opacity: 0.58;
+  }
+
+  .hero-section__backdrop-glow--one {
+    width: 28rem;
+    height: 28rem;
+    top: -6rem;
+    right: 4%;
+    background: rgba(205, 169, 146, 0.2);
+  }
+
+  .hero-section__backdrop-glow--two {
+    width: 20rem;
+    height: 20rem;
+    left: -4rem;
+    bottom: 10rem;
+    background: rgba(166, 131, 110, 0.18);
+  }
+
+  .hero-section__overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(
+        90deg,
+        rgba(9, 10, 10, 0.8) 0%,
+        rgba(9, 10, 10, 0.42) 34%,
+        rgba(9, 10, 10, 0.08) 62%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(9, 10, 10, 0.14) 0%,
+        rgba(9, 10, 10, 0.02) 28%,
+        rgba(9, 10, 10, 0.74) 100%
+      );
+    z-index: 1;
+  }
+
+  .hero-section__inner {
+    position: relative;
+    z-index: 2;
+    min-height: 100svh;
+    display: grid;
+    align-content: end;
+    padding-top: clamp(7rem, 10vw, 8.5rem);
+    padding-bottom: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  .hero-section__layout {
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(1rem, 3vw, 2rem);
+    align-items: start;
+    margin-bottom: clamp(1rem, 4vw, 2.5rem);
+  }
+
+  .hero-section__content {
+    display: grid;
+    gap: 1.35rem;
+    max-width: min(56rem, 70vw);
+  }
+
+  .hero-section__eyebrow-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 1rem;
+    max-width: min(48rem, 100%);
+  }
+
+  .hero-section__heading-group {
+    display: grid;
+    gap: 0.98rem;
+  }
+
+  .hero-section__title {
+    max-width: min(58rem, 100%);
+    margin-left: -0.04em;
+    font-size: clamp(3.36rem, 7vw, 6.3rem);
+    line-height: 0.9;
+    text-wrap: balance;
+  }
+
+  .hero-section__title-line {
+    display: block;
+  }
+
+  .hero-section__title-line--offset {
+    padding-left: clamp(1.5rem, 6vw, 5rem);
+  }
+
+  .hero-section__deck {
+    display: grid;
+    grid-template-columns: minmax(0, 24rem) auto;
+    gap: 1.05rem;
+    align-items: end;
+    max-width: min(50rem, 100%);
+  }
+
+  .hero-section__content .eyebrow,
+  .hero-section__content .body-copy,
+  .hero-section__motion-note .eyebrow,
+  .hero-section__motion-note .body-copy,
+  .hero-section__caption .eyebrow,
+  .hero-section__caption h3 {
+    color: #f3efec;
+  }
+
+  .hero-section__content .eyebrow {
+    color: rgba(239, 238, 238, 0.74);
+    text-shadow: 0 0 18px rgba(12, 13, 13, 0.22);
+  }
+
+  .hero-section__intro {
+    max-width: 34ch;
+    font-size: 0.92rem;
+    color: rgba(239, 238, 238, 0.86);
+    text-shadow: 0 10px 30px rgba(12, 13, 13, 0.28);
+    text-wrap: pretty;
+  }
+
+  .hero-section__actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .hero-section__content .button--primary {
+    background: linear-gradient(
+      135deg,
+      rgba(239, 238, 238, 0.98) 0%,
+      rgba(205, 169, 146, 0.94) 52%,
+      rgba(166, 131, 110, 0.96) 100%
+    );
+    color: #181717;
+    border-color: rgba(239, 238, 238, 0.78);
+    box-shadow:
+      0 18px 40px rgba(12, 13, 13, 0.22),
+      inset 0 1px 0 rgba(255, 255, 255, 0.42),
+      0 0 0 1px rgba(205, 169, 146, 0.16);
+  }
+
+  .hero-section__content .button--ghost {
+    border-color: rgba(239, 238, 238, 0.3);
+    background: color-mix(in srgb, #efeeee 10%, transparent);
+    color: rgba(239, 238, 238, 0.96);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.12),
+      0 10px 28px rgba(12, 13, 13, 0.14);
+    backdrop-filter: blur(14px);
+  }
+
+  .hero-section__content .button--primary:hover,
+  .hero-section__content .button--primary:focus-visible {
+    box-shadow:
+      0 24px 52px rgba(12, 13, 13, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5),
+      0 0 0 1px rgba(205, 169, 146, 0.24);
+  }
+
+  .hero-section__content .button--ghost:hover,
+  .hero-section__content .button--ghost:focus-visible {
+    border-color: rgba(239, 238, 238, 0.44);
+    background: color-mix(in srgb, #efeeee 14%, transparent);
+    color: #f3efec;
+  }
+
+  .hero-section__caption h3,
+  .hero-section__caption h3 {
+    font-family: var(--font-display);
+    font-size: clamp(1.55rem, 2.4vw, 2.25rem);
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+  }
+
+  .hero-section__poster {
+    position: absolute;
+    inset: 0;
+  }
+
+  .hero-section__poster--main {
+    animation: heroFloat 16s ease-in-out infinite alternate;
+    transform: scale(1.04);
+  }
+
+  .hero-section__poster--echo {
+    opacity: 0.22;
+    transform: scale(1.12) translate3d(0.8rem, 1rem, 0);
+    filter: blur(14px) saturate(0.9);
+    animation: heroPulse 18s ease-in-out infinite alternate;
+  }
+
+  .hero-section__film-grain,
+  .hero-section__scanline {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .hero-section__film-grain {
+    background-image:
+      radial-gradient(
+        circle at 20% 30%,
+        rgba(255, 255, 255, 0.1) 0 0.05rem,
+        transparent 0.07rem
+      ),
+      radial-gradient(
+        circle at 80% 70%,
+        rgba(24, 23, 23, 0.1) 0 0.05rem,
+        transparent 0.07rem
+      );
+    background-size:
+      1.4rem 1.4rem,
+      1.8rem 1.8rem;
+    mix-blend-mode: soft-light;
+    opacity: 0.34;
+  }
+
+  .hero-section__scanline {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.08),
+      transparent 12%,
+      transparent 88%,
+      rgba(24, 23, 23, 0.1)
+    );
+    opacity: 0.42;
+  }
+
+  .hero-section__progress {
+    position: absolute;
+    left: clamp(0.9rem, 2vw, 1.75rem);
+    right: clamp(0.9rem, 2vw, 1.75rem);
+    bottom: clamp(0.9rem, 2vw, 1.75rem);
+    height: 0.2rem;
+    border-radius: 999px;
+    background: rgba(243, 239, 236, 0.16);
+    overflow: hidden;
+    z-index: 2;
+  }
+
+  .hero-section__progress-track {
+    display: block;
+    height: 100%;
+    width: 42%;
+    background: linear-gradient(
+      90deg,
+      var(--color-accent),
+      rgba(239, 238, 238, 0.92)
+    );
+    animation: heroProgress 9s linear infinite;
+  }
+
+  .hero-section__meta-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(15rem, 0.8fr);
+    gap: 1.75rem;
+    align-items: start;
+    padding-top: 1.1rem;
+    padding-bottom: clamp(1.15rem, 2vw, 1.85rem);
+    border-top: 1px solid rgba(243, 239, 236, 0.18);
+    border-bottom: 1px solid rgba(243, 239, 236, 0.1);
+    isolation: isolate;
+  }
+
+  .hero-section__meta-row::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    bottom: -1px;
+    left: calc(50% - 50vw);
+    width: 100vw;
+    border-top: 1px solid rgba(243, 239, 236, 0.18);
+    border-bottom: 1px solid rgba(243, 239, 236, 0.1);
+    background: linear-gradient(
+      180deg,
+      rgba(17, 17, 16, 0.32),
+      rgba(17, 17, 16, 0.08)
+    );
+    backdrop-filter: blur(14px);
+    z-index: -1;
+  }
+
+  .hero-section__motion-note {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.45rem;
+    align-items: start;
+  }
+
+  .hero-section__motion-note .eyebrow,
+  .hero-section__caption .eyebrow {
+    padding-top: 0.1rem;
+    color: rgba(243, 239, 236, 0.58);
+  }
+
+  .hero-section__motion-note .body-copy {
+    max-width: 48ch;
+    font-size: 0.92rem;
+    line-height: 1.7;
+    color: rgba(239, 238, 238, 0.78);
+  }
+
+  .hero-section__caption {
+    display: grid;
+    gap: 0.45rem;
+    justify-items: start;
+    align-content: start;
+    min-height: 100%;
+    padding-left: 1.5rem;
+    border-left: 1px solid rgba(243, 239, 236, 0.12);
+  }
+
+  .hero-section__orb {
+    position: absolute;
+    border-radius: 999px;
+    filter: blur(28px);
+  }
+
+  .hero-section__orb--large {
+    /* 光斑 */
+    width: 18rem;
+    height: 18rem;
+    top: 7rem;
+    right: 6rem;
+    background: rgba(205, 169, 146, 0.1);
+  }
+
+  .hero-section__orb--small {
+    width: 10rem;
+    height: 10rem;
+    left: 8%;
+    bottom: 12rem;
+    background: rgba(166, 131, 110, 0.22);
+  }
+
+  @media (max-width: 980px) {
+    .hero-section__layout {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-section__content {
+      max-width: min(44rem, 100%);
+    }
+
+    .hero-section__deck {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .hero-section__title-line--offset {
+      padding-left: clamp(0rem, 4vw, 2rem);
+    }
+
+    .hero-section__meta-row {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .hero-section__motion-note {
+      grid-template-columns: 1fr;
+      gap: 0.45rem;
+    }
+
+    .hero-section__caption {
+      padding-left: 0;
+      padding-top: 1rem;
+      border-left: none;
+      border-top: 1px solid rgba(243, 239, 236, 0.12);
+    }
+  }
+
+  @media (max-width: 720px) {
+    .hero-section {
+      min-height: 0;
+      background:
+        linear-gradient(
+          180deg,
+          rgba(17, 17, 16, 0) 0%,
+          rgba(17, 17, 16, 0) 100%
+        ),
+        #111110;
+    }
+
+    .hero-section__media {
+      inset: 0 0 auto;
+      height: 100svh;
+      transform: none;
+    }
+
+    .hero-section__inner {
+      min-height: 0;
+      display: block;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    .hero-section__layout {
+      min-height: 100svh;
+      align-items: end;
+      align-content: end;
+      margin-bottom: 0;
+      padding-top: 6rem;
+      padding-bottom: 2.2rem;
+    }
+
+    .hero-section__content {
+      max-width: none;
+      gap: 1.05rem;
+    }
+
+    .hero-section__eyebrow-row {
+      align-items: start;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .hero-section__title {
+      font-size: clamp(2.52rem, 11.2vw, 3.64rem);
+      line-height: 0.92;
+    }
+
+    .hero-section__title-line--offset {
+      padding-left: 0;
+    }
+
+    .hero-section__intro {
+      max-width: 32ch;
+      font-size: 0.96rem;
+      line-height: 1.62;
+    }
+
+    .hero-section__deck {
+      gap: 0.85rem;
+    }
+
+    .hero-section__actions {
+      gap: 0.75rem;
+    }
+
+    .hero-section__meta-row {
+      margin-top: 0;
+      gap: 0.8rem;
+      padding-top: 1rem;
+      padding-bottom: 1.15rem;
+      background: #111110;
+      border-top: none;
+      border-bottom: none;
+    }
+
+    .hero-section__meta-row::before {
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      border-top: 1px solid rgba(243, 239, 236, 0.1);
+      border-bottom: none;
+      background: linear-gradient(
+        180deg,
+        rgba(24, 23, 23, 0.96),
+        rgba(17, 17, 16, 1)
+      );
+      backdrop-filter: none;
+    }
+
+    .hero-section__motion-note,
+    .hero-section__caption {
+      gap: 0.35rem;
+    }
+
+    .hero-section__motion-note .eyebrow,
+    .hero-section__caption .eyebrow {
+      color: rgba(243, 239, 236, 0.5);
+    }
+
+    .hero-section__motion-note .body-copy {
+      max-width: none;
+      font-size: 0.88rem;
+      line-height: 1.58;
+      color: rgba(239, 238, 238, 0.74);
+    }
+
+    .hero-section__caption {
+      gap: 0.4rem;
+      padding-top: 0.9rem;
+    }
+
+    .hero-section__caption h3 {
+      font-size: clamp(1.18rem, 5.6vw, 1.5rem);
+      line-height: 1.02;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-section__progress {
+      left: 1rem;
+      right: 1rem;
+      bottom: 0.8rem;
+    }
+  }
+
+  @keyframes heroFloat {
+    0% {
+      transform: scale(1.04) translate3d(0, 0, 0);
+    }
+    100% {
+      transform: scale(1.1) translate3d(0, -0.8rem, 0);
+    }
+  }
+
+  @keyframes heroPulse {
+    0% {
+      transform: scale(1.12) translate3d(0.8rem, 1rem, 0);
+    }
+    100% {
+      transform: scale(1.18) translate3d(-0.4rem, -0.6rem, 0);
+    }
+  }
+
+  @keyframes heroProgress {
+    0% {
+      transform: translateX(-105%);
+    }
+    100% {
+      transform: translateX(240%);
+    }
+  }
+</style>

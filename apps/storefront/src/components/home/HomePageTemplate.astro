@@ -1,0 +1,221 @@
+---
+import SiteDocument from "../../layouts/SiteDocument.astro";
+import SiteFrame from "../shared/SiteFrame.astro";
+import BrandFrameworkSection from "./BrandFrameworkSection.astro";
+import HomeContactCtaSection from "./HomeContactCtaSection.astro";
+import HomeHero from "./HomeHero.astro";
+import ProductSpotlightSection from "../product/ProductSpotlightSection.astro";
+import type { PageContent, ProductContent } from "gcss-blocks";
+import type { ActiveLocale } from "../../i18n/config";
+
+interface AlternateLink {
+  locale: string;
+  href: string;
+}
+
+interface NavItem {
+  label: string;
+  href: string;
+}
+
+interface Dictionary {
+  htmlLang: string;
+  ui: {
+    skipToContent: string;
+    themeLight: string;
+    themeDark: string;
+  };
+  footer: {
+    copyright: string;
+  };
+}
+
+interface Props {
+  locale: ActiveLocale;
+  dictionary: Dictionary;
+  alternates: AlternateLink[];
+  navItems: NavItem[];
+  homePage: PageContent;
+  products: ProductContent[];
+  commerceEnabled: boolean;
+}
+
+const {
+  locale,
+  dictionary,
+  alternates,
+  navItems,
+  homePage,
+  products,
+  commerceEnabled,
+} = Astro.props as Props;
+const productSpotlightContent =
+  homePage.homeProductSpotlight ?? homePage.productSpotlight;
+const homeHero = commerceEnabled
+  ? homePage.hero!
+  : {
+      ...homePage.hero!,
+      primaryCta: homePage.hero!.primaryCta
+        ? {
+            ...homePage.hero!.primaryCta,
+            href: homePage.hero!.primaryCta.href.includes("/products/")
+              ? `/${locale}/about/`
+              : homePage.hero!.primaryCta.href,
+          }
+        : undefined,
+      secondaryCta: homePage.hero!.secondaryCta
+        ? {
+            ...homePage.hero!.secondaryCta,
+            href: homePage.hero!.secondaryCta.href.includes("/products/")
+              ? `/${locale}/about/`
+              : homePage.hero!.secondaryCta.href,
+          }
+        : undefined,
+    };
+const brandFrameworkContent = commerceEnabled
+  ? homePage.brandFramework!
+  : {
+      ...homePage.brandFramework!,
+      ctaLabel:
+        homePage.hero!.secondaryCta?.label ?? homePage.brandFramework!.ctaLabel,
+    };
+---
+
+<SiteDocument
+  lang={dictionary.htmlLang}
+  title={homePage.seo.title}
+  description={homePage.seo.description}
+  pathname={`/${locale}/`}
+  alternates={alternates}
+  skipLabel={dictionary.ui.skipToContent}
+  footer={{
+    locale,
+    navItems,
+    copyright: dictionary.footer.copyright,
+  }}
+>
+  <SiteFrame
+    locale={locale}
+    navItems={navItems}
+    lightLabel={dictionary.ui.themeLight}
+    darkLabel={dictionary.ui.themeDark}
+    currentPath={`/${locale}/`}
+    headerVariant="overlay"
+  >
+    <HomeHero hero={homeHero} />
+    <BrandFrameworkSection
+      content={brandFrameworkContent}
+      productsHref={commerceEnabled ? `/${locale}/products/` : `/${locale}/about/`}
+    />
+    {
+      commerceEnabled && productSpotlightContent && products.length > 0 ? (
+        <ProductSpotlightSection
+          locale={locale}
+          content={productSpotlightContent}
+          products={products}
+        />
+      ) : null
+    }
+    <HomeContactCtaSection content={homePage.contactMaskSection!} />
+  </SiteFrame>
+</SiteDocument>
+
+<script is:inline>
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    document.documentElement.classList.add("js");
+
+    const revealElements = document.querySelectorAll("[data-reveal]");
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.2, rootMargin: "0px 0px -8% 0px" },
+    );
+
+    revealElements.forEach((element) => revealObserver.observe(element));
+
+    const heroSection = document.querySelector("[data-hero-section]");
+    const parallaxTarget = document.querySelector("[data-parallax-target]");
+    let ticking = false;
+
+    const updateParallax = () => {
+      if (!heroSection || !parallaxTarget) {
+        return;
+      }
+
+      const rect = heroSection.getBoundingClientRect();
+      const offset = Math.max(Math.min(rect.top * -0.12, 48), -12);
+      heroSection.style.setProperty("--hero-parallax", `${offset}px`);
+
+      ticking = false;
+    };
+
+    const requestTick = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateParallax);
+        ticking = true;
+      }
+    };
+
+    updateParallax();
+    window.addEventListener("scroll", requestTick, { passive: true });
+    window.addEventListener("resize", requestTick);
+  }
+</script>
+
+<style>
+  :global(html),
+  :global(body) {
+    scroll-snap-type: y proximity;
+  }
+
+  :global(#page-content) {
+    position: relative;
+  }
+
+  :global(#page-content > .hero-section),
+  :global(#page-content > .feature-grid),
+  :global(#page-content > .spotlight),
+  :global(#page-content > .editorial-band) {
+    min-height: 100svh;
+    scroll-snap-align: start;
+    scroll-snap-stop: normal;
+  }
+
+  :global(.site-footer) {
+    scroll-snap-align: none;
+    scroll-snap-stop: normal;
+  }
+
+  @media (max-width: 720px) {
+    :global(#page-content > .hero-section),
+    :global(#page-content > .feature-grid),
+    :global(#page-content > .spotlight),
+    :global(#page-content > .editorial-band) {
+      min-height: 100svh;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(html),
+    :global(body) {
+      scroll-snap-type: none;
+    }
+
+    :global(#page-content > .hero-section),
+    :global(#page-content > .feature-grid),
+    :global(#page-content > .spotlight),
+    :global(#page-content > .editorial-band) {
+      scroll-snap-stop: normal;
+    }
+
+    :global(.site-footer) {
+      scroll-snap-stop: normal;
+    }
+  }
+</style>

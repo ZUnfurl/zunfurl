@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "auditId": "phase6-original-private-history-2026-08-16",
+  "generatedAt": "2026-08-16T02:15:20.685Z",
+  "scope": {
+    "localRefCount": 4,
+    "advertisedOriginRefCount": 1,
+    "advertisedOriginRefsCovered": true,
+    "commitCount": 6,
+    "localAdditionalRefSnapshotCount": 1,
+    "oldActionsLogArchiveCount": 3,
+    "remoteMode": "read-only",
+    "remoteWritesPerformed": false
+  },
+  "tools": {
+    "gitleaks": {
+      "version": "8.30.1",
+      "binarySha256": "17157e2ee8b76fc8b1d8bee607a250e34b8a8023c8bc81822d4b5ee4d78fcb7c",
+      "distributionSource": "official GitHub release archive",
+      "archiveChecksumVerified": true,
+      "redactionPercent": 100
+    },
+    "trufflehog": {
+      "version": "3.97.0",
+      "binarySha256": "2b8df30e45a54dddafb00f4fbdaeaeca9437cd59fd4219530bdb6c56b9228b9a",
+      "distributionSource": "official GitHub release archive",
+      "archiveChecksumVerified": true,
+      "verificationMode": "disabled",
+      "resultClass": "unverified"
+    },
+    "publicTextRuleset": {
+      "version": 1
+    }
+  },
+  "results": {
+    "originalHistory": {
+      "assessment": "blocked",
+      "local": {
+        "gitleaksFindingCount": 0,
+        "trufflehogFindingCount": 0,
+        "publicTextFindingCount": 39,
+        "publicTextRuleCounts": {
+          "EMAIL_ADDRESS": 1,
+          "ORDER_SHAPED_DATA": 2,
+          "REAL_DOMAIN": 33,
+          "STORE_IDENTIFIER": 3
+        },
+        "reachableBlobCount": 569,
+        "largeObjectCount": 2,
+        "maximumLargeObjectBytes": 2413237
+      },
+      "origin": {
+        "gitleaksFindingCount": 0,
+        "trufflehogFindingCount": 0,
+        "publicTextFindingCount": 39,
+        "publicTextRuleCounts": {
+          "EMAIL_ADDRESS": 1,
+          "ORDER_SHAPED_DATA": 2,
+          "REAL_DOMAIN": 33,
+          "STORE_IDENTIFIER": 3
+        },
+        "reachableBlobCount": 359,
+        "largeObjectCount": 1,
+        "maximumLargeObjectBytes": 2352509
+      },
+      "localAdditionalRefs": {
+        "snapshotObjectCount": 1,
+        "gitleaksFindingCount": 0,
+        "trufflehogFindingCount": 0
+      },
+      "manualAndRuleCategoryReview": {
+        "customerTermCandidateCount": 0,
+        "emailAddressCandidateCount": 1,
+        "phoneNumberCandidateCount": 0,
+        "realDomainOrProductionUrlCandidateCount": 33,
+        "orderShapedDataCandidateCount": 2,
+        "storeIdentifierCandidateCount": 3,
+        "internalAbsolutePathCandidateCount": 0,
+        "largeObjectReviewed": true
+      }
+    },
+    "oldActionsLogs": {
+      "assessment": "blocked",
+      "archiveCount": 3,
+      "scannedFileCount": 9,
+      "totalBytes": 191976,
+      "archiveSetSha256": "bcd5a9b05dbcf7dce8ac206799b64f6c052bbb5aa225cdbbb9fc48df08e6e7e3",
+      "gitleaksFindingCount": 0,
+      "trufflehogFindingCount": 0,
+      "publicTextFindingCount": 70,
+      "publicTextRuleCounts": {
+        "INTERNAL_ABSOLUTE_PATH": 54,
+        "PHONE_NUMBER": 7,
+        "REAL_DOMAIN": 9
+      }
+    }
+  },
+  "publicationDecision": {
+    "originalHistoryAllowed": false,
+    "oldActionsLogsAllowed": false,
+    "repositoryIdentityReuseAllowedOnlyAfter": [
+      "replace every public-reachable Git ref with the approved sanitized root history",
+      "remove old Actions runs and their downloadable logs before changing visibility",
+      "scan the exact replacement history and hosted repository again"
+    ]
+  },
+  "privacy": {
+    "rawSecretValuesPersisted": false,
+    "rawScannerReportsPersisted": false,
+    "publicSummaryContainsRunIdentifiers": false,
+    "publicSummaryContainsOriginUrl": false,
+    "privateEvidenceStoredOutsideRepository": true
+  },
+  "privateEvidenceSummaryDigests": {
+    "historySummarySha256": "93049d5f5d5edefeec8b802ab03f4544d1ba20bbe4b7fda56ebac6e9b6d9333f",
+    "actionsLogSummarySha256": "9af2df33efc3ce88a7e74cc17f5c8741d12f99853b4b9a4cda6af1c6fbe818f7"
+  }
+}

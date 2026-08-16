@@ -1,0 +1,73 @@
+{
+  "locale": "zh-cn",
+  "kind": "home",
+  "title": "Example Brand 首页",
+  "seo": {
+    "title": "Example Brand｜模块化品牌网站模板",
+    "description": "一个中性的 ZUnfurl 演示网站，用于展示可复用的 Astro、Sanity、Cloudflare 和可选 Shopify 模块。"
+  },
+  "hero": {
+    "eyebrow": "ZUnfurl 演示",
+    "titleLines": [
+      "模块化品牌网站，",
+      "随时可成为你的项目。"
+    ],
+    "intro": "Example Brand 是用于演示框架的中性占位品牌。为客户项目交付前，请替换这里的文案、图片、法律内容和集成配置。",
+    "primaryCta": {
+      "label": "了解框架",
+      "href": "/zh-cn/about/"
+    },
+    "secondaryCta": {
+      "label": "联系我们",
+      "href": "/zh-cn/contact/"
+    },
+    "motionLabel": "首屏动态内容",
+    "videoSrc": "/brand-assets/video/homevideo.mp4",
+    "videoPoster": "/brand-assets/brand/Brand-01.webp",
+    "motionQuote": "首屏支持视频、后备图片和静态优先交付。",
+    "captionEyebrow": "模板层",
+    "captionTitle": "可复用内容，清晰的 Profile 边界。"
+  },
+  "brandFramework": {
+    "eyebrow": "框架层次",
+    "ariaLabel": "Example Brand 框架层次",
+    "ctaLabel": "查看详情",
+    "slides": [
+      {
+        "image": "/brand-assets/brand/Brand-01.webp",
+        "title": "静态优先的前台",
+        "description": "Astro 让公开页面保持快速、可缓存，并易于部署到 Cloudflare。"
+      },
+      {
+        "image": "/brand-assets/brand/Brand-02.webp",
+        "title": "便于编辑的 CMS",
+        "description": "当所选 Profile 包含内容 CMS 时，Sanity 为结构化页面模块提供编辑能力。"
+      },
+      {
+        "image": "/brand-assets/brand/Brand-03.webp",
+        "title": "只读商品目录层",
+        "description": "C Profile 可把 Shopify 商品身份和媒体映射到静态目录，但不增加 Checkout 或订单处理能力。"
+      }
+    ]
+  },
+  "homeProductSpotlight": {
+    "eyebrow": "商品目录模块",
+    "title": "可选的商品聚焦区域。",
+    "body": "只有启用 retail 机器 Profile 和商品内容 CMS 时才显示此区域。",
+    "ariaLabel": "商品聚焦导航",
+    "previousLabel": "上一个商品",
+    "nextLabel": "下一个商品",
+    "openProductLabel": "查看商品"
+  },
+  "contactMaskSection": {
+    "eyebrow": "联系",
+    "title": "从边界清晰的沟通开始。",
+    "body": "使用轻量表单模块接收业务咨询，无需在自建数据库中保存消息。",
+    "image": "/brand-assets/hero/contact/Hero-Contact-01.webp",
+    "imageAlt": "Example Brand 联系页面示例视觉",
+    "cta": {
+      "label": "打开联系页面",
+      "href": "/zh-cn/contact/"
+    }
+  }
+}

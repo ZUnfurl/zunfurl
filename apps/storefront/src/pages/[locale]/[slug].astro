@@ -1,0 +1,133 @@
+---
+import BrandPageTemplate from "../../components/brand/BrandPageTemplate.astro";
+import LegalPageTemplate from "../../components/legal/LegalPageTemplate.astro";
+import {
+  getPageByKind,
+  getPagesByKinds,
+  getProducts,
+} from "../../lib/content/contentSource";
+import {
+  getLegalEntries,
+  getLegalPage,
+  isEnabledLegalSlug,
+  type LegalPage,
+  type LegalSlug,
+} from "../../lib/legal/legalContent";
+import {
+  activeLocales,
+  getAlternateLinks,
+  getDictionary,
+  type ActiveLocale,
+} from "../../i18n/config";
+import {
+  getEnabledBrandPageKinds,
+  getSiteNavigation,
+  isCommerceEnabled,
+  isContactFormEnabled,
+  isEnabledBrandPageKind,
+} from "../../lib/site/profile";
+import type { PageContent, ProductContent } from "gcss-blocks";
+
+export async function getStaticPaths() {
+  const pageEntries = await getPagesByKinds(getEnabledBrandPageKinds());
+  const legalEntries = getLegalEntries();
+
+  const brandPaths = pageEntries
+    .filter((entry) =>
+      activeLocales.includes(entry.locale as ActiveLocale),
+    )
+    .map((entry) => ({
+      params: {
+        locale: entry.locale,
+        slug: entry.kind,
+      },
+    }));
+
+  const legalPaths = legalEntries.map((entry) => ({
+    params: {
+      locale: entry.locale,
+      slug: entry.slug,
+    },
+  }));
+
+  return [...brandPaths, ...legalPaths];
+}
+
+const locale = Astro.params.locale as ActiveLocale;
+const slug = Astro.params.slug ?? "";
+
+const dictionary = getDictionary(locale);
+const alternates = getAlternateLinks(`/${slug}`);
+const commerceEnabled = isCommerceEnabled();
+const contactFormEnabled = isContactFormEnabled();
+
+const navItems = getSiteNavigation(locale, dictionary);
+
+let pageEntry: PageContent | undefined;
+let productEntries: ProductContent[] = [];
+let legalPage: LegalPage | undefined;
+
+if (isEnabledBrandPageKind(slug)) {
+  [pageEntry, productEntries] = await Promise.all([
+    getPageByKind(locale, slug),
+    commerceEnabled && slug === "products" ? getProducts(locale) : Promise.resolve([]),
+  ]);
+
+  const requiresContentBlocks = pageEntry?.showContentBlocks !== false;
+
+  if (
+    !pageEntry ||
+    !pageEntry.pageHero ||
+    !pageEntry.pageHero.eyebrow ||
+    !pageEntry.pageHero.title ||
+    !pageEntry.pageHero.body ||
+    (requiresContentBlocks &&
+      (!pageEntry.blocks || pageEntry.blocks.length === 0))
+  ) {
+    throw new Error(`Missing content for page: ${locale}/${slug}`);
+  }
+
+  if (slug === "about" && !pageEntry.aboutSignature) {
+    throw new Error(`Missing aboutSignature content for page: ${locale}/${slug}`);
+  }
+
+  if (slug === "contact" && contactFormEnabled && !pageEntry.contactSection) {
+    throw new Error(`Missing contactSection content for page: ${locale}/${slug}`);
+  }
+
+  if (slug === "products" && commerceEnabled && !pageEntry.productSpotlight) {
+    throw new Error(
+      `Missing productSpotlight content for page: ${locale}/${slug}`,
+    );
+  }
+} else if (isEnabledLegalSlug(slug)) {
+  legalPage = await getLegalPage(locale, slug as LegalSlug);
+} else {
+  throw new Error(`Unsupported page slug: ${locale}/${slug}`);
+}
+
+---
+
+{
+  pageEntry && isEnabledBrandPageKind(slug) ? (
+    <BrandPageTemplate
+      locale={locale}
+      pageKind={slug}
+      dictionary={dictionary}
+      alternates={alternates}
+      navItems={navItems}
+      page={pageEntry}
+      products={productEntries}
+      commerceEnabled={commerceEnabled}
+      contactFormEnabled={contactFormEnabled}
+    />
+  ) : legalPage ? (
+    <LegalPageTemplate
+      locale={locale}
+      dictionary={dictionary}
+      alternates={alternates}
+      navItems={navItems}
+      page={legalPage}
+    />
+  ) : null
+}

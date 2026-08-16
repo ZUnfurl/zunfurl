@@ -1,0 +1,16 @@
+{
+  "name": "gcss-sanity-queries",
+  "type": "module",
+  "version": "0.3.0-preview.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.mjs"
+    }
+  },
+  "dependencies": {
+    "@sanity/client": "^8.0.0"
+  }
+}

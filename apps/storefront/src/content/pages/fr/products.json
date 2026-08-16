@@ -1,0 +1,71 @@
+{
+  "locale": "fr",
+  "kind": "products",
+  "title": "Produits Example Brand",
+  "seo": {
+    "title": "Produits | Example Brand",
+    "description": "Une démonstration neutre du C Retail Catalog & Content Foundation avec CMS produit et mapping Shopify en lecture seule."
+  },
+  "pageHero": {
+    "eyebrow": "Démo catalogue C",
+    "title": "Un catalogue produit avec une couche éditoriale.",
+    "body": "Cette page présente la base catalogue-contenu C. Les projets B ne génèrent pas cette route par défaut.",
+    "slides": [
+      {
+        "src": "/brand-assets/hero/products/Hero-Products-01.webp",
+        "alt": "Example Brand products hero image 1.",
+        "eyebrow": "Cadre catalogue",
+        "caption": "Un hero réutilisable pour les collections produit du profil C."
+      },
+      {
+        "src": "/brand-assets/hero/products/Hero-Products-02.webp",
+        "alt": "Example Brand products hero image 2.",
+        "eyebrow": "Logique produit",
+        "caption": "Un espace pour le contexte de lancement et les notes de collection."
+      },
+      {
+        "src": "/brand-assets/hero/products/Hero-Products-03.webp",
+        "alt": "Example Brand products hero image 3.",
+        "eyebrow": "Gamme future",
+        "caption": "Une section evolutive pour les lignes produit a venir."
+      }
+    ]
+  },
+  "productSpotlight": {
+    "eyebrow": "Product source",
+    "title": "Cards come from the product workbench.",
+    "body": "Les cartes combinent les médias issus de Shopify et le contenu éditorial géré dans Sanity lorsque le profil machine retail est actif.",
+    "ariaLabel": "Products spotlight navigation",
+    "previousLabel": "Previous product",
+    "nextLabel": "Next product",
+    "openProductLabel": "View product"
+  },
+  "blocks": [
+    {
+      "id": "catalog-boundary",
+      "eyebrow": "Périmètre",
+      "title": "Shopify fournit des faits catalogue en lecture seule.",
+      "body": "Cette base mappe l'identité et les médias produit ; elle n'inclut ni panier, checkout, paiement, commande, taxe, livraison, exécution, prix en temps réel ou stock en temps réel.",
+      "items": [
+        "Sanity gère le contenu éditorial",
+        "Shopify fournit les faits catalogue en lecture seule",
+        "Cloudflare assure la diffusion en périphérie"
+      ],
+      "variant": "standard"
+    },
+    {
+      "id": "launch-flow",
+      "eyebrow": "Flux de publication",
+      "title": "Publier le contenu catalogue depuis l'atelier.",
+      "body": "Utilisez Shopify pour la fiche catalogue source, puis Sanity pour les pages de langue, les récits et le SEO.",
+      "variant": "accent"
+    },
+    {
+      "id": "scale",
+      "eyebrow": "Scale",
+      "title": "The catalog can grow without reshaping pages.",
+      "body": "The same product card and detail templates support additional products when the C profile is enabled.",
+      "variant": "standard"
+    }
+  ]
+}

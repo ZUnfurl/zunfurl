@@ -1,0 +1,15 @@
+{
+  "blank_issues_enabled": false,
+  "contact_links": [
+    {
+      "name": "私密报告安全漏洞",
+      "url": "https://github.com/ZUnfurl/zunfurl/security/advisories/new",
+      "about": "不要公开漏洞细节；优先使用 GitHub Private Vulnerability Reporting。"
+    },
+    {
+      "name": "支持范围与数据边界",
+      "url": "https://github.com/ZUnfurl/zunfurl/blob/main/SUPPORT.md",
+      "about": "提交 Issue 前确认 best-effort 支持范围，并移除客户数据、secret 和私有素材。"
+    }
+  ]
+}

@@ -1,0 +1,340 @@
+---
+import type { ProductContent, ProductStoryContent } from "gcss-blocks";
+import { resolveContentImage } from "../../lib/images/imageSources";
+
+interface Props {
+  product: ProductContent;
+  story: ProductStoryContent;
+}
+
+const { product, story } = Astro.props as Props;
+const storyPages = story.storyPages ?? [];
+const resolvedStoryPages = storyPages.map((page) => ({
+  ...page,
+  resolvedImage: resolveContentImage(page, {
+    decorative: true,
+    localKeys: ["image"],
+  }),
+}));
+---
+
+{
+  storyPages.length > 0 && (
+    <div class="product-story">
+      {resolvedStoryPages.map((page, index) => (
+        <section
+          class="product-story__section"
+          aria-labelledby={`product-story-title-${page.id}`}
+        >
+          <div class="product-story__image-wrap" aria-hidden="true">
+            <img
+              class="product-story__image"
+              src={page.resolvedImage.src}
+              alt=""
+              loading={index === 0 ? "eager" : "lazy"}
+            />
+          </div>
+
+          <div class="product-story__veil" aria-hidden="true" />
+
+          <div class="product-story__shell">
+            <div class="container product-story__layout">
+              <div class="product-story__meta">
+                <span class="product-story__index">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span class="product-story__count">
+                  {String(storyPages.length).padStart(2, "0")}
+                </span>
+              </div>
+
+              <div class="product-story__content">
+                <div class="product-story__heading-group">
+                  <p class="eyebrow product-story__collection">
+                    {product.collection}
+                  </p>
+                  <p class="eyebrow product-story__eyebrow">{page.eyebrow}</p>
+                  <h2
+                    id={`product-story-title-${page.id}`}
+                    class="display-title product-story__title"
+                  >
+                    {page.title}
+                  </h2>
+
+                  <div class="product-story__deck">
+                    <p class="body-copy product-story__body">{page.body}</p>
+                    {page.supporting && (
+                      <p class="body-copy product-story__supporting">
+                        {page.supporting}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <span class="sr-only">{page.imageAlt}</span>
+        </section>
+      ))}
+    </div>
+  )
+}
+
+<style>
+  .product-story {
+    --story-bg: var(--color-bg);
+    --story-bg-soft: var(--color-bg-soft);
+    --story-panel: color-mix(
+      in srgb,
+      var(--color-surface-strong) 78%,
+      transparent
+    );
+    --story-panel-soft: color-mix(
+      in srgb,
+      var(--color-surface) 84%,
+      transparent
+    );
+    --story-text: var(--color-text);
+    --story-text-strong: color-mix(in srgb, var(--color-text) 94%, transparent);
+    --story-text-muted: color-mix(
+      in srgb,
+      var(--color-text-muted) 88%,
+      transparent
+    );
+    background:
+      radial-gradient(
+        circle at top left,
+        color-mix(in srgb, var(--color-accent) 14%, transparent),
+        transparent 26%
+      ),
+      linear-gradient(180deg, var(--story-bg) 0%, var(--story-bg-soft) 100%);
+  }
+
+  .product-story__section {
+    position: relative;
+    min-height: 100svh;
+    overflow: clip;
+    isolation: isolate;
+    display: flex;
+    align-items: stretch;
+  }
+
+  .product-story__image-wrap,
+  .product-story__veil {
+    position: absolute;
+    inset: 0;
+  }
+
+  .product-story__image {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: center;
+    filter: saturate(0.92) contrast(1.04);
+  }
+
+  .product-story__veil {
+    background: none;
+  }
+
+  .product-story__section::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: 8rem;
+    background: none;
+    pointer-events: none;
+  }
+
+  .product-story__shell {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    min-height: 100svh;
+    display: grid;
+    align-content: end;
+    padding-top: clamp(7rem, 10vw, 8.5rem);
+    padding-bottom: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  .product-story__layout {
+    position: relative;
+    width: 100%;
+    min-height: min(28rem, calc(100svh - clamp(8.25rem, 13vw, 10.5rem)));
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(1rem, 3vw, 2rem);
+    align-items: end;
+  }
+
+  .product-story__meta {
+    position: absolute;
+    left: 50%;
+    bottom: clamp(0.9rem, 2.4vw, 1.5rem);
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.45rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--story-text-muted);
+    z-index: 2;
+  }
+
+  .product-story__count::before {
+    content: "/";
+    margin-right: 0.45rem;
+  }
+
+  .product-story__content {
+    display: grid;
+    gap: 1.35rem;
+    width: 100%;
+    max-width: min(56rem, 70vw);
+  }
+
+  .product-story__heading-group {
+    display: grid;
+    gap: 0.95rem;
+  }
+
+  .product-story__collection,
+  .product-story__eyebrow {
+    margin: 0;
+  }
+
+  .product-story__collection {
+    color: var(--story-text-muted);
+  }
+
+  .product-story__eyebrow {
+    color: color-mix(in srgb, var(--story-text) 82%, transparent);
+  }
+
+  .product-story__title {
+    margin: 0 0 0 -0.04em;
+    max-width: 11ch;
+    font-size: clamp(3.2rem, 5vw, 5.5rem);
+    line-height: 0.9;
+    color: var(--story-text-strong);
+    text-shadow: 0 0.08em 0.4em
+      color-mix(in srgb, var(--story-bg) 22%, transparent);
+    text-wrap: balance;
+  }
+
+  .product-story__deck {
+    display: grid;
+    gap: 0.85rem;
+    max-width: min(24rem, 100%);
+  }
+
+  .product-story__body,
+  .product-story__supporting {
+    margin: 0;
+    max-width: 34ch;
+    color: color-mix(in srgb, var(--story-text) 86%, transparent);
+    text-shadow: 0 0.08em 0.32em
+      color-mix(in srgb, var(--story-bg) 18%, transparent);
+    text-wrap: pretty;
+  }
+
+  .product-story__body {
+    font-size: 0.94rem;
+    line-height: 1.68;
+  }
+
+  .product-story__supporting {
+    font-size: 0.9rem;
+    line-height: 1.72;
+    color: var(--story-text-muted);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (max-width: 720px) {
+    .product-story {
+      display: grid;
+      gap: 1rem;
+      padding: 0 0 1rem;
+      background: var(--story-bg-soft);
+    }
+
+    .product-story__section {
+      min-height: 100svh;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) minmax(0, 3fr);
+      background: var(--story-bg);
+      border: 1px solid color-mix(in srgb, var(--color-border) 68%, transparent);
+      box-shadow: var(--shadow-luxury);
+    }
+
+    .product-story__image-wrap {
+      position: relative;
+      inset: auto;
+      min-height: 100%;
+      overflow: hidden;
+    }
+
+    .product-story__veil,
+    .product-story__section::after {
+      display: none;
+    }
+
+    .product-story__image {
+      position: absolute;
+      inset: 0;
+      object-position: 33% center;
+    }
+
+    .product-story__shell {
+      min-height: 100%;
+      align-content: start;
+      padding: 0;
+    }
+
+    .product-story__meta {
+      left: 50%;
+      right: auto;
+      bottom: 1rem;
+    }
+
+    .product-story__layout {
+      min-height: 100%;
+      justify-items: start;
+      gap: 0;
+    }
+
+    .product-story__content {
+      min-height: 100%;
+      align-content: start;
+      width: 100%;
+      max-width: none;
+      padding: 0.9rem 0.9rem 3.25rem;
+      background: var(--story-panel);
+      backdrop-filter: blur(18px);
+    }
+
+    .product-story__title {
+      font-size: clamp(2.5rem, 11vw, 3.6rem);
+      max-width: 9ch;
+    }
+
+    .product-story__body,
+    .product-story__supporting {
+      max-width: none;
+      font-size: 0.92rem;
+    }
+  }
+</style>

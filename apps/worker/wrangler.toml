@@ -1,0 +1,32 @@
+# Generated from gcss.project.json for gcss-v3-site-framework.
+name = "gcss-v3-site-framework"
+main = "entry.mjs"
+compatibility_date = "2026-07-10"
+
+[vars]
+SITE_PROFILE = "cms-brand"
+SITE_FEATURE_CONTACT_FORM = "true"
+GITHUB_REPOSITORY = "owner/gcss-v3-site-framework"
+GITHUB_API_VERSION = "2022-11-28"
+CONTACT_FORM_ENABLED = "true"
+CONTACT_DAILY_LIMIT = "60"
+CONTACT_HOURLY_LIMIT = "10"
+CONTACT_IP_HOURLY_LIMIT = "3"
+CONTACT_IP_DAILY_LIMIT = "8"
+CONTACT_EMAIL_HOURLY_LIMIT = "2"
+CONTACT_EMAIL_DAILY_LIMIT = "5"
+CONTACT_MESSAGE_MAX_LENGTH = "2000"
+
+[[durable_objects.bindings]]
+name = "GCSS_COORDINATOR"
+class_name = "GcssCoordinator"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["GcssCoordinator"]
+
+[assets]
+directory = "../storefront/dist"
+binding = "ASSETS"
+html_handling = "auto-trailing-slash"
+not_found_handling = "404-page"

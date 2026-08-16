@@ -1,0 +1,66 @@
+{
+  "locale": "zh-cn",
+  "slug": "example-product",
+  "name": "示例商品",
+  "collection": "示例系列",
+  "roadmapOrder": 1,
+  "tagline": "用于 C Profile 项目的中性目录与内容演示商品。",
+  "primaryImage": "/brand-assets/products/example-product/example-product-sku-main.webp",
+  "roadmapLinkLabel": "查看商品详情",
+  "launchStatus": "live",
+  "shopifyHandle": "example-product",
+  "detailHero": {
+    "summary": "示例商品用于演示 C 目录与内容契约：Shopify 提供只读目录和媒体事实，Sanity 管理编辑故事、语言状态和 SEO。",
+    "gallery": [
+      {
+        "src": "/brand-assets/products/example-product/example-product-sku-01.webp",
+        "alt": "示例商品展示图片一"
+      },
+      {
+        "src": "/brand-assets/products/example-product/example-product-sku-02.webp",
+        "alt": "示例商品展示图片二"
+      },
+      {
+        "src": "/brand-assets/products/example-product/example-product-sku-03.webp",
+        "alt": "示例商品展示图片三"
+      },
+      {
+        "src": "/brand-assets/products/example-product/example-product-sku-04.webp",
+        "alt": "示例商品展示图片四"
+      }
+    ]
+  },
+  "storyPages": [
+    {
+      "id": "product-introduction",
+      "eyebrow": "商品介绍",
+      "title": "一个简明的目录与内容示例。",
+      "body": "可用此区域说明商品承诺、目标顾客和发布背景。",
+      "supporting": "客户项目初始化时，请用项目专用商品文案替换此占位故事。",
+      "image": "/brand-assets/products/example-product/transparency/example-product-powder-01.webp",
+      "imageAlt": "示例商品故事图片一"
+    },
+    {
+      "id": "editorial-story",
+      "eyebrow": "编辑故事",
+      "title": "由 Sanity 维护的内容层。",
+      "body": "可用此区域呈现品牌叙事、使用场景或活动内容。",
+      "supporting": "客户项目初始化时，请用项目专用商品文案替换此占位故事。",
+      "image": "/brand-assets/products/example-product/transparency/example-product-powder-02.webp",
+      "imageAlt": "示例商品故事图片二"
+    },
+    {
+      "id": "catalog-boundary",
+      "eyebrow": "目录边界",
+      "title": "Shopify 提供只读目录事实。",
+      "body": "本基础框架只映射商品身份和媒体，不包含 Cart、Checkout、支付、订单、税务、配送、履约、实时价格或实时库存。",
+      "supporting": "客户项目初始化时，请用项目专用商品文案替换此占位故事。",
+      "image": "/brand-assets/products/example-product/transparency/example-product-powder-03.webp",
+      "imageAlt": "示例商品故事图片三"
+    }
+  ],
+  "seo": {
+    "title": "示例商品｜Example Brand",
+    "description": "用于 ZUnfurl C Profile 项目的中性目录与内容演示商品。"
+  }
+}

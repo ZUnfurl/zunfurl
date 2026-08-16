@@ -1,0 +1,557 @@
+---
+import type { ProductContent, ProductStoryContent } from "gcss-blocks";
+
+interface Props {
+  product: ProductContent;
+  story: ProductStoryContent;
+}
+
+const { product, story } = Astro.props as Props;
+const { detailHero } = story;
+const gallery = detailHero.gallery;
+const mosaicGallery = gallery.slice(1, 4);
+const detailHeroLabels = {
+  en: {
+    mosaicLabel: "Product composition",
+    carouselLabel: "Product focus",
+    previousLabel: "Previous product image",
+    nextLabel: "Next product image",
+  },
+  fr: {
+    mosaicLabel: "Composition produit",
+    carouselLabel: "Focus produit",
+    previousLabel: "Image produit précédente",
+    nextLabel: "Image produit suivante",
+  },
+  "zh-cn": {
+    mosaicLabel: "商品构图",
+    carouselLabel: "商品焦点",
+    previousLabel: "上一张商品图",
+    nextLabel: "下一张商品图",
+  },
+} as const;
+const labels =
+  detailHeroLabels[story.locale as keyof typeof detailHeroLabels] ??
+  detailHeroLabels.en;
+---
+
+<section class="product-detail" data-product-detail>
+  <div class="product-detail__hero">
+    <div class="product-detail__columns">
+      <div
+        class="product-detail__column product-detail__column--mosaic"
+        aria-label={labels.mosaicLabel}
+      >
+        <div class="product-detail__mosaic-grid">
+          {
+            mosaicGallery.map((image, index) => (
+              <figure
+                class:list={[
+                  "product-detail__mosaic-card",
+                  `product-detail__mosaic-card--${index + 1}`,
+                ]}
+              >
+                <img
+                  src={image.src}
+                  alt={image.alt}
+                  loading={index === 0 ? "eager" : "lazy"}
+                  draggable="false"
+                />
+              </figure>
+            ))
+          }
+        </div>
+      </div>
+
+      <div
+        class="product-detail__column product-detail__column--carousel"
+        aria-label={labels.carouselLabel}
+      >
+        <div class="product-detail__carousel" data-detail-carousel>
+          <div class="product-detail__slides">
+            {
+              gallery.map((image, index) => (
+                <figure
+                  class="product-detail__slide"
+                  data-detail-slide
+                  data-active={index === 0 ? "true" : "false"}
+                >
+                  <img
+                    src={image.src}
+                    alt={image.alt}
+                    loading={index === 0 ? "eager" : "lazy"}
+                    draggable="false"
+                  />
+                </figure>
+              ))
+            }
+          </div>
+
+          <div class="product-detail__controls">
+            <button
+              type="button"
+              class="product-detail__control"
+              data-detail-prev
+              aria-label={labels.previousLabel}
+            >
+              <span aria-hidden="true">&lt;</span>
+            </button>
+            <div class="product-detail__index" data-detail-index>
+              1/{gallery.length}
+            </div>
+            <button
+              type="button"
+              class="product-detail__control"
+              data-detail-next
+              aria-label={labels.nextLabel}
+            >
+              <span aria-hidden="true">&gt;</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-detail__column product-detail__column--summary">
+        <div class="product-detail__heading-group">
+          <p class="eyebrow product-detail__collection">{product.collection}</p>
+          <h1 class="display-title product-detail__title">{product.name}</h1>
+
+          <div class="product-detail__deck">
+            <p class="body-copy product-detail__tagline">{product.tagline}</p>
+            <p class="body-copy product-detail__summary">
+              {detailHero.summary}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // @ts-nocheck
+  import { createHorizontalGesture } from "../../lib/gesture/createHorizontalGesture";
+
+  const detailRoots = document.querySelectorAll("[data-product-detail]");
+
+  for (const root of detailRoots) {
+    const carousel = root.querySelector("[data-detail-carousel]");
+    const slides = Array.from(root.querySelectorAll("[data-detail-slide]"));
+    const prevButton = root.querySelector("[data-detail-prev]");
+    const nextButton = root.querySelector("[data-detail-next]");
+    const indexNode = root.querySelector("[data-detail-index]");
+    const slidesTrack = root.querySelector(".product-detail__slides");
+
+    if (
+      !(carousel instanceof HTMLElement) ||
+      !prevButton ||
+      !nextButton ||
+      !indexNode ||
+      !(slidesTrack instanceof HTMLElement) ||
+      slides.length === 0
+    ) {
+      continue;
+    }
+
+    let activeIndex = slides.findIndex(
+      (slide) => slide.getAttribute("data-active") === "true",
+    );
+    if (activeIndex < 0) activeIndex = 0;
+
+    function goTo(nextIndex = 0) {
+      activeIndex = (nextIndex + slides.length) % slides.length;
+      render();
+    }
+
+    const render = () => {
+      slides.forEach((slide, index) => {
+        slide.setAttribute(
+          "data-active",
+          index === activeIndex ? "true" : "false",
+        );
+      });
+      indexNode.textContent = `${activeIndex + 1} / ${slides.length}`;
+    };
+
+    prevButton.addEventListener("click", () => {
+      goTo(activeIndex - 1);
+    });
+
+    nextButton.addEventListener("click", () => {
+      goTo(activeIndex + 1);
+    });
+
+    const clearDragState = () => {
+      slidesTrack.style.removeProperty("--detail-drag-offset");
+      carousel.dataset.dragging = "false";
+    };
+
+    createHorizontalGesture(carousel, {
+      mode: "paged",
+      onDragStart: () => {
+        carousel.dataset.dragging = "true";
+        slidesTrack.style.setProperty("--detail-drag-offset", "0px");
+      },
+      onDragMove: (snapshot) => {
+        slidesTrack.style.setProperty(
+          "--detail-drag-offset",
+          `${snapshot.previewOffset}px`,
+        );
+      },
+      onDragEnd: (_, commit) => {
+        clearDragState();
+
+        if (commit.shouldCommit) {
+          goTo(commit.direction === "next" ? activeIndex + 1 : activeIndex - 1);
+          return;
+        }
+
+        render();
+      },
+      onCancel: () => {
+        clearDragState();
+        render();
+      },
+    });
+
+    render();
+  }
+</script>
+
+<style>
+  .product-detail {
+    --detail-header-clearance: clamp(5.5rem, 7vw, 6.75rem);
+    --detail-edge-gap: clamp(1.25rem, 2.6vw, 2.25rem);
+    --detail-carousel-control-color: #181717;
+    --detail-bg: var(--color-bg);
+    --detail-panel: color-mix(
+      in srgb,
+      var(--color-surface-strong) 78%,
+      transparent
+    );
+    --detail-panel-soft: color-mix(
+      in srgb,
+      var(--color-surface) 84%,
+      transparent
+    );
+    --detail-text: var(--color-text);
+    --detail-muted: var(--color-text-muted);
+    --detail-accent: var(--color-accent);
+    width: 100vw;
+    margin-inline: calc(50% - 50vw);
+    background:
+      radial-gradient(
+        circle at top left,
+        color-mix(in srgb, var(--detail-accent) 14%, transparent),
+        transparent 28%
+      ),
+      linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--detail-panel) 64%, transparent),
+        transparent 48%
+      ),
+      var(--detail-bg);
+    color: var(--detail-text);
+  }
+
+  .product-detail__hero {
+    min-height: 100svh;
+    padding: calc(var(--detail-header-clearance) + clamp(0.25rem, 1vw, 0.75rem))
+      var(--detail-edge-gap) var(--detail-edge-gap);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-detail__columns {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 1.8vw, 1.5rem);
+    align-items: stretch;
+    flex: 1;
+    min-height: 0;
+    padding-inline: var(--detail-edge-gap);
+  }
+
+  .product-detail__column {
+    min-height: 0;
+    background: var(--detail-panel);
+    backdrop-filter: blur(18px);
+  }
+
+  .product-detail__column--mosaic,
+  .product-detail__column--summary {
+    padding: clamp(1rem, 2vw, 1.5rem);
+  }
+
+  .product-detail__column--carousel {
+    padding: clamp(0.7rem, 1.3vw, 0.9rem);
+  }
+
+  .product-detail__label {
+    margin: 0 0 1rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--detail-muted);
+  }
+
+  .product-detail__mosaic-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.82fr);
+    grid-template-rows: repeat(2, minmax(9rem, 1fr));
+    gap: 0.75rem;
+    height: calc(100% - 1.72rem);
+  }
+
+  .product-detail__mosaic-card {
+    margin: 0;
+    overflow: hidden;
+    background: var(--detail-panel-soft);
+  }
+
+  .product-detail__mosaic-card--1 {
+    grid-row: span 2;
+  }
+
+  .product-detail__mosaic-card--2 {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .product-detail__mosaic-card--3 {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .product-detail__mosaic-card img,
+  .product-detail__slide img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  .product-detail__carousel {
+    height: 100%;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    gap: 0;
+    touch-action: pan-y;
+  }
+
+  .product-detail__slides {
+    position: relative;
+    min-height: clamp(26rem, 62vw, 46rem);
+    overflow: hidden;
+    touch-action: pan-y;
+    cursor: grab;
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--detail-panel-soft) 82%, transparent),
+        color-mix(in srgb, var(--detail-panel) 96%, transparent)
+      ),
+      var(--detail-panel-soft);
+  }
+
+  .product-detail__carousel[data-dragging="true"] .product-detail__slides {
+    cursor: grabbing;
+  }
+
+  .product-detail__slides::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translate3d(var(--detail-drag-offset, 0px), 0, 0);
+    pointer-events: none;
+  }
+
+  .product-detail__slide {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    transform: translate3d(var(--detail-drag-offset, 0px), 1.25rem, 0)
+      scale(0.985);
+    transition:
+      opacity 320ms ease,
+      transform 420ms ease;
+    pointer-events: none;
+  }
+
+  .product-detail__slide[data-active="true"] {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    pointer-events: auto;
+  }
+
+  .product-detail__controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    align-self: end;
+    margin-top: -2.25rem;
+    padding: 0 0 0.8rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .product-detail__control {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: var(--detail-carousel-control-color);
+    font: inherit;
+    font-size: 0.88rem;
+    line-height: 1;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .product-detail__index {
+    min-width: 3.5rem;
+    text-align: center;
+    font-size: 0.82rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--detail-carousel-control-color);
+  }
+
+  .product-detail__column--summary {
+    display: grid;
+    align-content: center;
+    gap: 1.35rem;
+  }
+
+  .product-detail__heading-group {
+    display: grid;
+    gap: 0.98rem;
+  }
+
+  .product-detail__deck {
+    display: grid;
+    gap: 0.85rem;
+    max-width: min(34rem, 100%);
+  }
+
+  .product-detail__collection,
+  .product-detail__tagline,
+  .product-detail__summary {
+    color: var(--detail-text);
+  }
+
+  .product-detail__collection {
+    color: var(--detail-muted);
+  }
+
+  .product-detail__collection {
+    margin: 0;
+  }
+
+  .product-detail__title {
+    max-width: min(58rem, 100%);
+    margin: 0 0 0 -0.04em;
+    font-size: clamp(3.36rem, 5vw, 5.6rem);
+    line-height: 0.9;
+    text-wrap: balance;
+  }
+
+  .product-detail__tagline,
+  .product-detail__summary {
+    margin: 0;
+    max-width: 34ch;
+    text-wrap: pretty;
+  }
+
+  .product-detail__tagline {
+    font-size: 0.92rem;
+    color: color-mix(in srgb, var(--detail-text) 86%, transparent);
+  }
+
+  .product-detail__summary {
+    font-size: 0.92rem;
+    line-height: 1.7;
+    color: color-mix(in srgb, var(--detail-text) 78%, transparent);
+  }
+
+  .product-detail__column--summary {
+    justify-content: center;
+  }
+
+  @media (max-width: 1100px) {
+    .product-detail__columns {
+      grid-template-columns: 1fr;
+    }
+
+    .product-detail__mosaic-grid {
+      height: auto;
+      grid-template-rows: repeat(2, minmax(9rem, 14rem));
+    }
+
+    .product-detail__slides {
+      min-height: 26rem;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .product-detail {
+      --detail-header-clearance: 4.6rem;
+      --detail-edge-gap: 1rem;
+    }
+
+    .product-detail__hero {
+      min-height: auto;
+      padding: calc(var(--detail-header-clearance) + 0.45rem) 0
+        var(--detail-edge-gap);
+    }
+
+    .product-detail__columns {
+      padding-inline: var(--detail-edge-gap);
+    }
+
+    .product-detail__column--summary,
+    .product-detail__column--carousel {
+      padding: 0.9rem;
+    }
+
+    .product-detail__column--mosaic {
+      display: none;
+    }
+
+    .product-detail__mosaic-grid {
+      gap: 0.55rem;
+      grid-template-rows: repeat(2, minmax(7rem, 9rem));
+    }
+
+    .product-detail__slides {
+      min-height: 20rem;
+    }
+
+    .product-detail__controls {
+      margin-top: -1.9rem;
+      padding-bottom: 0.55rem;
+    }
+
+    .product-detail__title {
+      font-size: clamp(2.52rem, 11.2vw, 3.64rem);
+      max-width: none;
+      line-height: 0.92;
+    }
+
+    .product-detail__tagline,
+    .product-detail__summary {
+      font-size: 0.92rem;
+      line-height: 1.65;
+    }
+
+    .product-detail__controls {
+      gap: 0.55rem;
+    }
+
+    .product-detail__index {
+      min-width: 3rem;
+      font-size: 0.74rem;
+    }
+  }
+</style>
