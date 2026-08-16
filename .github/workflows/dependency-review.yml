@@ -15,6 +15,7 @@ concurrency:
 jobs:
   dependency-review:
     name: Vulnerability and license policy
+    if: ${{ github.event.repository.visibility == 'public' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

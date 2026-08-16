@@ -26,6 +26,7 @@
 - 生产 Deploy 改为仅 `main` 人工触发，并要求远程 `production` Environment 与显式 arming。
 - Sanity/Shopify webhook 只产生去重后的 rebuild-request receipt，不自动 build 或 deploy。
 - Git checkout 统一为 LF，确保 Windows 默认 `core.autocrlf` 不改变受哈希门禁管理的资产和供应链文件。
+- CodeQL 与 Dependency Review 在不受 GitHub Free 支持的 Private 阶段显式跳过，并在 Public 后自动启用；Private clean-room Gate 仍由本地供应链门禁与 Secret Scan 覆盖。
 
 ### Removed
 

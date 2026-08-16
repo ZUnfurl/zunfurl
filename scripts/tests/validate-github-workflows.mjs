@@ -457,9 +457,17 @@ assert(
   dependencyReviewWorkflow.includes("config-file: './.github/dependency-review-config.yml'"),
   'dependency-review.yml must consume the canonical local license and vulnerability policy.',
 );
+assert(
+  dependencyReviewWorkflow.includes("if: ${{ github.event.repository.visibility == 'public' }}"),
+  'Dependency Review must skip unsupported Private/Free repositories and run immediately after Public.',
+);
 assert(!dependencyReviewWorkflow.includes('push:'), 'Dependency Review must only execute for pull requests.');
 
 assert(codeqlWorkflow.includes('security-events: write'), 'codeql.yml must grant only the CodeQL upload permission it needs.');
+assert(
+  codeqlWorkflow.includes("if: ${{ github.event.repository.visibility == 'public' }}"),
+  'CodeQL must skip unsupported Private/Free repositories and run immediately after Public.',
+);
 assert(codeqlWorkflow.includes('github/codeql-action/init@'), 'codeql.yml must initialize CodeQL.');
 assert(codeqlWorkflow.includes('github/codeql-action/analyze@'), 'codeql.yml must upload CodeQL analysis.');
 assert(codeqlWorkflow.includes('languages: javascript-typescript'), 'codeql.yml must analyze JavaScript and TypeScript.');
