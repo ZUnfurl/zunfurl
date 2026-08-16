@@ -271,3 +271,5 @@ Copy-Item .env.example .env
 `0.3.0-preview.1` 候选保留 `Example Brand` 和 `Example Product` 作为中性、可运行示例内容。客户项目必须将 `templateMode` 改为 `false`，按 [模板占位审计](docs/template-placeholder-audit.md) 完成品牌、法律、资产和平台配置，并通过 `npm.cmd run project:scan` 后再部署。
 
 源码许可见 [LICENSE](LICENSE) 与 [NOTICE](NOTICE)；媒体权利、第三方依赖和项目标识分别受 [资产清单](docs/compliance/ASSET_LICENSES.yml)、[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) 与 [TRADEMARKS.md](TRADEMARKS.md) 约束。Copyright 2026 Noodle Freeman。
+
+<!-- DCO metadata publisher canary; deliberately unmerged. -->
