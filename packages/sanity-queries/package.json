@@ -11,6 +11,6 @@
     }
   },
   "dependencies": {
-    "@sanity/client": "^8.0.0"
+    "@sanity/client": "^8.2.0"
   }
 }

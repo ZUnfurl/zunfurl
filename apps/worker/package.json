@@ -15,9 +15,9 @@
     "typecheck": "npm run generate:types && tsc --noEmit --project tsconfig.json"
   },
   "devDependencies": {
-    "@cloudflare/vitest-pool-workers": "^0.21.3",
+    "@cloudflare/vitest-pool-workers": "^0.22.0",
     "typescript": "^5.9.3",
-    "vitest": "^4.1.10",
+    "vitest": "^4.1.11",
     "wrangler": "^4.123.0"
   }
 }
