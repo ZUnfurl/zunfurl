@@ -13,6 +13,6 @@
   "dependencies": {
     "gcss-config": "file:../config",
     "react": "^19.2.8",
-    "sanity": "^6.9.2"
+    "sanity": "^6.11.0"
   }
 }

@@ -12,14 +12,14 @@
   },
   "dependencies": {
     "@sanity/ui": "^3.5.3",
-    "@sanity/vision": "^6.9.2",
+    "@sanity/vision": "^6.11.0",
     "@types/react": "^19.2.18",
     "gcss-config": "file:../../packages/config",
     "gcss-schemas": "file:../../packages/schemas",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "sanity": "^6.9.2",
-    "styled-components": "^6.1.19"
+    "sanity": "^6.11.0",
+    "styled-components": "^6.5.3"
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
