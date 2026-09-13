@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "gcss-config": "file:../config",
-    "react": "^19.2.8",
-    "sanity": "^6.9.2"
+    "react": "^19.3.0",
+    "sanity": "^6.13.1"
   }
 }
